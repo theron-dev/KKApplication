@@ -1,0 +1,6 @@
+framework module KKApplication {
+  umbrella header "KKApplication.h"
+
+  export *
+  module * { export * }
+}

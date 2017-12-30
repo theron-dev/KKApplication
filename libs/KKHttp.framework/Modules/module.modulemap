@@ -1,0 +1,6 @@
+framework module KKHttp {
+  umbrella header "KKHttp.h"
+
+  export *
+  module * { export * }
+}

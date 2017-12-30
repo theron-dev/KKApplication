@@ -1,0 +1,6 @@
+framework module KKView {
+  umbrella header "KKView.h"
+
+  export *
+  module * { export * }
+}
