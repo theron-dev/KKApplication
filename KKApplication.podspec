@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
 
 
   s.name         = "KKApplication"
-  s.version      = "1.0.0"
+  s.version      = "1.0.1"
   s.summary      = "小应用"
   s.description  = "小应用, 原生组建渲染 200k"
 
