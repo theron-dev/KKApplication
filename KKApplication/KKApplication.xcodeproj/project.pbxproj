@@ -26,6 +26,12 @@
 		1A9E3C761FF74AD40023B627 /* KKController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A9E3C741FF74AD40023B627 /* KKController.m */; };
 		1A9E3C791FF750770023B627 /* KKPageController.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A9E3C771FF750770023B627 /* KKPageController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1A9E3C7A1FF750770023B627 /* KKPageController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A9E3C781FF750770023B627 /* KKPageController.m */; };
+		1A9E3CA51FF878710023B627 /* KKApplicationDylib.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A9E3CA31FF878710023B627 /* KKApplicationDylib.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1A9E3CB11FF878CA0023B627 /* KKApplication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AE143311FF4956800D2DEAD /* KKApplication.framework */; };
+		1A9E3CB21FF878CE0023B627 /* KKHttp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A9E3CB41FF878CE0023B627 /* KKHttp.framework */; };
+		1A9E3CB31FF878CE0023B627 /* KKObserver.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A9E3CB51FF878CE0023B627 /* KKObserver.framework */; };
+		1A9E3CB61FF878CE0023B627 /* KKView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AE143441FF4959D00D2DEAD /* KKView.framework */; };
+		1A9E3CBA1FF8799E0023B627 /* KKDylib.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A9E3CB81FF8799E0023B627 /* KKDylib.m */; };
 		1AE143361FF4956800D2DEAD /* KKApplication.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AE143341FF4956800D2DEAD /* KKApplication.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1AE143491FF495BE00D2DEAD /* KKApp.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AE143471FF495BE00D2DEAD /* KKApp.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1AE1434A1FF495BE00D2DEAD /* KKApp.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AE143481FF495BE00D2DEAD /* KKApp.m */; };
@@ -38,6 +44,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		1A9E3CAE1FF878C50023B627 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1AE143281FF4956800D2DEAD /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1AE143301FF4956800D2DEAD;
+			remoteInfo = KKApplication;
+		};
 		1AE143431FF4959D00D2DEAD /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 1AE1433C1FF4959D00D2DEAD /* KKView.xcodeproj */;
@@ -66,6 +79,21 @@
 		1A9E3C741FF74AD40023B627 /* KKController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KKController.m; sourceTree = "<group>"; };
 		1A9E3C771FF750770023B627 /* KKPageController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KKPageController.h; sourceTree = "<group>"; };
 		1A9E3C781FF750770023B627 /* KKPageController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KKPageController.m; sourceTree = "<group>"; };
+		1A9E3C871FF878400023B627 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		1A9E3C881FF878400023B627 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		1A9E3C8A1FF878400023B627 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		1A9E3C8B1FF878400023B627 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		1A9E3C8E1FF878400023B627 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		1A9E3C901FF878400023B627 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		1A9E3C931FF878400023B627 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		1A9E3C951FF878400023B627 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1A9E3C961FF878400023B627 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		1A9E3CA11FF878710023B627 /* KKApplicationDylib.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = KKApplicationDylib.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1A9E3CA31FF878710023B627 /* KKApplicationDylib.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KKApplicationDylib.h; sourceTree = "<group>"; };
+		1A9E3CA41FF878710023B627 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1A9E3CB41FF878CE0023B627 /* KKHttp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = KKHttp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1A9E3CB51FF878CE0023B627 /* KKObserver.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = KKObserver.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1A9E3CB81FF8799E0023B627 /* KKDylib.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KKDylib.m; sourceTree = "<group>"; };
 		1AE143311FF4956800D2DEAD /* KKApplication.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = KKApplication.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1AE143341FF4956800D2DEAD /* KKApplication.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KKApplication.h; sourceTree = "<group>"; };
 		1AE143351FF4956800D2DEAD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -81,6 +109,17 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		1A9E3C9D1FF878710023B627 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1A9E3CB21FF878CE0023B627 /* KKHttp.framework in Frameworks */,
+				1A9E3CB31FF878CE0023B627 /* KKObserver.framework in Frameworks */,
+				1A9E3CB61FF878CE0023B627 /* KKView.framework in Frameworks */,
+				1A9E3CB11FF878CA0023B627 /* KKApplication.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1AE1432D1FF4956800D2DEAD /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -91,12 +130,50 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1A9E3C861FF878400023B627 /* app */ = {
+			isa = PBXGroup;
+			children = (
+				1A9E3C871FF878400023B627 /* AppDelegate.h */,
+				1A9E3C881FF878400023B627 /* AppDelegate.m */,
+				1A9E3C8A1FF878400023B627 /* ViewController.h */,
+				1A9E3C8B1FF878400023B627 /* ViewController.m */,
+				1A9E3C8D1FF878400023B627 /* Main.storyboard */,
+				1A9E3C901FF878400023B627 /* Assets.xcassets */,
+				1A9E3C921FF878400023B627 /* LaunchScreen.storyboard */,
+				1A9E3C951FF878400023B627 /* Info.plist */,
+				1A9E3C961FF878400023B627 /* main.m */,
+			);
+			path = app;
+			sourceTree = "<group>";
+		};
+		1A9E3CA21FF878710023B627 /* KKApplicationDylib */ = {
+			isa = PBXGroup;
+			children = (
+				1A9E3CA31FF878710023B627 /* KKApplicationDylib.h */,
+				1A9E3CB81FF8799E0023B627 /* KKDylib.m */,
+				1A9E3CA41FF878710023B627 /* Info.plist */,
+			);
+			path = KKApplicationDylib;
+			sourceTree = "<group>";
+		};
+		1A9E3CB01FF878CA0023B627 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1A9E3CB41FF878CE0023B627 /* KKHttp.framework */,
+				1A9E3CB51FF878CE0023B627 /* KKObserver.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		1AE143271FF4956800D2DEAD = {
 			isa = PBXGroup;
 			children = (
 				1AE1433C1FF4959D00D2DEAD /* KKView.xcodeproj */,
 				1AE143331FF4956800D2DEAD /* KKApplication */,
+				1A9E3C861FF878400023B627 /* app */,
+				1A9E3CA21FF878710023B627 /* KKApplicationDylib */,
 				1AE143321FF4956800D2DEAD /* Products */,
+				1A9E3CB01FF878CA0023B627 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -104,6 +181,7 @@
 			isa = PBXGroup;
 			children = (
 				1AE143311FF4956800D2DEAD /* KKApplication.framework */,
+				1A9E3CA11FF878710023B627 /* KKApplicationDylib.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -140,6 +218,14 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		1A9E3C9E1FF878710023B627 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1A9E3CA51FF878710023B627 /* KKApplicationDylib.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1AE1432E1FF4956800D2DEAD /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -157,6 +243,25 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		1A9E3CA01FF878710023B627 /* KKApplicationDylib */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1A9E3CAA1FF878710023B627 /* Build configuration list for PBXNativeTarget "KKApplicationDylib" */;
+			buildPhases = (
+				1A9E3C9C1FF878710023B627 /* Sources */,
+				1A9E3C9D1FF878710023B627 /* Frameworks */,
+				1A9E3C9E1FF878710023B627 /* Headers */,
+				1A9E3C9F1FF878710023B627 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1A9E3CAF1FF878C50023B627 /* PBXTargetDependency */,
+			);
+			name = KKApplicationDylib;
+			productName = KKApplicationDylib;
+			productReference = 1A9E3CA11FF878710023B627 /* KKApplicationDylib.framework */;
+			productType = "com.apple.product-type.framework";
+		};
 		1AE143301FF4956800D2DEAD /* KKApplication */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1AE143391FF4956800D2DEAD /* Build configuration list for PBXNativeTarget "KKApplication" */;
@@ -185,6 +290,10 @@
 				LastUpgradeCheck = 0920;
 				ORGANIZATIONNAME = kkmofang.cn;
 				TargetAttributes = {
+					1A9E3CA01FF878710023B627 = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+					};
 					1AE143301FF4956800D2DEAD = {
 						CreatedOnToolsVersion = 9.2;
 						ProvisioningStyle = Automatic;
@@ -201,6 +310,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = 1AE143271FF4956800D2DEAD;
 			productRefGroup = 1AE143321FF4956800D2DEAD /* Products */;
@@ -215,6 +325,7 @@
 			targets = (
 				1AE143301FF4956800D2DEAD /* KKApplication */,
 				1AE6FCF01FF6435200001889 /* KKApplication.framework */,
+				1A9E3CA01FF878710023B627 /* KKApplicationDylib */,
 			);
 		};
 /* End PBXProject section */
@@ -230,6 +341,13 @@
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
+		1A9E3C9F1FF878710023B627 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1AE1432F1FF4956800D2DEAD /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -256,6 +374,14 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		1A9E3C9C1FF878710023B627 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1A9E3CBA1FF8799E0023B627 /* KKDylib.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1AE1432C1FF4956800D2DEAD /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -272,6 +398,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		1A9E3CAF1FF878C50023B627 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1AE143301FF4956800D2DEAD /* KKApplication */;
+			targetProxy = 1A9E3CAE1FF878C50023B627 /* PBXContainerItemProxy */;
+		};
 		1AE143461FF495A600D2DEAD /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = KKView;
@@ -284,7 +415,72 @@
 		};
 /* End PBXTargetDependency section */
 
+/* Begin PBXVariantGroup section */
+		1A9E3C8D1FF878400023B627 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1A9E3C8E1FF878400023B627 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		1A9E3C921FF878400023B627 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1A9E3C931FF878400023B627 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
 /* Begin XCBuildConfiguration section */
+		1A9E3CAB1FF878710023B627 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 8V7A9F9SCJ;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_BITCODE = NO;
+				INFOPLIST_FILE = KKApplicationDylib/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = cn.kkmofang.KKApplicationDylib;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		1A9E3CAC1FF878710023B627 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 8V7A9F9SCJ;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_BITCODE = NO;
+				INFOPLIST_FILE = KKApplicationDylib/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = cn.kkmofang.KKApplicationDylib;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		1AE143371FF4956800D2DEAD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -462,6 +658,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		1A9E3CAA1FF878710023B627 /* Build configuration list for PBXNativeTarget "KKApplicationDylib" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1A9E3CAB1FF878710023B627 /* Debug */,
+				1A9E3CAC1FF878710023B627 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		1AE1432B1FF4956800D2DEAD /* Build configuration list for PBXProject "KKApplication" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

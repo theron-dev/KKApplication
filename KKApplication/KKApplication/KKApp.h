@@ -9,6 +9,9 @@
 #import <KKObserver/KKObserver.h>
 #import <KKView/KKView.h>
 
+#define KKApplicationVersion 1.0
+#define KKApplicationBuild 1
+
 @class KKApplication;
 
 @protocol KKViewController
@@ -64,5 +67,9 @@
 -(BOOL) has:(NSString *) path;
 
 -(void) run;
+
++(double) version;
+
++(unsigned int) build;
 
 @end

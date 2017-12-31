@@ -13,6 +13,14 @@
 
 @implementation KKApplication
 
++(double) version {
+    return KKApplicationVersion;
+}
+
++(unsigned int) build {
+    return KKApplicationBuild;
+}
+
 -(instancetype) initWithBundle:(NSBundle *) bundle {
     return [self initWithBundle:bundle jsContext:[[JSContext alloc] init]];
 }
