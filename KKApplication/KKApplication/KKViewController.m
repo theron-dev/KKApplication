@@ -9,7 +9,12 @@
 #import "KKViewController.h"
 
 
-@interface KKViewController ()
+@interface KKViewController () {
+    BOOL _topbar_hidden;
+    UIColor * _topbar_backgroundColor;
+    UIColor * _topbar_tintColor;
+    UIColor * _topbar_barTintColor;
+}
 
 @end
 
@@ -75,10 +80,37 @@
 -(void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    [self.controller.observer set:@[@"page",@"topbarHidden"] value:@([self.navigationController isNavigationBarHidden])];
+    {
+        id v = [self.controller.observer get:@[@"page",@"topbar",@"hidden"] defaultValue:nil];
+        if(v) {
+            _topbar_hidden = [self.navigationController isNavigationBarHidden];
+            [self.navigationController setNavigationBarHidden:[v boolValue] animated:NO];
+        }
+    }
     
-    [self.navigationController setNavigationBarHidden:
-     [[self.controller.observer get:@[@"page",@"topbar",@"hidden"] defaultValue:@(false)] boolValue] animated:NO];
+    {
+        id v = [self.controller.observer get:@[@"page",@"topbar",@"background-color"] defaultValue:nil];
+        if(v) {
+            _topbar_backgroundColor = [self.navigationController.navigationBar backgroundColor];
+            [self.navigationController.navigationBar setBackgroundColor:[UIColor KKElementStringValue:[v kk_stringValue]]];
+        }
+    }
+    
+    {
+        id v = [self.controller.observer get:@[@"page",@"topbar",@"tint-color"] defaultValue:nil];
+        if(v) {
+            _topbar_tintColor = [self.navigationController.navigationBar tintColor];
+            [self.navigationController.navigationBar setTintColor:[UIColor KKElementStringValue:[v kk_stringValue]]];
+        }
+    }
+    
+    {
+        id v = [self.controller.observer get:@[@"page",@"topbar",@"bar-tint-color"] defaultValue:nil];
+        if(v) {
+            _topbar_barTintColor = [self.navigationController.navigationBar barTintColor];
+            [self.navigationController.navigationBar setBarTintColor:[UIColor KKElementStringValue:[v kk_stringValue]]];
+        }
+    }
     
     [self.controller willAppear];
 }
@@ -86,8 +118,33 @@
 -(void) viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
-    [self.navigationController setNavigationBarHidden:
-     [[self.controller.observer get:@[@"page",@"topbarHidden"] defaultValue:@(false)] boolValue] animated:NO];
+    {
+        id v = [self.controller.observer get:@[@"page",@"topbar",@"hidden"] defaultValue:nil];
+        if(v) {
+            [self.navigationController setNavigationBarHidden:_topbar_hidden animated:NO];
+        }
+    }
+    
+    {
+        id v = [self.controller.observer get:@[@"page",@"topbar",@"background-color"] defaultValue:nil];
+        if(v) {
+            [self.navigationController.navigationBar setBackgroundColor:_topbar_backgroundColor];
+        }
+    }
+    
+    {
+        id v = [self.controller.observer get:@[@"page",@"topbar",@"tint-color"] defaultValue:nil];
+        if(v) {
+            [self.navigationController.navigationBar setTintColor:_topbar_tintColor];
+        }
+    }
+    
+    {
+        id v = [self.controller.observer get:@[@"page",@"topbar",@"bar-tint-color"] defaultValue:nil];
+        if(v) {
+            [self.navigationController.navigationBar setBarTintColor:_topbar_barTintColor];
+        }
+    }
     
     [self.controller willDisappear];
 }

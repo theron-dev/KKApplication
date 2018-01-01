@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
 
 
   s.name         = "KKApplication"
-  s.version      = "1.0.1"
+  s.version      = "1.0.2"
   s.summary      = "小应用"
   s.description  = "小应用, 原生组建渲染 200k"
 
@@ -15,6 +15,6 @@ Pod::Spec.new do |s|
 
   s.vendored_frameworks = 'KKApplication.framework'
   s.requires_arc = true
-  s.dependency 'KKView', '~> 1.0.0' 
+  s.dependency 'KKView', '~> 1.0.3' 
 
 end

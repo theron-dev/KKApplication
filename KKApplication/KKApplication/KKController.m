@@ -79,44 +79,170 @@
 }
 
 -(void) run:(UIViewController *) viewController {
+    
+    {
+        __weak UIViewController * v = viewController;
+        
+        [self.observer on:^(id value, NSArray *changedKeys, void *context) {
+            
+            if(v && value) {
+                
+                v.view.backgroundColor = [UIColor KKElementStringValue:[value kk_stringValue]];
+                
+            }
+            
+        } keys:@[@"page",@"background-color"] context:nil];
+        
+    }
+    
+    {
+        __weak UIViewController * v = viewController;
+        
+        [self.observer on:^(id value, NSArray *changedKeys, void *context) {
+            
+            if(v && value) {
+                
+                v.view.tintColor = [UIColor KKElementStringValue:[value kk_stringValue]];
+                
+            }
+            
+        } keys:@[@"page",@"tint-color"] context:nil];
+        
+    }
+    
+    {
+        __weak UIViewController * v = viewController;
+        
+        [self.observer on:^(id title, NSArray *changedKeys, void *context) {
+            
+            if(v && title) {
+                
+                v.title = [title kk_stringValue];
+                
+            }
+            
+        } keys:@[@"page",@"title"] context:nil];
+        
+    }
+    
+    {
+        __weak KKController * ctl = self;
+        __weak UIViewController * v = viewController;
+        
+        [self.observer on:^(id data, NSArray *changedKeys, void *context) {
+            
+            if(v && ctl && data) {
+                
+                if([data isKindOfClass:[NSDictionary class]]) {
+                    UIImage * image = nil;
+                    {
+                        NSString * v = [data kk_getString:@"image"];
+                        if(v != nil && ![@"" isEqualToString:v]) {
+                            image = [ctl.application.viewContext imageWithURI:v];
+                        }
+                    }
+                    if(image != nil) {
+                        viewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:image style:UIBarButtonItemStylePlain target:ctl action:@selector(doTopbarRightAction:)];
+                    } else {
+                        NSString * v = [data kk_getString:@"title"];
+                        if(v) {
+                            viewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:v style:UIBarButtonItemStylePlain target:ctl action:@selector(doTopbarRightAction:)];
+                        }
+                    }
+                } else {
+                    v.navigationItem.rightBarButtonItem = nil;
+                }
+                
+            }
+            
+        } keys:@[@"page",@"topbar",@"right"] context:nil];
+        
+    }
+    
+    {
+        __weak KKController * ctl = self;
+        __weak UIViewController * v = viewController;
+        
+        [self.observer on:^(id data, NSArray *changedKeys, void *context) {
+            
+            if(v && ctl && data) {
+                
+                if([data isKindOfClass:[NSDictionary class]]) {
+                    UIImage * image = nil;
+                    {
+                        NSString * v = [data kk_getString:@"image"];
+                        if(v != nil && ![@"" isEqualToString:v]) {
+                            image = [ctl.application.viewContext imageWithURI:v];
+                        }
+                    }
+                    if(image != nil) {
+                        viewController.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithImage:image style:UIBarButtonItemStylePlain target:nil action:nil];
+                    } else {
+                        NSString * v = [data kk_getString:@"title"];
+                        if(v) {
+                            viewController.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:v style:UIBarButtonItemStylePlain target:nil action:nil];
+                        }
+                    }
+                } else {
+                    v.navigationItem.backBarButtonItem = nil;
+                }
+                
+            }
+            
+        } keys:@[@"page",@"topbar",@"back"] context:nil];
+        
+    }
+    
+    {
+        __weak KKController * ctl = self;
+        __weak UIViewController * v = viewController;
+        
+        [self.observer on:^(id data, NSArray *changedKeys, void *context) {
+            
+            if(v && ctl && data) {
+                
+                if([data isKindOfClass:[NSDictionary class]]) {
+                    UIImage * image = nil;
+                    {
+                        NSString * v = [data kk_getString:@"image"];
+                        if(v != nil && ![@"" isEqualToString:v]) {
+                            image = [ctl.application.viewContext imageWithURI:v];
+                        }
+                    }
+                    if(image != nil) {
+                        viewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:image style:UIBarButtonItemStylePlain target:ctl action:@selector(doTopbarLeftAction:)];
+                    } else {
+                        NSString * v = [data kk_getString:@"title"];
+                        if(v) {
+                            viewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:v style:UIBarButtonItemStylePlain target:ctl action:@selector(doTopbarLeftAction:)];
+                        }
+                    }
+                } else {
+                    v.navigationItem.leftBarButtonItem = nil;
+                }
+                
+            }
+            
+        } keys:@[@"page",@"topbar",@"left"] context:nil];
+        
+    }
+    
     [self run];
     
-    {
-        // 背景色
-        NSString * v = [[self.observer get:@[@"page",@"background-color"] defaultValue:@"#ffffff"] kk_stringValue];
-        viewController.view.backgroundColor = [UIColor KKElementStringValue:v];
-    }
+    viewController.hidesBottomBarWhenPushed = [[self.observer get:@[@"page",@"bottombar",@"hidden"] defaultValue:@(true)] boolValue];
     
-    {
-        // 标题
-        NSString * v = [[self.observer get:@[@"page",@"title"] defaultValue:viewController.title] kk_stringValue];
-        viewController.title = v;
-    }
+}
+
+-(IBAction) doTopbarLeftAction:(id)sender {
     
-    {
-        // 顶部导航 右侧
-        id data = [self.observer get:@[@"page",@"topbar",@"right"] defaultValue:nil];
-        
-        if([data isKindOfClass:[NSDictionary class]]) {
-            UIImage * image = nil;
-            {
-                NSString * v = [data kk_getString:@"image"];
-                if(v != nil && ![@"" isEqualToString:v]) {
-                    image = [self.application.viewContext imageWithURI:v];
-                }
-            }
-            if(image != nil) {
-                viewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:image style:UIBarButtonItemStylePlain target:self action:@selector(doTopbarRightAction:)];
-            } else {
-                NSString * v = [data kk_getString:@"title"];
-                if(v) {
-                    viewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:v style:UIBarButtonItemStylePlain target:self action:@selector(doTopbarRightAction:)];
-                }
-            }
+    id data = [self.observer get:@[@"page",@"topbar",@"left"] defaultValue:nil];
+    
+    if([data isKindOfClass:[NSDictionary class]]) {
+        NSArray * action = [[data kk_getString:@"action"] componentsSeparatedByString:@"."];
+        if(action && [action count] >0 ){
+            [self.observer set:action value:[data kk_getValue:@"data"]];
         }
     }
-    
-    viewController.hidesBottomBarWhenPushed = [[self.observer get:@[@"page",@"bottombar",@"hidden"] defaultValue:@(true)] boolValue];
     
 }
 

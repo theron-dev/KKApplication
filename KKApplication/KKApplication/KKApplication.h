@@ -9,3 +9,6 @@
 #import <UIKit/UIKit.h>
 #import <KKApplication/KKApp.h>
 #import <KKApplication/KKPageViewController.h>
+#import <KKApplication/KKWindowPageController.h>
+#import <KKApplication/KKNavigationController.h>
+#import <KKApplication/KKShell.h>

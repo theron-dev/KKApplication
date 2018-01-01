@@ -9,9 +9,9 @@
 #import <KKObserver/KKObserver.h>
 #import <KKView/KKView.h>
 
-#define KKApplicationVersion 1.0
-#define KKApplicationBuild 1
+#define KKApplicationKernel 1.0
 
+@class KKWindowPageController;
 @class KKApplication;
 
 @protocol KKViewController
@@ -68,8 +68,17 @@
 
 -(void) run;
 
-+(double) version;
+-(UIViewController *) openViewController:(NSDictionary *) action;
 
-+(unsigned int) build;
+-(UITabBarController *) openTabBarController:(NSDictionary *) action;
+
+-(KKWindowPageController *) openWindowPageController:(NSDictionary *) action;
 
 @end
+
+@interface UIApplication (KKApplication)
+
+@property(nonatomic,strong,readonly) KKApplication * KKApplication;
+
+@end
+

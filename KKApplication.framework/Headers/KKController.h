@@ -19,6 +19,7 @@
 @property(nonatomic,strong) NSString * path;
 
 -(IBAction) doTopbarRightAction:(id)sender;
+-(IBAction) doTopbarLeftAction:(id)sender;
 
 -(void) run;
 

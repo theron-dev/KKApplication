@@ -37,7 +37,7 @@
                 
             }
             
-        } keys:@[] children:true identity:INT_MAX context:nil];
+        } keys:@[] children:true priority:KKOBSERVER_PRIORITY_HIGH context:nil];
         
     }
     

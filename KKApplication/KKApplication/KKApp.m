@@ -10,16 +10,12 @@
 
 #import "KKPageViewController.h"
 #import "KKWebViewController.h"
+#import "KKWindowPageController.h"
+#import "KKNavigationController.h"
+
+#import <CommonCrypto/CommonCrypto.h>
 
 @implementation KKApplication
-
-+(double) version {
-    return KKApplicationVersion;
-}
-
-+(unsigned int) build {
-    return KKApplicationBuild;
-}
 
 -(instancetype) initWithBundle:(NSBundle *) bundle {
     return [self initWithBundle:bundle jsContext:[[JSContext alloc] init]];
@@ -40,15 +36,60 @@
         {
             JSValue * kk = [JSValue valueWithNewObjectInContext:jsContext];
             
+            [kk setValue:@(KKApplicationKernel) forProperty:@"kernel"];
+            [kk setValue:@"ios" forProperty:@"platform"];
+            
             [kk setValue:^NSString *(NSString *path){
 
                 return [NSString stringWithContentsOfFile:[app absolutePath:path] encoding:NSUTF8StringEncoding error:nil];
                 
             } forProperty:@"getString"];
             
+            {
+                JSValue * app = [JSValue valueWithNewObjectInContext:jsContext];
+            
+                NSBundle * main = [NSBundle mainBundle];
+                [app setValue:[[main infoDictionary] valueForKey:@"CFBundleIdentifier"] forProperty:@"id"];
+                [app setValue:[[main infoDictionary] valueForKey:@"CFBundleShortVersionString"] forProperty:@"version"];
+                [app setValue:[[main infoDictionary] valueForKey:@"CFBundleVersion"] forProperty:@"build"];
+                [app setValue:[[main infoDictionary] valueForKey:@"CFBundleDisplayName"] forProperty:@"name"];
+                [app setValue:[[NSLocale currentLocale] localeIdentifier] forProperty:@"lang"];
+                
+                [kk setValue:app forProperty:@"app"];
+            }
+            
+            {
+                JSValue * v = [JSValue valueWithNewObjectInContext:jsContext];
+                
+                UIDevice * device = [UIDevice currentDevice];
+                
+                CC_MD5_CTX m;
+                
+                CC_MD5_Init(&m);
+                
+                NSData * data = [[[device identifierForVendor] UUIDString] dataUsingEncoding:NSUTF8StringEncoding];
+                
+                CC_MD5_Update(&m, [data bytes], (CC_LONG) [data length]);
+                
+                unsigned char md[16];
+                
+                CC_MD5_Final(md, &m);
+                
+                [v setValue:[NSString stringWithFormat:@"%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x"
+                               ,md[0],md[1],md[2],md[3],md[4],md[5],md[6],md[7]
+                               ,md[8],md[9],md[10],md[11],md[12],md[13],md[14],md[15]] forProperty:@"id"];
+                [v setValue:[device systemName] forProperty:@"systemName"];
+                [v setValue:[device systemVersion] forProperty:@"systemVersion"];
+                [v setValue:[device model] forProperty:@"model"];
+                [v setValue:[device name] forProperty:@"name"];
+                
+                [kk setValue:v forProperty:@"device"];
+            }
+            
             [[jsContext globalObject] setValue:kk forProperty:@"kk"];
             
         }
+        
         
         [_observer on:^(id value, NSArray *changedKeys, void *context) {
             
@@ -168,13 +209,112 @@
     return [_observer jsContext];
 }
 
--(void) doAction:(NSDictionary *) action {
+-(UITabBarController *) openTabBarController:(NSDictionary *) action {
     
-    if([(id) _delegate respondsToSelector:@selector(KKApplication:openAction:)]) {
-        if([_delegate KKApplication:self openAction:action]) {
-            return;
+    UITabBarController * tabBarController = [[UITabBarController alloc] initWithNibName:nil bundle:self.bundle];
+    
+    NSMutableArray * viewControllers = [NSMutableArray arrayWithCapacity:4];
+    
+    UIViewController * selectedViewController = nil;
+    
+    NSArray * items = [action kk_getValue:@"items"];
+    
+    if([items isKindOfClass:[NSArray class]]) {
+        
+        for(NSDictionary * item in items) {
+            
+            if([item isKindOfClass:[NSDictionary class]]) {
+                
+                UIViewController * viewController = [self openViewController:item];
+                
+                KKNavigationController * navController = [[KKNavigationController alloc] initWithRootViewController:viewController];
+                
+                id tabbar = [item kk_getValue:@"tabbar"];
+                
+                UIImage * image = [self.viewContext imageWithURI:[tabbar kk_getString:@"image"]];
+                UIImage * selectedImage = [self.viewContext imageWithURI:[tabbar kk_getString:@"image:selected"]];
+                
+                if(image && selectedImage) {
+                    image = [image imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+                    selectedImage = [selectedImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+                }
+                
+                NSString * title = [tabbar kk_getString:@"title"];
+                
+                navController.tabBarItem = [[UITabBarItem alloc] initWithTitle:title image:image selectedImage:selectedImage];
+                
+                [viewControllers addObject:navController];
+                
+                if([[tabbar kk_getValue:@"selected"] boolValue]) {
+                    selectedViewController = navController;
+                }
+            }
+            
         }
     }
+    
+    tabBarController.viewControllers = viewControllers;
+    
+    if(selectedViewController) {
+        tabBarController.selectedViewController = selectedViewController;
+    }
+    
+    {
+        __weak UITabBarController * v = tabBarController;
+        
+        [self.observer on:^(id value, NSArray *changedKeys, void *context) {
+            
+            if(v && value) {
+                NSInteger i = [value integerValue];
+                if(i >=0 && i < [v.viewControllers count]) {
+                    v.selectedIndex = i;
+                }
+            }
+            
+        } keys:@[@"tabbar",@"selected"] context:nil];
+        
+    }
+    
+    id tabbar = [action kk_getValue:@"tabbar"];
+    {
+        UIColor * v = [UIColor KKElementStringValue:[tabbar kk_getString:@"background-color"]];
+        if(v) {
+            tabBarController.tabBar.backgroundColor = v;
+        }
+    }
+    
+    {
+        UIColor * v = [UIColor KKElementStringValue:[tabbar kk_getString:@"tint-color"]];
+        if(v) {
+            tabBarController.tabBar.tintColor = v;
+        }
+    }
+    
+    {
+        UIColor * v = [UIColor KKElementStringValue:[tabbar kk_getString:@"color"]];
+        if(v) {
+            tabBarController.tabBar.barTintColor = v;
+        }
+    }
+    
+    {
+        UIColor * v = [UIColor KKElementStringValue:[action kk_getString:@"background-color"]];
+        if(v) {
+            tabBarController.view.backgroundColor = v;
+        }
+    }
+    
+    {
+        UIColor * v = [UIColor KKElementStringValue:[action kk_getString:@"tint-color"]];
+        if(v) {
+            tabBarController.view.tintColor = v;
+        }
+    }
+    
+    return tabBarController;
+}
+
+-(UIViewController *) openViewController:(NSDictionary *) action {
     
     UIViewController * viewController = nil;
     
@@ -195,21 +335,25 @@
             if([v hasPrefix:@"http://"] || [v hasPrefix:@"https://"]) {
                 isa = [KKWebViewController class];
             } else {
-                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:v]];
-                return;
+                return nil;
             }
         }
         
+        if(isa ==nil && [[action kk_getString:@"type"] isEqualToString:@"tabbar"]) {
+            return [self openTabBarController:action];
+        }
+
         if(isa == nil && [action kk_getString:@"path"]) {
             isa = [KKPageViewController class];
         }
         
         if(isa == nil) {
             NSLog(@"Not Implement Action %@",action);
-            return;
+            return nil;
         }
         
         viewController = [[isa alloc] initWithNibName:[action valueForKey:@"nibName"] bundle:self.bundle];
+        
     }
     
     viewController.title = [action valueForKey:@"title"];
@@ -220,6 +364,49 @@
         kkViewController.action = action;
     }
     
+    return viewController;
+}
+
+-(KKWindowPageController *) openWindowPageController:(NSDictionary *) action {
+    
+    KKWindowPageController * pageController = [[KKWindowPageController alloc] init];
+    
+    pageController.application = self;
+    pageController.action = action;
+    
+    [pageController show];
+    
+    return pageController;
+}
+
+-(void) doAction:(NSDictionary *) action {
+    
+    if([(id) _delegate respondsToSelector:@selector(KKApplication:openAction:)]) {
+        if([_delegate KKApplication:self openAction:action]) {
+            return;
+        }
+    }
+    
+    if([[action kk_getString:@"type"] isEqualToString:@"window"]) {
+        [self openWindowPageController:action];
+        return ;
+    }
+    
+    UIViewController * viewController = [self openViewController:action];
+    
+    if(viewController == nil) {
+        
+        if([action kk_getString:@"scheme"]) {
+            NSString * v = [action kk_getString:@"scheme"];
+            if(![v hasPrefix:@"http://"] && ![v hasPrefix:@"https://"]) {
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:v]];
+                return;
+            }
+        }
+        
+        return ;
+    }
+    
     if([(id) _delegate respondsToSelector:@selector(KKApplication:openViewController:)]) {
         if([_delegate KKApplication:self openViewController:viewController]) {
             return;
@@ -228,7 +415,19 @@
     
     UIViewController * topViewController = [self topViewController:[UIApplication sharedApplication].keyWindow.rootViewController];
     
-    if([topViewController isKindOfClass:[UINavigationController class]]) {
+    if(topViewController == nil
+       || [[action kk_getString:@"target"] isEqualToString:@"root"]) {
+        
+        if([viewController isKindOfClass:[UITabBarController class]] || [viewController isKindOfClass:[UINavigationController class]]) {
+            [[UIApplication sharedApplication].keyWindow setRootViewController:viewController];
+        } else if([[UIApplication sharedApplication].keyWindow.rootViewController isKindOfClass:[UINavigationController class]]){
+            [(UINavigationController *) [UIApplication sharedApplication].keyWindow.rootViewController setViewControllers:@[viewController] animated:NO];
+        } else {
+            [[UIApplication sharedApplication].keyWindow setRootViewController:[[KKNavigationController alloc] initWithRootViewController:viewController]];
+        }
+        
+    }
+    else if([topViewController isKindOfClass:[UINavigationController class]]) {
         [(UINavigationController *) topViewController pushViewController:viewController animated:YES];
     } else {
         [topViewController presentViewController:viewController animated:YES completion:nil];
@@ -286,6 +485,27 @@
     
     if([(id)_delegate respondsToSelector:@selector(KKApplication:imageWithURI:)]) {
         return [_delegate KKApplication:self imageWithURI:uri];
+    }
+    
+    return nil;
+}
+
+@end
+
+@implementation UIApplication (KKApplication)
+
+-(KKApplication *) KKApplication {
+    
+    UIViewController * viewController = [[self keyWindow] rootViewController];
+    
+    if([viewController isKindOfClass:[UINavigationController class]]) {
+        viewController = [[(UINavigationController *) viewController viewControllers] firstObject];
+    } else if([viewController isKindOfClass:[UITabBarController class]]) {
+        viewController = [[(UITabBarController *) viewController viewControllers] firstObject];
+    }
+    
+    if([viewController conformsToProtocol:@protocol(KKViewController)]) {
+        return [(id<KKViewController>) viewController application];
     }
     
     return nil;

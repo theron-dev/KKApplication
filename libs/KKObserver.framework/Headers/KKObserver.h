@@ -9,6 +9,10 @@
 #import <UIKit/UIKit.h>
 #import <JavaScriptCore/JavaScriptCore.h>
 
+#define KKOBSERVER_PRIORITY_LOW -1
+#define KKOBSERVER_PRIORITY_NORMAL 0
+#define KKOBSERVER_PRIORITY_HIGH 1
+
 typedef void (^KKObserverFunction)(id value,NSArray * changedKeys,void * context);
 
 @protocol KKObserver<JSExport>
@@ -56,7 +60,7 @@ JSExportAs(off,
 
 -(void) on:(KKObserverFunction) func keys:(NSArray *) keys children:(BOOL) children context:(void *) context;
 
--(void) on:(KKObserverFunction) func keys:(NSArray *) keys children:(BOOL) children identity:(NSUInteger) identity context:(void *) context;
+-(void) on:(KKObserverFunction) func keys:(NSArray *) keys children:(BOOL) children priority:(NSInteger) priority context:(void *) context;
 
 -(void) on:(KKObserverFunction) func keys:(NSArray *) keys context:(void *) context;
 

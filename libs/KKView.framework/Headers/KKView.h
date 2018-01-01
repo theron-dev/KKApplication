@@ -21,3 +21,5 @@
 #import <KKView/KKViewCreator.h>
 #import <KKView/JSContext+KKView.h>
 #import <KKView/KKViewContext.h>
+#import <KKView/KKQRElement.h>
+#import <KKView/KKQRCaptureElement.h>
