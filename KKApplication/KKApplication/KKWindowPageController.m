@@ -22,12 +22,8 @@
 -(void) showInView:(UIView *) view {
     
     [self run];
-    
-    _rootElement = [[KKViewElement alloc] init];
-    [_rootElement setLayout:KKViewElementLayoutRelative];
-    [_rootElement append:self.element];
-    
-    [_rootElement layout:view.bounds.size];
+
+    [self.element layout:view.bounds.size];
     [self.element obtainView:view];
     
     objc_setAssociatedObject(self.element.view, "_KKWindowPageController", self, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
@@ -50,7 +46,7 @@
                 
             }
             
-        } keys:@[] children:true priority:KKOBSERVER_PRIORITY_HIGH context:nil];
+        } keys:@[] children:true priority:KKOBSERVER_PRIORITY_LOW context:nil];
         
         [self.observer on:^(id value, NSArray *changedKeys, void *context) {
             

@@ -30,4 +30,6 @@
 -(void) willDisappear;
 -(void) didDisappear;
 
+-(void) recycle;
+
 @end

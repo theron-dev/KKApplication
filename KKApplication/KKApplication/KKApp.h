@@ -19,6 +19,9 @@
 @property(nonatomic,strong) NSDictionary * action;
 @property(nonatomic,strong) KKApplication * application;
 
+@optional
+-(UIView *) contentView;
+
 @end
 
 @protocol KKApplicationDelegate

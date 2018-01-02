@@ -110,28 +110,25 @@
 }
 
 
--(KKElement *) elementWithPath:(NSString *) path observer:(KKObserver *) observer {
+-(KKElement *) elementWithPath:(NSString *) path observer:(KKObserver *) observer{
+    
+    KKElement * rootElement = [[KKElement alloc] init];
     
     if(_viewContext) {
         [KKViewContext pushContext:_viewContext];
     }
     
-    KKElement * root = [[KKElement alloc] init];
+    NSString * code = [NSString stringWithContentsOfFile:[self absolutePath:path] encoding:NSUTF8StringEncoding error:nil];
     
-    {
-        NSString * code = [NSString stringWithContentsOfFile:[self absolutePath:path] encoding:NSUTF8StringEncoding error:nil];
-        
-        JSValue * fn = [self.jsContext evaluateScript:[NSString stringWithFormat:@"(function(element,data){ %@ })",code]];
-        
-        [fn callWithArguments:@[root,observer]];
-        
-    }
+    JSValue * fn = [self.jsContext evaluateScript:[NSString stringWithFormat:@"(function(element,data){ %@ })",code]];
+    
+    [fn callWithArguments:@[rootElement,observer]];
     
     if(_viewContext) {
         [KKViewContext popContext];
     }
     
-    return root.firstChild;
+    return rootElement.lastChild;
 }
 
 -(NSString *) path {

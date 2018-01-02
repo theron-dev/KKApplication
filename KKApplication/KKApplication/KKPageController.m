@@ -13,31 +13,42 @@
 @synthesize element = _element;
 @synthesize elementNeedsLayoutDataKeys = _elementNeedsLayoutDataKeys;
 
+-(void) dealloc {
+    [_element recycleView];
+}
+
 -(void) run:(UIViewController *)viewController {
     [super run:viewController];
     
-    [_element layout:viewController.view.bounds.size];
-    [_element obtainView:viewController.view];
+    __weak UIView * view = nil;
+    
+    if([viewController respondsToSelector:@selector(contentView)]) {
+        view = [(id<KKViewController>) viewController contentView];
+    } else {
+        view = [viewController view];
+    }
+    
+    [_element layout:view.bounds.size];
+    [_element obtainView:view];
     
     {
         //更新布局
         __weak KKPageController * v = self;
-        __weak UIViewController * ctl = viewController;
         
         [self.observer on:^(id value, NSArray *changedKeys, void *context) {
             
-            if(v) {
+            if(v && view) {
                 
                 if([changedKeys count] ==0 ||
                    [[v elementNeedsLayoutDataKeys] containsObject:changedKeys[0]]) {
                     
-                    [v.element layout:ctl.view.bounds.size];
-                    [v.element obtainView:ctl.view];
+                    [v.element layout:view.bounds.size];
+                    [v.element obtainView:view];
                 }
                 
             }
             
-        } keys:@[] children:true priority:KKOBSERVER_PRIORITY_HIGH context:nil];
+        } keys:@[] children:true priority:KKOBSERVER_PRIORITY_LOW context:nil];
         
     }
     
@@ -76,7 +87,16 @@
 }
 
 -(void) layout:(UIViewController *) viewController {
-    [self.element layout:viewController.view.bounds.size];
+    
+    UIView * view = nil;
+    
+    if([viewController respondsToSelector:@selector(contentView)]) {
+        view = [(id<KKViewController>) viewController contentView];
+    } else {
+        view = [viewController view];
+    }
+    
+    [_element layout:view.bounds.size];
 }
 
 -(NSSet *) elementNeedsLayoutDataKeys {
@@ -86,5 +106,10 @@
     return _elementNeedsLayoutDataKeys;
 }
 
+-(void) recycle {
+    [super recycle];
+    [_element recycleView];
+    [_element remove];
+}
 
 @end

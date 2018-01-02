@@ -10,8 +10,6 @@
 
 @interface KKWindowPageController : KKPageController<KKViewController>
 
-@property(nonatomic,strong,readonly) KKViewElement * rootElement;
-
 -(void) showInView:(UIView *) view;
 
 -(void) show;

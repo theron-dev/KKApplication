@@ -21,6 +21,11 @@
     [_observer off:nil keys:@[] context:nil];
 }
 
+-(void) recycle {
+    [_http cancel];
+    [_observer off:nil keys:@[] context:nil];
+}
+
 -(KKJSHttp *) http {
     
     if(_http == nil) {

@@ -115,4 +115,8 @@ typedef void (^KKHttpOnProcess)(long long value, long long maxValue,id weakObjec
 
 +(NSString *) stringValue:(id) value defaultValue:(NSString *) defaultValue;
 
++(NSString *) userAgent;
+
++(void) setUserAgent:(NSString *)userAgent;
+
 @end

@@ -7,12 +7,17 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <KKApplication/KKViewController.h>
+#import <KKApplication/KKPageViewController.h>
 #import <WebKit/WebKit.h>
 
-@interface KKWebViewController : KKViewController
+@interface KKWebViewController : UIViewController<KKViewController,WKScriptMessageHandler>
 
+@property(nonatomic,strong,readonly) KKPageController * pageController;
 @property(nonatomic,strong,readonly) WKWebView * webView;
 @property(nonatomic,strong) NSString * url;
+
+-(WKWebView *) loadWebView;
+
+-(WKWebViewConfiguration *) loadWebViewConfiguration;
 
 @end

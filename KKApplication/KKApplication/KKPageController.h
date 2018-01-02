@@ -16,4 +16,6 @@
 
 -(void) layout:(UIViewController *) viewController;
 
+-(void) recycle;
+
 @end
