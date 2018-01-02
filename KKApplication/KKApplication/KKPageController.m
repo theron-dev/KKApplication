@@ -8,6 +8,19 @@
 
 #import "KKPageController.h"
 
+static CGSize KKPageControllerViewSize(UIView * view) {
+    
+    CGSize size = view.bounds.size;
+    
+    if([view isKindOfClass:[UIScrollView class]]) {
+        UIEdgeInsets edge = [(UIScrollView *) view contentInset];
+        size.width -= edge.left + edge.right;
+        size.height -= edge.top + edge.bottom;
+    }
+    
+    return size;
+}
+
 @implementation KKPageController
 
 @synthesize element = _element;
@@ -27,8 +40,8 @@
     } else {
         view = [viewController view];
     }
-    
-    [_element layout:view.bounds.size];
+  
+    [_element layout:KKPageControllerViewSize(view)];
     [_element obtainView:view];
     
     {
@@ -42,7 +55,7 @@
                 if([changedKeys count] ==0 ||
                    [[v elementNeedsLayoutDataKeys] containsObject:changedKeys[0]]) {
                     
-                    [v.element layout:view.bounds.size];
+                    [v.element layout:KKPageControllerViewSize(view)];
                     [v.element obtainView:view];
                 }
                 
@@ -96,7 +109,7 @@
         view = [viewController view];
     }
     
-    [_element layout:view.bounds.size];
+    [_element layout:KKPageControllerViewSize(view)];
 }
 
 -(NSSet *) elementNeedsLayoutDataKeys {

@@ -72,7 +72,7 @@
     
     WKUserContentController * userContentController = [[WKUserContentController alloc] init];
     
-    [userContentController addUserScript:[[WKUserScript alloc] initWithSource:@"kk = { run : function(path,query) { window.webkit.messageHandlers.run.postMessage({ path : path, query: query}); } , setData:function(data) { window.webkit.messageHandlers.data.postMessage(data); } }" injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:YES]];
+    [userContentController addUserScript:[[WKUserScript alloc] initWithSource:@"kk = { run : function(path,query) { window.webkit.messageHandlers.run.postMessage({ path : path, query: query}); } , setData:function(data) { window.webkit.messageHandlers.data.postMessage(data); }, onData:function(){} }" injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:YES]];
     
     [userContentController addScriptMessageHandler:self name:@"run"];
     [userContentController addScriptMessageHandler:self name:@"data"];
@@ -90,6 +90,23 @@
         _pageController.application = self.application;
         _pageController.path = [message.body kk_getString:@"path"];
         _pageController.query = [message.body kk_getValue:@"query"];
+        
+        {
+            __weak WKWebView * view = self.webView;
+            
+            [_pageController.observer on:^(id value, NSArray *changedKeys, void *context) {
+                
+                if(view) {
+                    
+                    NSData * data = [NSJSONSerialization dataWithJSONObject:value options:NSJSONWritingPrettyPrinted error:nil];
+    
+                    [view evaluateJavaScript:[NSString stringWithFormat:@"kk.onData(%@);",[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]] completionHandler:nil];
+                    
+                }
+                
+            } keys:@[@"action",@"data"] context:nil];
+        
+        }
         [_pageController run:self];
     } else if([message.name isEqualToString:@"data"]) {
         
@@ -100,7 +117,6 @@
                 [_pageController.observer set:@[key] value:[message.body kk_getValue:key]];
             }
         }
-        
     }
 }
 
