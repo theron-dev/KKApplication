@@ -12,7 +12,6 @@
 
 @interface KKWebViewController : UIViewController<KKViewController,WKScriptMessageHandler,WKNavigationDelegate>
 
-@property(nonatomic,strong,readonly) KKPageController * pageController;
 @property(nonatomic,strong) IBOutlet WKWebView * webView;
 @property(nonatomic,strong) NSString * url;
 
