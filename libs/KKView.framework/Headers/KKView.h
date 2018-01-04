@@ -23,3 +23,5 @@
 #import <KKView/KKViewContext.h>
 #import <KKView/KKQRElement.h>
 #import <KKView/KKQRCaptureElement.h>
+#import <KKView/KKBodyElement.h>
+

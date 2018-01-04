@@ -15,8 +15,4 @@
 
 -(void) KKViewOpenlib;
 
-+(NSMutableDictionary *) defaultElementClass;
-
-+(void) setDefaultElementClass:(Class) elementClass name:(NSString *) name;
-
 @end

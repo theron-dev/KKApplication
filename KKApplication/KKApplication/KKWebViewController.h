@@ -10,8 +10,9 @@
 #import <KKApplication/KKPageViewController.h>
 #import <WebKit/WebKit.h>
 
-@interface KKWebViewController : UIViewController<KKViewController,WKScriptMessageHandler,WKNavigationDelegate>
+@interface KKWebViewController : UIViewController<KKViewController,WKScriptMessageHandler,WKNavigationDelegate,WKUIDelegate>
 
+@property(nonatomic,strong) IBOutlet UIProgressView * progressView;
 @property(nonatomic,strong) IBOutlet WKWebView * webView;
 @property(nonatomic,strong) NSString * url;
 

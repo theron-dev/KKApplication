@@ -59,7 +59,7 @@ CGSize KKViewElementLayoutHorizontal(KKViewElement * element);
 
 -(void) obtainChildrenView;
 
--(void) addSubview:(UIView *) view toView:(UIView *) toView;
+-(void) addSubview:(UIView *) view element:(KKViewElement *) element toView:(UIView *) toView;
 
 -(BOOL) isChildrenVisible:(KKViewElement *) element;
 

@@ -101,6 +101,17 @@
             
         } keys:@[@"action",@"open"] context:nil];
         
+        [_observer on:^(id value, NSArray *changedKeys, void *context) {
+            
+            if(app && value) {
+                
+                [[[UIAlertView alloc] initWithTitle:nil message:KKStringValue(value)
+                                           delegate:nil cancelButtonTitle:@"确定" otherButtonTitles: nil] show];
+                
+            }
+            
+        } keys:@[@"alert"] context:nil];
+        
     }
     return self;
 }

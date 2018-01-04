@@ -37,5 +37,8 @@
     [self.pageController layout:self];
 }
 
+-(void) dealloc {
+    NSLog(@"KKPageViewController dealloc");
+}
 
 @end

@@ -11,13 +11,12 @@
 
 
 @interface KKWebViewController () {
-    BOOL _topbar_hidden;
+    NSNumber * _topbar_hidden;
     UIColor * _topbar_backgroundColor;
     UIColor * _topbar_tintColor;
     UIColor * _topbar_barTintColor;
 }
 
-@property(nonatomic,strong) NSMutableDictionary * styleSheet;
 @property(nonatomic,strong) KKBodyElement * bodyElement;
 @property(nonatomic,strong) NSMutableDictionary * elements;
 
@@ -29,16 +28,33 @@
 @synthesize application = _application;
 @synthesize action = _action;
 
+-(void) dealloc {
+    [_webView removeObserver:self forKeyPath:@"estimatedProgress"];
+    NSLog(@"KKWebViewController dealloc");
+}
+
 -(WKWebView *) webView {
     if(_webView == nil) {
         _webView = [self loadWebView];
         [_webView setNavigationDelegate:self];
+        [_webView setUIDelegate:self];
+        [_webView addObserver:self forKeyPath:@"estimatedProgress" options:NSKeyValueObservingOptionNew context:nil];
     }
     return _webView;
 }
 
+-(void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
+    
+    if(object == _webView && [keyPath isEqualToString:@"estimatedProgress"]) {
+        [self.progressView setProgress:_webView.estimatedProgress animated:YES];
+        [self.progressView setHidden:_webView.estimatedProgress>=1];
+    }
+    
+}
 - (void)viewDidLoad {
     [super viewDidLoad];
+
+    self.view.backgroundColor = [UIColor whiteColor];
     
     {
         WKWebView * v = self.webView;
@@ -48,11 +64,26 @@
         [self.view addSubview:v];
     }
     
+    {
+        CGSize size = self.view.bounds.size;
+        UIProgressView * v = [self progressView];
+        v.frame = CGRectMake(0, 64, size.width, 4);
+        v.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin;
+        [self.view addSubview:v];
+    }
+    
+    NSString * url = self.url;
+    
+    NSRange r = [url rangeOfString:@"#"];
+    if(r.length >0 && r.location != NSNotFound) {
+        url = [url substringToIndex:r.location];
+    }
+    
     NSURL * u = nil;
-    if([self.url hasPrefix:@"app://"]) {
-        u = [NSURL fileURLWithPath:[[self.application path] stringByAppendingPathComponent:[self.url substringFromIndex:6]] ];
+    if([url hasPrefix:@"app://"]) {
+        u = [NSURL fileURLWithPath:[[self.application path] stringByAppendingPathComponent:[url substringFromIndex:6]] ];
     } else {
-        u = [NSURL URLWithString:self.url];
+        u = [NSURL URLWithString:url];
     }
 
     [self.webView loadRequest:[NSURLRequest requestWithURL:u]];
@@ -61,6 +92,13 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+-(UIProgressView *) progressView {
+    if(_progressView == nil) {
+        _progressView = [[UIProgressView alloc] initWithFrame:CGRectZero];
+    }
+    return _progressView;
 }
 
 -(void) setAction:(NSDictionary *)action {
@@ -87,35 +125,6 @@
     return _bodyElement;
 }
 
--(NSMutableDictionary *) styleSheet {
-    if(_styleSheet == nil) {
-        _styleSheet = [[NSMutableDictionary alloc] initWithCapacity:4];
-        NSURL * u = [NSURL URLWithString:self.url];
-        if(u && [u.fragment hasPrefix:@"#"]) {
-            NSArray * items = [[u.fragment substringFromIndex:1] componentsSeparatedByString:@"}"];
-            for(NSString * item in items) {
-                NSArray * nv = [item componentsSeparatedByString:@"{"];
-                if([nv count] > 1) {
-                    NSString * name= [nv[0] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-                    NSMutableDictionary* attrs = [NSMutableDictionary dictionaryWithCapacity:4];
-                    NSArray * kv = [nv[1] componentsSeparatedByString:@";"];
-                    
-                    for(NSString * v in kv) {
-                        NSArray * kvv = [v componentsSeparatedByString:@":"];
-                        if([kvv count] > 1) {
-                            NSString * key = [kvv[0] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-                            NSString * value = [kvv[1] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-                            [attrs setObject:value forKey:key];
-                        }
-                    }
-                    
-                    [_styleSheet setObject:attrs forKey:name];
-                }
-            }
-        }
-    }
-    return _styleSheet;
-}
 
 -(UIView *) contentView {
     WKWebView * view = self.webView;
@@ -136,7 +145,7 @@
     
     WKUserContentController * userContentController = [[WKUserContentController alloc] init];
     
-    [userContentController addUserScript:[[WKUserScript alloc] initWithSource:@"kk = { add : function(id,name,attrs,pid) { window.webkit.messageHandlers.add.postMessage({ id : id, name: name , attrs : attrs, pid : pid}); } , remove:function(id) { window.webkit.messageHandlers.remove.postMessage({ id : id}); }, set:function(id,key,value) {window.webkit.messageHandlers.set.postMessage({ id : id , key:key , value: value});} ,  onEvent:function(id,name,data) { var e = document.getElementById(id); if(e) { var ev = new Event(name); ev.data = data; e.dispatchEvent(ev); } } , on:function(id,name){ window.webkit.messageHandlers.on.postMessage({ id : id, name : name}); }, off:function(id,name){ window.webkit.messageHandlers.off.postMessage({ id : id, name : name}); } ,commit : function() { window.webkit.messageHandlers.commit.postMessage({ }); }}" injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:YES]];
+    [userContentController addUserScript:[[WKUserScript alloc] initWithSource:@"window.kk = { add : function(id,name,attrs,pid) { window.webkit.messageHandlers.add.postMessage({ id : id, name: name , attrs : attrs, pid : pid}); } , remove:function(id) { window.webkit.messageHandlers.remove.postMessage({ id : id}); }, set:function(id,key,value) {window.webkit.messageHandlers.set.postMessage({ id : id , key:key , value: value});} ,  onEvent:function(id,name,data) { var e = document.getElementById(id); if(e) { var ev = new Event(name); ev.data = data; e.dispatchEvent(ev); } } , on:function(id,name){ window.webkit.messageHandlers.on.postMessage({ id : id, name : name}); }, off:function(id,name){ window.webkit.messageHandlers.off.postMessage({ id : id, name : name}); } ,commit : function() { window.webkit.messageHandlers.commit.postMessage({ }); } , style:function(name,data) {window.webkit.messageHandlers.style.postMessage({ name : name, data: data });} , close:function(){window.webkit.messageHandlers.close.postMessage({});} , gesture:function(enabled){window.webkit.messageHandlers.gesture.postMessage({ back : enabled });} }" injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:YES]];
     
     [userContentController addScriptMessageHandler:self name:@"add"];
     [userContentController addScriptMessageHandler:self name:@"remove"];
@@ -144,6 +153,9 @@
     [userContentController addScriptMessageHandler:self name:@"on"];
     [userContentController addScriptMessageHandler:self name:@"off"];
     [userContentController addScriptMessageHandler:self name:@"commit"];
+    [userContentController addScriptMessageHandler:self name:@"style"];
+    [userContentController addScriptMessageHandler:self name:@"close"];
+    [userContentController addScriptMessageHandler:self name:@"gesture"];
     
     configuration.userContentController = userContentController;
     
@@ -170,8 +182,6 @@
 - (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message {
     
     if([message.name isEqualToString:@"add"]) {
-        
-        self.webView.opaque = NO;
         
         NSString * elementId = [message.body kk_getString:@"id"];
         NSString * name = [message.body kk_getString:@"name"];
@@ -209,6 +219,7 @@
                 [parent append:e];
             }
             
+            [self.elements setObject:e forKey:elementId];
         }
         
     } else if([message.name isEqualToString:@"remove"]) {
@@ -270,6 +281,82 @@
                 [e off:name fn:nil context:nil];
             }
         }
+    } else if([message.name isEqualToString:@"commit"]) {
+        
+        self.webView.opaque = NO;
+        
+        UIView * view = self.contentView;
+        
+        [_bodyElement layout:view.bounds.size];
+        [_bodyElement obtainView:view];
+        
+    } else if([message.name isEqualToString:@"style"]) {
+        NSString * name = [message.body kk_getString:@"name"];
+        NSDictionary * data = [message.body kk_getValue:@"data"];
+        if([name isEqualToString:@"topbar"]) {
+            {
+                UIColor * v = [UIColor KKElementStringValue:[data kk_getString:@"background-color"]];
+                if(v) {
+                    self.navigationController.navigationBar.backgroundColor = v;
+                }
+            }
+            {
+                UIColor * v = [UIColor KKElementStringValue:[data kk_getString:@"tint-color"]];
+                if(v) {
+                    self.navigationController.navigationBar.tintColor = v;
+                }
+            }
+            {
+                UIColor * v = [UIColor KKElementStringValue:[data kk_getString:@"bar-tint-color"]];
+                if(v) {
+                    self.navigationController.navigationBar.barTintColor = v;
+                }
+            }
+            {
+                id v = [data kk_getValue:@"hidden"];
+                if(v) {
+                    [self.navigationController setNavigationBarHidden:[v boolValue] animated:NO];
+                    
+                }
+            }
+        } else if([name isEqualToString:@"view"]) {
+            {
+                UIColor * v = [UIColor KKElementStringValue:[data kk_getString:@"background-color"]];
+                if(v) {
+                    self.view.backgroundColor = v;
+                }
+            }
+            {
+                UIColor * v = [UIColor KKElementStringValue:[data kk_getString:@"tint-color"]];
+                if(v) {
+                    self.view.tintColor = v;
+                }
+            }
+        } else if([name isEqualToString:@"progress"]) {
+            {
+                UIColor * v = [UIColor KKElementStringValue:[data kk_getString:@"tint-color"]];
+                if(v) {
+                    self.progressView.trackTintColor = v;
+                }
+            }
+            {
+                UIColor * v = [UIColor KKElementStringValue:[data kk_getString:@"background-color"]];
+                if(v) {
+                    self.progressView.progressTintColor = v;
+                }
+            }
+        }
+    } else if([message.name isEqualToString:@"close"]) {
+        [self doCloseAction:nil];
+    } else if([message.name isEqualToString:@"gesture"]) {
+        {
+            id v = [message.body kk_getValue:@"back"];
+            if(KKBooleanValue(v)) {
+                self.navigationController.interactivePopGestureRecognizer.enabled = true;
+            } else {
+                self.navigationController.interactivePopGestureRecognizer.enabled = false;
+            }
+        }
     }
 }
 
@@ -288,75 +375,21 @@
 -(void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    NSDictionary * styleSheet = [self styleSheet];
- 
-    {
-        id v = [styleSheet valueForKeyPath:@"topbar.hidden"];
-        
-        if(v) {
-            _topbar_hidden = [self.navigationController isNavigationBarHidden];
-            [self.navigationController setNavigationBarHidden:KKBooleanValue(v) animated:NO];
-        }
-    }
-    
-    {
-        id v = [styleSheet valueForKeyPath:@"topbar.background-color"];
-        if(v) {
-            _topbar_backgroundColor = [self.navigationController.navigationBar backgroundColor];
-            [self.navigationController.navigationBar setBackgroundColor:[UIColor KKElementStringValue:[v kk_stringValue]]];
-        }
-    }
-    
-    {
-        id v = [styleSheet valueForKeyPath:@"topbar.tint-color"];
-        if(v) {
-            _topbar_tintColor = [self.navigationController.navigationBar tintColor];
-            [self.navigationController.navigationBar setTintColor:[UIColor KKElementStringValue:[v kk_stringValue]]];
-        }
-    }
-    
-    {
-        id v = [styleSheet valueForKeyPath:@"topbar.bar-tint-color"];
-        if(v) {
-            _topbar_barTintColor = [self.navigationController.navigationBar barTintColor];
-            [self.navigationController.navigationBar setBarTintColor:[UIColor KKElementStringValue:[v kk_stringValue]]];
-        }
-    }
+    _topbar_hidden = @([self.navigationController isNavigationBarHidden]);
+    _topbar_backgroundColor = self.navigationController.navigationBar.backgroundColor;
+    _topbar_tintColor = self.navigationController.navigationBar.tintColor;
+    _topbar_barTintColor = self.navigationController.navigationBar.barTintColor;
     
 }
 
 -(void) viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
-    NSDictionary * styleSheet = [self styleSheet];
-    
-    {
-        id v = [styleSheet valueForKeyPath:@"topbar.hidden"];
-        if(v) {
-            [self.navigationController setNavigationBarHidden:_topbar_hidden animated:NO];
-        }
-    }
-    
-    {
-        id v = [styleSheet valueForKeyPath:@"topbar.background-color"];
-        if(v) {
-            [self.navigationController.navigationBar setBackgroundColor:_topbar_backgroundColor];
-        }
-    }
-    
-    {
-        id v = [styleSheet valueForKeyPath:@"topbar.tint-color"];
-        if(v) {
-            [self.navigationController.navigationBar setTintColor:_topbar_tintColor];
-        }
-    }
-    
-    {
-        id v = [styleSheet valueForKeyPath:@"topbar.bar-tint-color"];
-        if(v) {
-            [self.navigationController.navigationBar setBarTintColor:_topbar_barTintColor];
-        }
-    }
+    [self.navigationController setNavigationBarHidden:[_topbar_hidden boolValue] animated:NO];
+    [self.navigationController.navigationBar setBackgroundColor:_topbar_backgroundColor];
+    [self.navigationController.navigationBar setTintColor:_topbar_tintColor];
+    [self.navigationController.navigationBar setBarTintColor:_topbar_barTintColor];
+    [self.navigationController.interactivePopGestureRecognizer setEnabled:YES];
 
 }
 
@@ -420,6 +453,20 @@
     }
 
     decisionHandler(WKNavigationActionPolicyAllow);
+}
+
+- (void)webView:(WKWebView *)webView didFinishNavigation:(null_unspecified WKNavigation *)navigation {
+    if([self.title length] == 0) {
+        __weak KKWebViewController * v = self;
+        [webView evaluateJavaScript:@"document.title" completionHandler:^(id value, NSError * error) {
+            v.title = KKStringValue(value);
+        }];
+    }
+}
+
+- (void)webView:(WKWebView *)webView runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(void))completionHandler {
+    [[[UIAlertView alloc] initWithTitle:nil message:message delegate:nil cancelButtonTitle:@"确定" otherButtonTitles: nil] show];
+    completionHandler();
 }
 
 @end

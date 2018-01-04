@@ -141,17 +141,17 @@
                 if([data isKindOfClass:[NSDictionary class]]) {
                     UIImage * image = nil;
                     {
-                        NSString * v = [data kk_getString:@"image"];
-                        if(v != nil && ![@"" isEqualToString:v]) {
-                            image = [ctl.application.viewContext imageWithURI:v];
+                        NSString * vv = [data kk_getString:@"image"];
+                        if(vv != nil && ![@"" isEqualToString:vv]) {
+                            image = [ctl.application.viewContext imageWithURI:vv];
                         }
                     }
                     if(image != nil) {
-                        viewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:image style:UIBarButtonItemStylePlain target:ctl action:@selector(doTopbarRightAction:)];
+                        v.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:image style:UIBarButtonItemStylePlain target:ctl action:@selector(doTopbarRightAction:)];
                     } else {
-                        NSString * v = [data kk_getString:@"title"];
-                        if(v) {
-                            viewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:v style:UIBarButtonItemStylePlain target:ctl action:@selector(doTopbarRightAction:)];
+                        NSString * vv = [data kk_getString:@"title"];
+                        if(vv) {
+                            v.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:vv style:UIBarButtonItemStylePlain target:ctl action:@selector(doTopbarRightAction:)];
                         }
                     }
                 } else {
@@ -175,17 +175,17 @@
                 if([data isKindOfClass:[NSDictionary class]]) {
                     UIImage * image = nil;
                     {
-                        NSString * v = [data kk_getString:@"image"];
-                        if(v != nil && ![@"" isEqualToString:v]) {
-                            image = [ctl.application.viewContext imageWithURI:v];
+                        NSString * vv = [data kk_getString:@"image"];
+                        if(vv != nil && ![@"" isEqualToString:vv]) {
+                            image = [ctl.application.viewContext imageWithURI:vv];
                         }
                     }
                     if(image != nil) {
-                        viewController.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithImage:image style:UIBarButtonItemStylePlain target:nil action:nil];
+                        v.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithImage:image style:UIBarButtonItemStylePlain target:nil action:nil];
                     } else {
-                        NSString * v = [data kk_getString:@"title"];
-                        if(v) {
-                            viewController.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:v style:UIBarButtonItemStylePlain target:nil action:nil];
+                        NSString * vv = [data kk_getString:@"title"];
+                        if(vv) {
+                            v.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:vv style:UIBarButtonItemStylePlain target:nil action:nil];
                         }
                     }
                 } else {
@@ -209,17 +209,17 @@
                 if([data isKindOfClass:[NSDictionary class]]) {
                     UIImage * image = nil;
                     {
-                        NSString * v = [data kk_getString:@"image"];
-                        if(v != nil && ![@"" isEqualToString:v]) {
-                            image = [ctl.application.viewContext imageWithURI:v];
+                        NSString * vv = [data kk_getString:@"image"];
+                        if(vv != nil && ![@"" isEqualToString:vv]) {
+                            image = [ctl.application.viewContext imageWithURI:vv];
                         }
                     }
                     if(image != nil) {
-                        viewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:image style:UIBarButtonItemStylePlain target:ctl action:@selector(doTopbarLeftAction:)];
+                        v.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:image style:UIBarButtonItemStylePlain target:ctl action:@selector(doTopbarLeftAction:)];
                     } else {
-                        NSString * v = [data kk_getString:@"title"];
-                        if(v) {
-                            viewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:v style:UIBarButtonItemStylePlain target:ctl action:@selector(doTopbarLeftAction:)];
+                        NSString * vv = [data kk_getString:@"title"];
+                        if(vv) {
+                            v.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:vv style:UIBarButtonItemStylePlain target:ctl action:@selector(doTopbarLeftAction:)];
                         }
                     }
                 } else {
