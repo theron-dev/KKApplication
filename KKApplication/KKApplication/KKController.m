@@ -71,7 +71,7 @@
             
             [self.application exec:main librarys:@{
                                                    @"http":self.http,
-                                                   @"observer":self.observer,
+                                                   @"page":self.observer,
                                                    @"query":self.query,
                                                    @"path":self.path}];
             

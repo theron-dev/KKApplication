@@ -9,9 +9,11 @@
 #import <UIKit/UIKit.h>
 #import <JavaScriptCore/JavaScriptCore.h>
 
-#define KKOBSERVER_PRIORITY_LOW -1
+#define KKOBSERVER_PRIORITY_ASC -1
+#define KKOBSERVER_PRIORITY_LOW INT32_MIN
 #define KKOBSERVER_PRIORITY_NORMAL 0
-#define KKOBSERVER_PRIORITY_HIGH 1
+#define KKOBSERVER_PRIORITY_HIGH INT32_MAX
+#define KKOBSERVER_PRIORITY_DESC 2
 
 typedef void (^KKObserverFunction)(id value,NSArray * changedKeys,void * context);
 
@@ -55,6 +57,8 @@ JSExportAs(off,
 -(instancetype) initWithJSContext:(JSContext *) jsContext object:(id) object;
 -(instancetype) init;
 -(instancetype) initWithObject:(id) object;
+
+-(void) on:(KKObserverFunction) func evaluateScript:(NSString *) evaluateScript priority:(NSInteger) priority context:(void *) context;
 
 -(void) on:(KKObserverFunction) func evaluateScript:(NSString *) evaluateScript context:(void *) context;
 
