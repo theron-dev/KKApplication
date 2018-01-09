@@ -9,6 +9,24 @@
 #import "KKWebViewController.h"
 #import <WebKit/WebKit.h>
 
+#include <objc/runtime.h>
+
+@implementation KKApplication (KKWebViewController)
+
+-(WKProcessPool *) processPool {
+    WKProcessPool * v = objc_getAssociatedObject(self, "_processPool");
+    if(v == nil) {
+        v = [[WKProcessPool alloc] init];
+        objc_setAssociatedObject(self, "_processPool", v, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
+    return v;
+}
+
+-(void) setProcessPool:(WKProcessPool *)processPool {
+    objc_setAssociatedObject(self, "_processPool", processPool, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+@end
 
 @interface KKWebViewController () {
     NSNumber * _topbar_hidden;
@@ -27,6 +45,8 @@
 @synthesize webView = _webView;
 @synthesize application = _application;
 @synthesize action = _action;
+@synthesize processPool = _processPool;
+@synthesize cookies = _cookies;
 
 -(void) dealloc {
     [_webView removeObserver:self forKeyPath:@"estimatedProgress"];
@@ -85,8 +105,12 @@
     } else {
         u = [NSURL URLWithString:url];
     }
-    
+
     NSLog(@"%@",u);
+    
+    if(_cookies == nil) {
+        _cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:u];
+    }
     
     [self.webView loadRequest:[self willLoadRequestWithURL:u]];
 }
@@ -98,6 +122,13 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+-(WKProcessPool *) processPool {
+    if(_processPool == nil) {
+        _processPool = self.application.processPool;
+    }
+    return _processPool;
 }
 
 -(UIProgressView *) progressView {
@@ -149,19 +180,33 @@
     
     WKWebViewConfiguration * configuration = [[WKWebViewConfiguration alloc] init];
     
+    configuration.processPool = self.processPool;
+    
     WKUserContentController * userContentController = [[WKUserContentController alloc] init];
     
-    [userContentController addUserScript:[[WKUserScript alloc] initWithSource:@"window.kk = { add : function(id,name,attrs,pid) { window.webkit.messageHandlers.add.postMessage({ id : id, name: name , attrs : attrs, pid : pid}); } , remove:function(id) { window.webkit.messageHandlers.remove.postMessage({ id : id}); }, set:function(id,key,value) {window.webkit.messageHandlers.set.postMessage({ id : id , key:key , value: value});} ,  onEvent:function(id,name,data) { var e = document.getElementById(id); if(e) { var ev = new Event(name); ev.data = data; e.dispatchEvent(ev); } } , on:function(id,name){ window.webkit.messageHandlers.on.postMessage({ id : id, name : name}); }, off:function(id,name){ window.webkit.messageHandlers.off.postMessage({ id : id, name : name}); } ,commit : function() { window.webkit.messageHandlers.commit.postMessage({ }); } , style:function(name,data) {window.webkit.messageHandlers.style.postMessage({ name : name, data: data });} , close:function(){window.webkit.messageHandlers.close.postMessage({});} , gesture:function(enabled){window.webkit.messageHandlers.gesture.postMessage({ back : enabled });} }" injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:YES]];
+    {
+        NSMutableString * v = [NSMutableString stringWithCapacity:64];
+        
+        for(NSHTTPCookie * cookie in self.cookies) {
+            [v appendFormat:@"%@=%@; ",cookie.name,cookie.value];
+        }
+        
+        [userContentController addUserScript:[[WKUserScript alloc] initWithSource:[NSString stringWithFormat:@"if(!document.referrer){ document.cookie = \"%@\"; }",v] injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:YES]];
+    }
     
-    [userContentController addScriptMessageHandler:self name:@"add"];
-    [userContentController addScriptMessageHandler:self name:@"remove"];
-    [userContentController addScriptMessageHandler:self name:@"set"];
-    [userContentController addScriptMessageHandler:self name:@"on"];
-    [userContentController addScriptMessageHandler:self name:@"off"];
-    [userContentController addScriptMessageHandler:self name:@"commit"];
-    [userContentController addScriptMessageHandler:self name:@"style"];
-    [userContentController addScriptMessageHandler:self name:@"close"];
-    [userContentController addScriptMessageHandler:self name:@"gesture"];
+    {
+        [userContentController addUserScript:[[WKUserScript alloc] initWithSource:@"window.kk = { add : function(id,name,attrs,pid) { window.webkit.messageHandlers.add.postMessage({ id : id, name: name , attrs : attrs, pid : pid}); } , remove:function(id) { window.webkit.messageHandlers.remove.postMessage({ id : id}); }, set:function(id,key,value) {window.webkit.messageHandlers.set.postMessage({ id : id , key:key , value: value});} ,  onEvent:function(id,name,data) { var e = document.getElementById(id); if(e) { var ev = new Event(name); ev.data = data; e.dispatchEvent(ev); } } , on:function(id,name){ window.webkit.messageHandlers.on.postMessage({ id : id, name : name}); }, off:function(id,name){ window.webkit.messageHandlers.off.postMessage({ id : id, name : name}); } ,commit : function() { window.webkit.messageHandlers.commit.postMessage({ }); } , style:function(name,data) {window.webkit.messageHandlers.style.postMessage({ name : name, data: data });} , close:function(){window.webkit.messageHandlers.close.postMessage({});} , gesture:function(enabled){window.webkit.messageHandlers.gesture.postMessage({ back : enabled });} }" injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:YES]];
+        
+        [userContentController addScriptMessageHandler:self name:@"add"];
+        [userContentController addScriptMessageHandler:self name:@"remove"];
+        [userContentController addScriptMessageHandler:self name:@"set"];
+        [userContentController addScriptMessageHandler:self name:@"on"];
+        [userContentController addScriptMessageHandler:self name:@"off"];
+        [userContentController addScriptMessageHandler:self name:@"commit"];
+        [userContentController addScriptMessageHandler:self name:@"style"];
+        [userContentController addScriptMessageHandler:self name:@"close"];
+        [userContentController addScriptMessageHandler:self name:@"gesture"];
+    }
     
     configuration.userContentController = userContentController;
     
