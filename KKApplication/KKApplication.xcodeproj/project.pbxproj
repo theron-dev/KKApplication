@@ -47,6 +47,16 @@
 		1AE143811FF5E0F000D2DEAD /* KKWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AE1437F1FF5E0EF00D2DEAD /* KKWebViewController.m */; };
 		1AE143841FF5E1B600D2DEAD /* KKViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AE143821FF5E1B600D2DEAD /* KKViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1AE143851FF5E1B600D2DEAD /* KKViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AE143831FF5E1B600D2DEAD /* KKViewController.m */; };
+		AC8E5D8D20043E4200343B83 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = AC8E5D8C20043E4200343B83 /* AppDelegate.m */; };
+		AC8E5D9320043E4200343B83 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AC8E5D9120043E4200343B83 /* Main.storyboard */; };
+		AC8E5D9520043E4200343B83 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AC8E5D9420043E4200343B83 /* Assets.xcassets */; };
+		AC8E5D9820043E4200343B83 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AC8E5D9620043E4200343B83 /* LaunchScreen.storyboard */; };
+		AC8E5D9B20043E4200343B83 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = AC8E5D9A20043E4200343B83 /* main.m */; };
+		AC8E5DA320043E7000343B83 /* main in Resources */ = {isa = PBXBuildFile; fileRef = AC8E5DA220043E7000343B83 /* main */; };
+		AC8E5DA4200441A300343B83 /* KKHttp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AC8E5DA6200441A300343B83 /* KKHttp.framework */; };
+		AC8E5DA5200441A300343B83 /* KKObserver.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AC8E5DA7200441A300343B83 /* KKObserver.framework */; };
+		AC8E5DA8200441A300343B83 /* KKApplication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AE143311FF4956800D2DEAD /* KKApplication.framework */; };
+		AC8E5DA9200441A300343B83 /* KKView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AE143441FF4959D00D2DEAD /* KKView.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -72,6 +82,13 @@
 			remoteInfo = KKView;
 		};
 		1AE6FCF81FF6436200001889 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1AE143281FF4956800D2DEAD /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1AE143301FF4956800D2DEAD;
+			remoteInfo = KKApplication;
+		};
+		AC8E5DA020043E5700343B83 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 1AE143281FF4956800D2DEAD /* Project object */;
 			proxyType = 1;
@@ -109,6 +126,17 @@
 		1AE1437F1FF5E0EF00D2DEAD /* KKWebViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KKWebViewController.m; sourceTree = "<group>"; };
 		1AE143821FF5E1B600D2DEAD /* KKViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KKViewController.h; sourceTree = "<group>"; };
 		1AE143831FF5E1B600D2DEAD /* KKViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KKViewController.m; sourceTree = "<group>"; };
+		AC8E5D8920043E4200343B83 /* demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AC8E5D8B20043E4200343B83 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		AC8E5D8C20043E4200343B83 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		AC8E5D9220043E4200343B83 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		AC8E5D9420043E4200343B83 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		AC8E5D9720043E4200343B83 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		AC8E5D9920043E4200343B83 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AC8E5D9A20043E4200343B83 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		AC8E5DA220043E7000343B83 /* main */ = {isa = PBXFileReference; lastKnownFileType = folder; path = main; sourceTree = "<group>"; };
+		AC8E5DA6200441A300343B83 /* KKHttp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = KKHttp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		AC8E5DA7200441A300343B83 /* KKObserver.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = KKObserver.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -130,6 +158,17 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		AC8E5D8620043E4200343B83 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AC8E5DA8200441A300343B83 /* KKApplication.framework in Frameworks */,
+				AC8E5DA4200441A300343B83 /* KKHttp.framework in Frameworks */,
+				AC8E5DA5200441A300343B83 /* KKObserver.framework in Frameworks */,
+				AC8E5DA9200441A300343B83 /* KKView.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -146,6 +185,8 @@
 		1A9E3CB01FF878CA0023B627 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				AC8E5DA6200441A300343B83 /* KKHttp.framework */,
+				AC8E5DA7200441A300343B83 /* KKObserver.framework */,
 				1A9E3CB41FF878CE0023B627 /* KKHttp.framework */,
 				1A9E3CB51FF878CE0023B627 /* KKObserver.framework */,
 			);
@@ -158,6 +199,7 @@
 				1AE1433C1FF4959D00D2DEAD /* KKView.xcodeproj */,
 				1AE143331FF4956800D2DEAD /* KKApplication */,
 				1A9E3CA21FF878710023B627 /* KKApplicationDylib */,
+				AC8E5D8A20043E4200343B83 /* demo */,
 				1AE143321FF4956800D2DEAD /* Products */,
 				1A9E3CB01FF878CA0023B627 /* Frameworks */,
 			);
@@ -168,6 +210,7 @@
 			children = (
 				1AE143311FF4956800D2DEAD /* KKApplication.framework */,
 				1A9E3CA11FF878710023B627 /* KKApplicationDylib.framework */,
+				AC8E5D8920043E4200343B83 /* demo.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -205,6 +248,21 @@
 				1AE143441FF4959D00D2DEAD /* KKView.framework */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		AC8E5D8A20043E4200343B83 /* demo */ = {
+			isa = PBXGroup;
+			children = (
+				AC8E5DA220043E7000343B83 /* main */,
+				AC8E5D8B20043E4200343B83 /* AppDelegate.h */,
+				AC8E5D8C20043E4200343B83 /* AppDelegate.m */,
+				AC8E5D9120043E4200343B83 /* Main.storyboard */,
+				AC8E5D9420043E4200343B83 /* Assets.xcassets */,
+				AC8E5D9620043E4200343B83 /* LaunchScreen.storyboard */,
+				AC8E5D9920043E4200343B83 /* Info.plist */,
+				AC8E5D9A20043E4200343B83 /* main.m */,
+			);
+			path = demo;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -276,6 +334,24 @@
 			productReference = 1AE143311FF4956800D2DEAD /* KKApplication.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		AC8E5D8820043E4200343B83 /* demo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AC8E5D9F20043E4200343B83 /* Build configuration list for PBXNativeTarget "demo" */;
+			buildPhases = (
+				AC8E5D8520043E4200343B83 /* Sources */,
+				AC8E5D8620043E4200343B83 /* Frameworks */,
+				AC8E5D8720043E4200343B83 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AC8E5DA120043E5700343B83 /* PBXTargetDependency */,
+			);
+			name = demo;
+			productName = demo;
+			productReference = AC8E5D8920043E4200343B83 /* demo.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -294,6 +370,10 @@
 						ProvisioningStyle = Automatic;
 					};
 					1AE6FCF01FF6435200001889 = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+					};
+					AC8E5D8820043E4200343B83 = {
 						CreatedOnToolsVersion = 9.2;
 						ProvisioningStyle = Automatic;
 					};
@@ -321,6 +401,7 @@
 				1AE143301FF4956800D2DEAD /* KKApplication */,
 				1AE6FCF01FF6435200001889 /* KKApplication.framework */,
 				1A9E3CA01FF878710023B627 /* KKApplicationDylib */,
+				AC8E5D8820043E4200343B83 /* demo */,
 			);
 		};
 /* End PBXProject section */
@@ -347,6 +428,17 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AC8E5D8720043E4200343B83 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AC8E5D9820043E4200343B83 /* LaunchScreen.storyboard in Resources */,
+				AC8E5DA320043E7000343B83 /* main in Resources */,
+				AC8E5D9520043E4200343B83 /* Assets.xcassets in Resources */,
+				AC8E5D9320043E4200343B83 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -393,6 +485,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		AC8E5D8520043E4200343B83 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AC8E5D9B20043E4200343B83 /* main.m in Sources */,
+				AC8E5D8D20043E4200343B83 /* AppDelegate.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -411,7 +512,31 @@
 			target = 1AE143301FF4956800D2DEAD /* KKApplication */;
 			targetProxy = 1AE6FCF81FF6436200001889 /* PBXContainerItemProxy */;
 		};
+		AC8E5DA120043E5700343B83 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1AE143301FF4956800D2DEAD /* KKApplication */;
+			targetProxy = AC8E5DA020043E5700343B83 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		AC8E5D9120043E4200343B83 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AC8E5D9220043E4200343B83 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		AC8E5D9620043E4200343B83 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AC8E5D9720043E4200343B83 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		1A9E3CAB1FF878710023B627 /* Debug */ = {
@@ -634,6 +759,38 @@
 			};
 			name = Release;
 		};
+		AC8E5D9C20043E4200343B83 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = BQQ2Y9B27K;
+				ENABLE_BITCODE = NO;
+				INFOPLIST_FILE = demo/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_BUNDLE_IDENTIFIER = cn.kkmofang.demo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		AC8E5D9D20043E4200343B83 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = BQQ2Y9B27K;
+				ENABLE_BITCODE = NO;
+				INFOPLIST_FILE = demo/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_BUNDLE_IDENTIFIER = cn.kkmofang.demo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -669,6 +826,15 @@
 			buildConfigurations = (
 				1AE6FCF11FF6435200001889 /* Debug */,
 				1AE6FCF21FF6435200001889 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AC8E5D9F20043E4200343B83 /* Build configuration list for PBXNativeTarget "demo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AC8E5D9C20043E4200343B83 /* Debug */,
+				AC8E5D9D20043E4200343B83 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

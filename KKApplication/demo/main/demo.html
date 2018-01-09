@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+</head>
+<body>
+	<p id="message"></p>
+	<script type="text/javascript" charset="utf-8">
+		var p = document.getElementById('message');
+
+		p.innerHTML += "User-Agent: "+ navigator.userAgent +"<br />";
+		p.innerHTML += "Cookie: "+ document.cookie +"<br />";
+		p.innerHTML += "Referrer: "+ document.referrer  +"<br />";
+	</script>
+</body>
+</html>
