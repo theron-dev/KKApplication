@@ -43,7 +43,7 @@
 		1AE1434A1FF495BE00D2DEAD /* KKApp.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AE143481FF495BE00D2DEAD /* KKApp.m */; };
 		1AE143551FF4A26200D2DEAD /* KKPageViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AE143531FF4A26200D2DEAD /* KKPageViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1AE143561FF4A26200D2DEAD /* KKPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AE143541FF4A26200D2DEAD /* KKPageViewController.m */; };
-		1AE143801FF5E0F000D2DEAD /* KKWebViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AE1437E1FF5E0EF00D2DEAD /* KKWebViewController.h */; };
+		1AE143801FF5E0F000D2DEAD /* KKWebViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AE1437E1FF5E0EF00D2DEAD /* KKWebViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1AE143811FF5E0F000D2DEAD /* KKWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AE1437F1FF5E0EF00D2DEAD /* KKWebViewController.m */; };
 		1AE143841FF5E1B600D2DEAD /* KKViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AE143821FF5E1B600D2DEAD /* KKViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1AE143851FF5E1B600D2DEAD /* KKViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AE143831FF5E1B600D2DEAD /* KKViewController.m */; };

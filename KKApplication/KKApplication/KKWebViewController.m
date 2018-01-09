@@ -85,8 +85,14 @@
     } else {
         u = [NSURL URLWithString:url];
     }
+    
+    NSLog(@"%@",u);
+    
+    [self.webView loadRequest:[self willLoadRequestWithURL:u]];
+}
 
-    [self.webView loadRequest:[NSURLRequest requestWithURL:u]];
+-(NSURLRequest *) willLoadRequestWithURL:(NSURL *) url {
+    return [NSURLRequest requestWithURL:url];
 }
 
 - (void)didReceiveMemoryWarning {

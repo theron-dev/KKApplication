@@ -29,6 +29,13 @@ typedef void (^KKShellOpenApplication)(KKApplication * app);
 
 -(void) KKShell:(KKShell *)shell didFailWithError:(NSError *) error url:(NSURL *) url;
 
+-(BOOL) KKShell:(KKShell *)shell application:(KKApplication *) application openAction:(NSDictionary *) action;
+
+-(UIViewController *) KKShell:(KKShell *)shell application:(KKApplication *) application viewController:(NSDictionary *) action;
+
+-(void) KKShell:(KKShell *)shell application:(KKApplication *) application willSend:(KKHttpOptions *) options ;
+
+
 @end
 
 @interface KKShell : NSObject<KKApplicationDelegate>

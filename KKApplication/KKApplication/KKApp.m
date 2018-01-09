@@ -421,7 +421,7 @@
         }
     }
     
-    UIViewController * topViewController = [self topViewController:[UIApplication sharedApplication].keyWindow.rootViewController];
+    UIViewController * topViewController = [KKApplication topViewController:[UIApplication sharedApplication].keyWindow.rootViewController];
     
     if(topViewController == nil
        || [[action kk_getString:@"target"] isEqualToString:@"root"]) {
@@ -442,7 +442,7 @@
     }
 }
 
--(UIViewController *) topViewController:(UIViewController *) viewController {
++(UIViewController *) topViewController:(UIViewController *) viewController {
     
     if([viewController isKindOfClass:[UINavigationController class]]) {
         return viewController;
@@ -517,6 +517,10 @@
     }
     
     return nil;
+}
+
+-(UIViewController *) topViewController {
+    return [KKApplication topViewController:self.keyWindow.rootViewController];
 }
 
 @end

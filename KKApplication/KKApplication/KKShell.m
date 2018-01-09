@@ -273,6 +273,12 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
 
 -(BOOL) KKApplication:(KKApplication *) application openAction:(NSDictionary *) action {
     
+    if([(id)_delegate respondsToSelector:@selector(KKShell:application:openAction:)]) {
+        if([_delegate KKShell:self application:application openAction:action]) {
+            return YES;
+        }
+    }
+    
     if([[action kk_getString:@"type"] isEqualToString:@"app"]) {
         
         NSString * v = [action kk_getString:@"url"];
@@ -285,6 +291,27 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
     }
     
     return NO;
+}
+
+-(UIViewController *) KKApplication:(KKApplication *) application viewController:(NSDictionary *) action {
+    
+    if([(id)_delegate respondsToSelector:@selector(KKShell:application:viewController:)]) {
+        UIViewController * v = [_delegate KKShell:self application:application viewController:action];
+        if(v) {
+            return v;
+        }
+    }
+    
+    return nil;
+}
+
+
+-(void) KKApplication:(KKApplication *)application willSend:(KKHttpOptions *)options {
+    
+    if([(id)_delegate respondsToSelector:@selector(KKShell:application:willSend:)]) {
+        [_delegate KKShell:self application:application willSend:options];
+    }
+    
 }
 
 +(KKShell *) main {

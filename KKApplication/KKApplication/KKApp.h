@@ -77,11 +77,14 @@
 
 -(KKWindowPageController *) openWindowPageController:(NSDictionary *) action;
 
++(UIViewController *) topViewController:(UIViewController *) viewController ;
+
 @end
 
 @interface UIApplication (KKApplication)
 
 @property(nonatomic,strong,readonly) KKApplication * KKApplication;
+@property(nonatomic,strong,readonly) UIViewController * topViewController;
 
 @end
 
