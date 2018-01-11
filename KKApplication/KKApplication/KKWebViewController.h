@@ -16,7 +16,9 @@
 
 @end
 
-@interface KKWebViewController : UIViewController<KKViewController,WKScriptMessageHandler,WKNavigationDelegate,WKUIDelegate>
+
+
+@interface KKWebViewController : UIViewController<KKViewController,WKNavigationDelegate,WKUIDelegate>
 
 @property(nonatomic,strong) IBOutlet UIProgressView * progressView;
 @property(nonatomic,strong) IBOutlet WKWebView * webView;

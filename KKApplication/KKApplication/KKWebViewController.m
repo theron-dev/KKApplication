@@ -11,6 +11,216 @@
 
 #include <objc/runtime.h>
 
+@interface KKWebViewController () {
+    NSNumber * _topbar_hidden;
+    UIColor * _topbar_backgroundColor;
+    UIColor * _topbar_tintColor;
+    UIColor * _topbar_barTintColor;
+}
+
+@property(nonatomic,strong) KKBodyElement * bodyElement;
+@property(nonatomic,strong) NSMutableDictionary * elements;
+
+-(void) removeElement:(KKElement *) element;
+
+@end
+
+
+@interface KKJSBridge : NSObject<WKScriptMessageHandler>
+
+@property(nonatomic,weak) KKWebViewController * viewController;
+
+@end
+
+@implementation KKJSBridge
+
+@synthesize viewController = _viewController;
+
+
+- (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message {
+    
+    if([message.name isEqualToString:@"add"]) {
+        
+        NSString * elementId = [message.body kk_getString:@"id"];
+        NSString * name = [message.body kk_getString:@"name"];
+        NSString * pid = [message.body kk_getString:@"pid"];
+        NSDictionary * attrs = [message.body kk_getValue:@"attrs"];
+        
+        if(elementId && name) {
+            
+            KKElement* e = [self.viewController.elements objectForKey:elementId];
+            
+            if(e == nil) {
+                Class isa = NSClassFromString( [[KKViewContext defaultElementClass] objectForKey:name] );
+                if(isa == nil) {
+                    e = [[KKViewElement alloc] init];
+                } else {
+                    e = [[isa alloc] init];
+                }
+            }
+            
+            if([attrs isKindOfClass:[NSDictionary class]]) {
+                [e setAttrs:attrs];
+            }
+            
+            [e set:@"id" value:elementId];
+            
+            KKElement* parent = nil;
+            
+            if(pid) {
+                parent = [self.viewController.elements objectForKey:pid];
+            }
+            
+            if(parent == nil) {
+                [self.viewController.bodyElement append:e];
+            } else {
+                [parent append:e];
+            }
+            
+            [self.viewController.elements setObject:e forKey:elementId];
+        }
+        
+    } else if([message.name isEqualToString:@"remove"]) {
+        
+        NSString * elementId = [message.body kk_getString:@"id"];
+        
+        if(elementId) {
+            [self.viewController removeElement:[self.viewController.elements objectForKey:elementId]];
+        }
+        
+    } else if([message.name isEqualToString:@"set"]) {
+        
+        NSString * elementId = [message.body kk_getString:@"id"];
+        NSString * key = [message.body kk_getString:@"key"];
+        NSString * value = [message.body kk_getString:@"value"];
+        
+        if(elementId && key) {
+            KKElement * e = [self.viewController.elements objectForKey:elementId];
+            if(e) {
+                [e set:key value:value];
+            }
+        }
+    } else if([message.name isEqualToString:@"on"]) {
+        
+        NSString * elementId = [message.body kk_getString:@"id"];
+        NSString * name = [message.body kk_getString:@"name"];
+        
+        if(elementId && name) {
+            KKElement * e = [self.viewController.elements objectForKey:elementId];
+            if(e) {
+                
+                __weak WKWebView * v = self.viewController.webView;
+                
+                [e on:name fn:^(KKEvent *event, void *context) {
+                    
+                    if(v && [event isKindOfClass:[KKElementEvent class]]) {
+                        KKElementEvent * e = (KKElementEvent *) event;
+                        NSData * data = [NSJSONSerialization dataWithJSONObject:e.data options:NSJSONWritingPrettyPrinted error:nil];
+                        NSString *code = [NSString stringWithFormat:@"kk.onEvent(\"%@\",%@);",name,[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]];
+                        [v evaluateJavaScript:code completionHandler:^(id r, NSError * error) {
+                            if(error) {
+                                NSLog(@"[KK] %@",error);
+                            }
+                        }];
+                    }
+                    
+                } context:nil];
+                
+            }
+        }
+    } else if([message.name isEqualToString:@"off"]) {
+        
+        NSString * elementId = [message.body kk_getString:@"id"];
+        NSString * name = [message.body kk_getString:@"name"];
+        
+        if(elementId && name) {
+            KKElement * e = [self.viewController.elements objectForKey:elementId];
+            if(e) {
+                [e off:name fn:nil context:nil];
+            }
+        }
+    } else if([message.name isEqualToString:@"commit"]) {
+        
+        self.viewController.webView.opaque = NO;
+        
+        UIView * view = self.viewController.contentView;
+        
+        [self.viewController.bodyElement layout:view.bounds.size];
+        [self.viewController.bodyElement obtainView:view];
+        
+    } else if([message.name isEqualToString:@"style"]) {
+        NSString * name = [message.body kk_getString:@"name"];
+        NSDictionary * data = [message.body kk_getValue:@"data"];
+        if([name isEqualToString:@"topbar"]) {
+            {
+                UIColor * v = [UIColor KKElementStringValue:[data kk_getString:@"background-color"]];
+                if(v) {
+                    self.viewController.navigationController.navigationBar.backgroundColor = v;
+                }
+            }
+            {
+                UIColor * v = [UIColor KKElementStringValue:[data kk_getString:@"tint-color"]];
+                if(v) {
+                    self.viewController.navigationController.navigationBar.tintColor = v;
+                }
+            }
+            {
+                UIColor * v = [UIColor KKElementStringValue:[data kk_getString:@"bar-tint-color"]];
+                if(v) {
+                    self.viewController.navigationController.navigationBar.barTintColor = v;
+                }
+            }
+            {
+                id v = [data kk_getValue:@"hidden"];
+                if(v) {
+                    [self.viewController.navigationController setNavigationBarHidden:[v boolValue] animated:NO];
+                    
+                }
+            }
+        } else if([name isEqualToString:@"view"]) {
+            {
+                UIColor * v = [UIColor KKElementStringValue:[data kk_getString:@"background-color"]];
+                if(v) {
+                    self.viewController.view.backgroundColor = v;
+                }
+            }
+            {
+                UIColor * v = [UIColor KKElementStringValue:[data kk_getString:@"tint-color"]];
+                if(v) {
+                    self.viewController.view.tintColor = v;
+                }
+            }
+        } else if([name isEqualToString:@"progress"]) {
+            {
+                UIColor * v = [UIColor KKElementStringValue:[data kk_getString:@"tint-color"]];
+                if(v) {
+                    self.viewController.progressView.trackTintColor = v;
+                }
+            }
+            {
+                UIColor * v = [UIColor KKElementStringValue:[data kk_getString:@"background-color"]];
+                if(v) {
+                    self.viewController.progressView.progressTintColor = v;
+                }
+            }
+        }
+    } else if([message.name isEqualToString:@"close"]) {
+        [self.viewController doCloseAction:nil];
+    } else if([message.name isEqualToString:@"gesture"]) {
+        {
+            id v = [message.body kk_getValue:@"back"];
+            if(KKBooleanValue(v)) {
+                self.viewController.navigationController.interactivePopGestureRecognizer.enabled = true;
+            } else {
+                self.viewController.navigationController.interactivePopGestureRecognizer.enabled = false;
+            }
+        }
+    }
+}
+
+
+@end
+
 @implementation KKApplication (KKWebViewController)
 
 -(WKProcessPool *) processPool {
@@ -25,18 +235,6 @@
 -(void) setProcessPool:(WKProcessPool *)processPool {
     objc_setAssociatedObject(self, "_processPool", processPool, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
-
-@end
-
-@interface KKWebViewController () {
-    NSNumber * _topbar_hidden;
-    UIColor * _topbar_backgroundColor;
-    UIColor * _topbar_tintColor;
-    UIColor * _topbar_barTintColor;
-}
-
-@property(nonatomic,strong) KKBodyElement * bodyElement;
-@property(nonatomic,strong) NSMutableDictionary * elements;
 
 @end
 
@@ -76,6 +274,25 @@
 
     self.view.backgroundColor = [UIColor whiteColor];
     
+    NSString * url = self.url;
+    
+    NSRange r = [url rangeOfString:@"#"];
+    if(r.length >0 && r.location != NSNotFound) {
+        url = [url substringToIndex:r.location];
+    }
+    
+    NSURL * u = nil;
+    if([url hasPrefix:@"app://"]) {
+        u = [NSURL fileURLWithPath:[[self.application path] stringByAppendingPathComponent:[url substringFromIndex:6]] ];
+    } else {
+        u = [NSURL URLWithString:url];
+    }
+
+    
+    if(_cookies == nil) {
+        _cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:u];
+    }
+    
     {
         WKWebView * v = self.webView;
         v.frame = self.view.bounds;
@@ -92,25 +309,7 @@
         [self.view addSubview:v];
     }
     
-    NSString * url = self.url;
-    
-    NSRange r = [url rangeOfString:@"#"];
-    if(r.length >0 && r.location != NSNotFound) {
-        url = [url substringToIndex:r.location];
-    }
-    
-    NSURL * u = nil;
-    if([url hasPrefix:@"app://"]) {
-        u = [NSURL fileURLWithPath:[[self.application path] stringByAppendingPathComponent:[url substringFromIndex:6]] ];
-    } else {
-        u = [NSURL URLWithString:url];
-    }
-
     NSLog(@"%@",u);
-    
-    if(_cookies == nil) {
-        _cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:u];
-    }
     
     [self.webView loadRequest:[self willLoadRequestWithURL:u]];
 }
@@ -127,6 +326,9 @@
 -(WKProcessPool *) processPool {
     if(_processPool == nil) {
         _processPool = self.application.processPool;
+    }
+    if(_processPool == nil) {
+        _processPool = [[WKProcessPool alloc] init];
     }
     return _processPool;
 }
@@ -180,7 +382,7 @@
     
     WKWebViewConfiguration * configuration = [[WKWebViewConfiguration alloc] init];
     
-    configuration.processPool = self.processPool;
+    //configuration.processPool = self.processPool;
     
     WKUserContentController * userContentController = [[WKUserContentController alloc] init];
     
@@ -197,15 +399,18 @@
     {
         [userContentController addUserScript:[[WKUserScript alloc] initWithSource:@"window.kk = { add : function(id,name,attrs,pid) { window.webkit.messageHandlers.add.postMessage({ id : id, name: name , attrs : attrs, pid : pid}); } , remove:function(id) { window.webkit.messageHandlers.remove.postMessage({ id : id}); }, set:function(id,key,value) {window.webkit.messageHandlers.set.postMessage({ id : id , key:key , value: value});} ,  onEvent:function(id,name,data) { var e = document.getElementById(id); if(e) { var ev = new Event(name); ev.data = data; e.dispatchEvent(ev); } } , on:function(id,name){ window.webkit.messageHandlers.on.postMessage({ id : id, name : name}); }, off:function(id,name){ window.webkit.messageHandlers.off.postMessage({ id : id, name : name}); } ,commit : function() { window.webkit.messageHandlers.commit.postMessage({ }); } , style:function(name,data) {window.webkit.messageHandlers.style.postMessage({ name : name, data: data });} , close:function(){window.webkit.messageHandlers.close.postMessage({});} , gesture:function(enabled){window.webkit.messageHandlers.gesture.postMessage({ back : enabled });} }" injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:YES]];
         
-        [userContentController addScriptMessageHandler:self name:@"add"];
-        [userContentController addScriptMessageHandler:self name:@"remove"];
-        [userContentController addScriptMessageHandler:self name:@"set"];
-        [userContentController addScriptMessageHandler:self name:@"on"];
-        [userContentController addScriptMessageHandler:self name:@"off"];
-        [userContentController addScriptMessageHandler:self name:@"commit"];
-        [userContentController addScriptMessageHandler:self name:@"style"];
-        [userContentController addScriptMessageHandler:self name:@"close"];
-        [userContentController addScriptMessageHandler:self name:@"gesture"];
+        KKJSBridge * v = [[KKJSBridge alloc] init];
+        v.viewController = self;
+        
+        [userContentController addScriptMessageHandler:v name:@"add"];
+        [userContentController addScriptMessageHandler:v name:@"remove"];
+        [userContentController addScriptMessageHandler:v name:@"set"];
+        [userContentController addScriptMessageHandler:v name:@"on"];
+        [userContentController addScriptMessageHandler:v name:@"off"];
+        [userContentController addScriptMessageHandler:v name:@"commit"];
+        [userContentController addScriptMessageHandler:v name:@"style"];
+        [userContentController addScriptMessageHandler:v name:@"close"];
+        [userContentController addScriptMessageHandler:v name:@"gesture"];
     }
     
     configuration.userContentController = userContentController;
@@ -227,187 +432,6 @@
     [element remove];
     if(elementId) {
         [[self elements] removeObjectForKey:elementId];
-    }
-}
-
-- (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message {
-    
-    if([message.name isEqualToString:@"add"]) {
-        
-        NSString * elementId = [message.body kk_getString:@"id"];
-        NSString * name = [message.body kk_getString:@"name"];
-        NSString * pid = [message.body kk_getString:@"pid"];
-        NSDictionary * attrs = [message.body kk_getValue:@"attrs"];
-        
-        if(elementId && name) {
-            
-            KKElement* e = [self.elements objectForKey:elementId];
-            
-            if(e == nil) {
-                Class isa = NSClassFromString( [[KKViewContext defaultElementClass] objectForKey:name] );
-                if(isa == nil) {
-                    e = [[KKViewElement alloc] init];
-                } else {
-                    e = [[isa alloc] init];
-                }
-            }
-            
-            if([attrs isKindOfClass:[NSDictionary class]]) {
-                [e setAttrs:attrs];
-            }
-            
-            [e set:@"id" value:elementId];
-            
-            KKElement* parent = nil;
-            
-            if(pid) {
-                parent = [self.elements objectForKey:pid];
-            }
-            
-            if(parent == nil) {
-                [self.bodyElement append:e];
-            } else {
-                [parent append:e];
-            }
-            
-            [self.elements setObject:e forKey:elementId];
-        }
-        
-    } else if([message.name isEqualToString:@"remove"]) {
-        
-        NSString * elementId = [message.body kk_getString:@"id"];
-        
-        if(elementId) {
-            [self removeElement:[self.elements objectForKey:elementId]];
-        }
-        
-    } else if([message.name isEqualToString:@"set"]) {
-        
-        NSString * elementId = [message.body kk_getString:@"id"];
-        NSString * key = [message.body kk_getString:@"key"];
-        NSString * value = [message.body kk_getString:@"value"];
-        
-        if(elementId && key) {
-            KKElement * e = [self.elements objectForKey:elementId];
-            if(e) {
-                [e set:key value:value];
-            }
-        }
-    } else if([message.name isEqualToString:@"on"]) {
-        
-        NSString * elementId = [message.body kk_getString:@"id"];
-        NSString * name = [message.body kk_getString:@"name"];
-        
-        if(elementId && name) {
-            KKElement * e = [self.elements objectForKey:elementId];
-            if(e) {
-                
-                __weak WKWebView * v = self.webView;
-                
-                [e on:name fn:^(KKEvent *event, void *context) {
-                    
-                    if(v && [event isKindOfClass:[KKElementEvent class]]) {
-                        KKElementEvent * e = (KKElementEvent *) event;
-                        NSData * data = [NSJSONSerialization dataWithJSONObject:e.data options:NSJSONWritingPrettyPrinted error:nil];
-                        NSString *code = [NSString stringWithFormat:@"kk.onEvent(\"%@\",%@);",name,[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]];
-                        [v evaluateJavaScript:code completionHandler:^(id r, NSError * error) {
-                            if(error) {
-                                NSLog(@"[KK] %@",error);
-                            }
-                        }];
-                    }
-                    
-                } context:nil];
-                
-            }
-        }
-    } else if([message.name isEqualToString:@"off"]) {
-        
-        NSString * elementId = [message.body kk_getString:@"id"];
-        NSString * name = [message.body kk_getString:@"name"];
-        
-        if(elementId && name) {
-            KKElement * e = [self.elements objectForKey:elementId];
-            if(e) {
-                [e off:name fn:nil context:nil];
-            }
-        }
-    } else if([message.name isEqualToString:@"commit"]) {
-        
-        self.webView.opaque = NO;
-        
-        UIView * view = self.contentView;
-        
-        [_bodyElement layout:view.bounds.size];
-        [_bodyElement obtainView:view];
-        
-    } else if([message.name isEqualToString:@"style"]) {
-        NSString * name = [message.body kk_getString:@"name"];
-        NSDictionary * data = [message.body kk_getValue:@"data"];
-        if([name isEqualToString:@"topbar"]) {
-            {
-                UIColor * v = [UIColor KKElementStringValue:[data kk_getString:@"background-color"]];
-                if(v) {
-                    self.navigationController.navigationBar.backgroundColor = v;
-                }
-            }
-            {
-                UIColor * v = [UIColor KKElementStringValue:[data kk_getString:@"tint-color"]];
-                if(v) {
-                    self.navigationController.navigationBar.tintColor = v;
-                }
-            }
-            {
-                UIColor * v = [UIColor KKElementStringValue:[data kk_getString:@"bar-tint-color"]];
-                if(v) {
-                    self.navigationController.navigationBar.barTintColor = v;
-                }
-            }
-            {
-                id v = [data kk_getValue:@"hidden"];
-                if(v) {
-                    [self.navigationController setNavigationBarHidden:[v boolValue] animated:NO];
-                    
-                }
-            }
-        } else if([name isEqualToString:@"view"]) {
-            {
-                UIColor * v = [UIColor KKElementStringValue:[data kk_getString:@"background-color"]];
-                if(v) {
-                    self.view.backgroundColor = v;
-                }
-            }
-            {
-                UIColor * v = [UIColor KKElementStringValue:[data kk_getString:@"tint-color"]];
-                if(v) {
-                    self.view.tintColor = v;
-                }
-            }
-        } else if([name isEqualToString:@"progress"]) {
-            {
-                UIColor * v = [UIColor KKElementStringValue:[data kk_getString:@"tint-color"]];
-                if(v) {
-                    self.progressView.trackTintColor = v;
-                }
-            }
-            {
-                UIColor * v = [UIColor KKElementStringValue:[data kk_getString:@"background-color"]];
-                if(v) {
-                    self.progressView.progressTintColor = v;
-                }
-            }
-        }
-    } else if([message.name isEqualToString:@"close"]) {
-        [self doCloseAction:nil];
-    } else if([message.name isEqualToString:@"gesture"]) {
-        {
-            id v = [message.body kk_getValue:@"back"];
-            if(KKBooleanValue(v)) {
-                self.navigationController.interactivePopGestureRecognizer.enabled = true;
-            } else {
-                self.navigationController.interactivePopGestureRecognizer.enabled = false;
-            }
-        }
     }
 }
 
@@ -501,6 +525,15 @@
             
         }
         
+    }
+    
+    if(![url hasPrefix:@"http://"] && ![url hasPrefix:@"https://"] ) {
+        
+        [[UIApplication sharedApplication] openURL:navigationAction.request.URL];
+        
+        decisionHandler(WKNavigationActionPolicyCancel);
+        
+        return ;
     }
 
     decisionHandler(WKNavigationActionPolicyAllow);

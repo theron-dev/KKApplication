@@ -10,11 +10,21 @@
 #import <KKApplication/KKPageViewController.h>
 #import <WebKit/WebKit.h>
 
-@interface KKWebViewController : UIViewController<KKViewController,WKScriptMessageHandler,WKNavigationDelegate,WKUIDelegate>
+@interface KKApplication (KKWebViewController)
+
+@property(nonatomic,strong) WKProcessPool * processPool;
+
+@end
+
+
+
+@interface KKWebViewController : UIViewController<KKViewController,WKNavigationDelegate,WKUIDelegate>
 
 @property(nonatomic,strong) IBOutlet UIProgressView * progressView;
 @property(nonatomic,strong) IBOutlet WKWebView * webView;
 @property(nonatomic,strong) NSString * url;
+@property(nonatomic,strong) NSArray<NSHTTPCookie*> * cookies;
+@property(nonatomic,strong) WKProcessPool * processPool;
 
 -(WKWebView *) loadWebView;
 
