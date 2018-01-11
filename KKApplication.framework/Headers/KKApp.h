@@ -63,6 +63,8 @@
 
 -(void) exec:(NSString *) path librarys:(NSDictionary *) librarys;
 
+-(void) doAction:(NSDictionary *) action;
+
 -(KKObserver *) newObserver;
 
 -(NSString *) absolutePath:(NSString *) path;
@@ -78,6 +80,8 @@
 -(KKWindowPageController *) openWindowPageController:(NSDictionary *) action;
 
 +(UIViewController *) topViewController:(UIViewController *) viewController ;
+
++(instancetype) main;
 
 @end
 

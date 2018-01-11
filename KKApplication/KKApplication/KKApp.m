@@ -498,6 +498,15 @@
     return nil;
 }
 
++(instancetype) main {
+    static KKApplication * v = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        v = [[KKApplication alloc] initWithBundle:[NSBundle mainBundle]];
+    });
+    return v;
+}
+
 @end
 
 @implementation UIApplication (KKApplication)

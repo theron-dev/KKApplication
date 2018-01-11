@@ -1,0 +1,11 @@
+
+config:
+  web: .
+  address: :8080
+  timeout: 30
+
+in:
+  name: ^var
+  key: result
+  value:
+    - version: 1.0

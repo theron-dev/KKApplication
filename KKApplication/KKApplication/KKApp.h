@@ -81,6 +81,8 @@
 
 +(UIViewController *) topViewController:(UIViewController *) viewController ;
 
++(instancetype) main;
+
 @end
 
 @interface UIApplication (KKApplication)
