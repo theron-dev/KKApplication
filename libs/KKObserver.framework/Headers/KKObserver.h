@@ -13,7 +13,7 @@
 #define KKOBSERVER_PRIORITY_LOW INT32_MIN
 #define KKOBSERVER_PRIORITY_NORMAL 0
 #define KKOBSERVER_PRIORITY_HIGH INT32_MAX
-#define KKOBSERVER_PRIORITY_DESC 2
+#define KKOBSERVER_PRIORITY_DESC 1
 
 typedef void (^KKObserverFunction)(id value,NSArray * changedKeys,void * context);
 

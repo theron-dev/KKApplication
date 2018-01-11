@@ -92,9 +92,12 @@ typedef void (^KKHttpOnProcess)(long long value, long long maxValue,id weakObjec
 
 @end
 
+typedef void (^KKHttpImageCallback)(UIImage * image);
+
+extern dispatch_queue_t KKHttpIODispatchQueue();
+
 @interface KKHttp : NSObject<KKHttp>
 
-@property(nonatomic,strong,readonly) dispatch_queue_t io;
 @property(nonatomic,strong,readonly) NSURLSession * session;
    
 -(instancetype) init;
@@ -112,6 +115,8 @@ typedef void (^KKHttpOnProcess)(long long value, long long maxValue,id weakObjec
 +(id<KKHttp>) main;
 
 +(UIImage *) imageWithURL:(NSString *) url;
+    
++(BOOL) imageWithURL:(NSString *) url callback:(KKHttpImageCallback) callback;
 
 +(NSString *) stringValue:(id) value defaultValue:(NSString *) defaultValue;
 

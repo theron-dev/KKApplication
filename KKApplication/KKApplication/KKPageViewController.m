@@ -15,6 +15,13 @@
 
 @implementation KKPageViewController
 
+-(instancetype) initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
+    if((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
+        self.edgesForExtendedLayout = UIRectEdgeAll;
+        self.automaticallyAdjustsScrollViewInsets = NO;
+    }
+    return self;
+}
 +(Class) controllerClass {
     return [KKPageController class];
 }

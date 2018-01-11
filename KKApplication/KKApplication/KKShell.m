@@ -305,6 +305,23 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
     return nil;
 }
 
+-(id<KKHttpTask>) KKApplication:(KKApplication *) application send:(KKHttpOptions *) options weakObject:(id) weakObject  {
+    
+    if([(id)_delegate respondsToSelector:@selector(KKShell:application:send:weakObject:)]) {
+        return [_delegate KKShell:self application:application send:options weakObject:weakObject];
+    }
+    
+    return nil;
+}
+    
+-(BOOL) KKApplication:(KKApplication *) application cancel:(id) weakObject {
+    
+    if([(id)_delegate respondsToSelector:@selector(KKShell:application:cancel:)]) {
+        return [_delegate KKShell:self application:application cancel:weakObject];
+    }
+    
+    return NO;
+}
 
 -(void) KKApplication:(KKApplication *)application willSend:(KKHttpOptions *)options {
     

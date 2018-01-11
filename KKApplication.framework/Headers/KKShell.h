@@ -35,7 +35,10 @@ typedef void (^KKShellOpenApplication)(KKApplication * app);
 
 -(void) KKShell:(KKShell *)shell application:(KKApplication *) application willSend:(KKHttpOptions *) options ;
 
+-(id<KKHttpTask>) KKShell:(KKShell *)shell application:(KKApplication *) application send:(KKHttpOptions *) options weakObject:(id) weakObject;
 
+-(BOOL) KKShell:(KKShell *)shell application:(KKApplication *) application cancel:(id) weakObject;
+    
 @end
 
 @interface KKShell : NSObject<KKApplicationDelegate>

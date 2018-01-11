@@ -23,6 +23,8 @@
 
 -(UIImage *) KKViewContext:(KKViewContext *) viewContext imageWithURI:(NSString * ) uri;
 
+-(BOOL) KKViewContext:(KKViewContext *) viewContext imageWithURI:(NSString * ) uri callback:(KKHttpImageCallback) callback;
+    
 @end
 
 @interface KKViewContext : NSObject<KKHttp>
@@ -31,6 +33,8 @@
 @property(nonatomic,strong) NSString * basePath;
 
 -(UIImage *) imageWithURI:(NSString * ) uri;
+    
+-(BOOL) imageWithURI:(NSString * ) uri callback:(KKHttpImageCallback) callback;
 
 +(void) pushContext:(KKViewContext *) context;
 
