@@ -59,6 +59,9 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
     
     KKApplication * app = [[KKApplication alloc] initWithBundle:[NSBundle bundleWithPath:path]];
     
+    [app.observer set:@[@"url"] value:[url absoluteString]];
+    [app.observer set:@[@"path"] value:path];
+    
     [self openApplication:app];
     
 }

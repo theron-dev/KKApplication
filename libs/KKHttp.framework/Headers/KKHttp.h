@@ -94,7 +94,7 @@ typedef void (^KKHttpOnProcess)(long long value, long long maxValue,id weakObjec
 
 typedef void (^KKHttpImageCallback)(UIImage * image);
 
-extern dispatch_queue_t KKHttpIODispatchQueue();
+extern dispatch_queue_t KKHttpIODispatchQueue(void);
 
 @interface KKHttp : NSObject<KKHttp>
 

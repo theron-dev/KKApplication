@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <KKView/KKElement.h>
 #import <KKView/KKPixel.h>
+#import <KKView/KKViewContext.h>
 
 @class KKViewElement;
 
@@ -32,6 +33,7 @@ CGSize KKViewElementLayoutHorizontal(KKViewElement * element);
 
 @interface KKViewElement : KKElement
 
+@property(nonatomic,strong) KKViewContext * viewContext;
 @property(nonatomic,assign) CGRect frame;
 @property(nonatomic,assign) CGSize contentSize;
 @property(nonatomic,assign) CGPoint contentOffset;
@@ -48,6 +50,8 @@ CGSize KKViewElementLayoutHorizontal(KKViewElement * element);
 @property(nonatomic,assign,readonly) struct KKPixel right;
 @property(nonatomic,assign,readonly) struct KKPixel bottom;
 @property(nonatomic,assign,readonly) enum KKVerticalAlign verticalAlign;
+@property(nonatomic,assign,readonly) enum KKPosition position;
+@property(nonatomic,assign) CGPoint translate;
 @property(nonatomic,assign) KKViewElementLayout layout;
 @property(nonatomic,strong) UIView * view;
 @property(nonatomic,strong,readonly) NSString * reuse;

@@ -51,6 +51,8 @@ typedef void (^KKShellOpenApplication)(KKApplication * app);
 
 -(void) update:(NSURL *) url;
 
+-(void) openApplication:(KKApplication *) app;
+
 +(KKShell *) main;
 
 @end

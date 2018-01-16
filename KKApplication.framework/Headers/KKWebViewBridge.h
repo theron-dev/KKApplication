@@ -8,12 +8,19 @@
 
 #import <JavaScriptCore/JavaScriptCore.h>
 #import <UIKit/UIKit.h>
+#import <KKView/KKView.h>
 
 @protocol KKWebViewBridge;
 
 @protocol KKWebViewBridgeViewController <NSObject>
 
+@property(nonatomic,assign,getter=isTopbarHidden) BOOL topbarHidden;
 @property(nonatomic,strong,readonly) UIView * contentView;
+@property(nonatomic,strong) NSMutableSet * elementKeys;
+@property(nonatomic,strong) NSMutableDictionary * elements;
+@property(nonatomic,strong) KKBodyElement * bodyElement;
+
+-(void) removeElement:(KKElement *) element;
 
 @optional
 
@@ -74,5 +81,6 @@ typedef void (^KKWebViewBridgeOnEvent)(NSString * elementId,NSString * name,id d
 @property(nonatomic,weak,readonly) UIViewController<KKWebViewBridgeViewController> * viewController;
 
 -(instancetype) initWithViewController:(UIViewController<KKWebViewBridgeViewController> *) viewController;
+
 
 @end

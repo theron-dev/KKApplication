@@ -79,6 +79,22 @@ static CGSize KKPageControllerViewSize(UIView * view) {
         
         if([e isKindOfClass:[KKViewElement class]]) {
             _element = (KKViewElement *) e;
+            if([e isKindOfClass:[KKBodyElement class]]) {
+                KKBodyElement * body = (KKBodyElement *) e;
+                struct KKEdge padding = body.padding;
+                CGFloat paddingTop = KKPixelValue(padding.top, 0, 0);
+                CGFloat paddingBottom = KKPixelValue(padding.bottom, 0, 0);
+                CGRect bounds =  [UIScreen mainScreen].bounds;
+                if(bounds.size.height == 812.0) {
+                    paddingTop += 24;
+                    paddingBottom += 34;
+                }
+                padding.top.type = KKPixelTypePX;
+                padding.top.value = paddingTop;
+                padding.bottom.type = KKPixelTypePX;
+                padding.bottom.value = paddingBottom;
+                [body set:@"padding" value:NSStringFromKKEdge(padding)];
+            }
         } else {
             _element = nil;
         }
