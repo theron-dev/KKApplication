@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<view layout="relative" width="100%" height="100%" background-color="#ffffff">
+
+	<text font="32rpx" color="#333">hello world</text>
+	
+</view>
