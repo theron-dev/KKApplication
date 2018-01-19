@@ -528,7 +528,7 @@
     return nil;
 }
 
--(UIViewController *) topViewController {
+-(UIViewController *) kk_topViewController {
     return [KKApplication topViewController:self.keyWindow.rootViewController];
 }
 

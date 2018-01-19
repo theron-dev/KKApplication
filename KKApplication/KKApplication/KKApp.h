@@ -88,7 +88,7 @@
 @interface UIApplication (KKApplication)
 
 @property(nonatomic,strong,readonly) KKApplication * KKApplication;
-@property(nonatomic,strong,readonly) UIViewController * topViewController;
+@property(nonatomic,strong,readonly) UIViewController * kk_topViewController;
 
 @end
 
