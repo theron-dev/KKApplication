@@ -122,7 +122,7 @@
   * min-height
   * max-height
 
-![](/assets/relative.png)
+![](/doc/assets/relative.png)
 
 * flex   从左到右 从上到下排列 
   * padding
@@ -135,7 +135,7 @@
   * min-height
   * max-height
 
-![](/assets/flex.png)
+![](/doc/assets/flex.png)
 
 * horizontal 从左到右排列 
   * padding
@@ -148,7 +148,7 @@
   * min-height
   * max-height
 
-![](/assets/horizontal.png)
+![](/doc/assets/horizontal.png)
 
 #### 数据绑定
 
