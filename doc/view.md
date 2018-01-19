@@ -46,8 +46,10 @@
   * src: 图片路径 只支持应用包内图片
 
 * image
+
   * src: 图片路径 支持应用包内图片,  HTTP URL
   * default-src: 图片路径 只支持应用包内图片
+
 * button
   * status:  hover\(按下\) 默认空
   * kk:ontap: 点击事件绑定
@@ -167,6 +169,7 @@
 #### 事件绑定
 
 * kk:on_**&lt;name&gt;**_
+
   * 绑定事件， 当节点产生事件_**&lt;name&gt;, 更新数据对应的 keyPath, 值为 节点数据**_
 
   ```
@@ -174,7 +177,9 @@
 
   page.set(["action","open"], { path : "demo/index" });
   ```
+
 * kk:emit\__**&lt;name&gt;**_
+
   * 发起事件，数据发生变化后对节点发送事件
 
   ```
