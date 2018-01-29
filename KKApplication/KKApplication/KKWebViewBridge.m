@@ -19,14 +19,30 @@
 
 @synthesize viewController = _viewController;
 @synthesize onevent = _onevent;
+@synthesize onappforeground = _onappforeground;
+@synthesize onappbackground = _onappbackground;
+
+-(void) dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillEnterForegroundNotification object:nil];
+}
 
 -(instancetype) initWithViewController:(UIViewController<KKWebViewBridgeViewController> *) viewController {
     if((self = [super init])) {
         _viewController = viewController;
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(UIApplicationDidEnterBackgroundNotification) name:UIApplicationDidEnterBackgroundNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(UIApplicationWillEnterForegroundNotification) name:UIApplicationWillEnterForegroundNotification object:nil];
     }
     return self;
 }
 
+-(void) UIApplicationDidEnterBackgroundNotification {
+    [self.onappbackground callWithArguments:@[]];
+}
+
+-(void) UIApplicationWillEnterForegroundNotification {
+    [self.onappforeground callWithArguments:@[]];
+}
 
 -(void) add:(NSString *) elementId name:(NSString *) name attrs:(NSDictionary *) attrs parentId:(NSString *) parentId {
     

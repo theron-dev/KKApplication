@@ -36,6 +36,8 @@
 
 @protocol KKWebViewBridge <JSExport>
 
+@property(nonatomic,strong) JSValue * onappbackground;
+@property(nonatomic,strong) JSValue * onappforeground;
 @property(nonatomic,strong) JSValue * onevent;
 
 JSExportAs(add,
