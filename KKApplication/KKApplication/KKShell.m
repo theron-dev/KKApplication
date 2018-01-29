@@ -334,6 +334,17 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
     
 }
 
+-(BOOL) KKApplication:(KKApplication *) application openViewController:(UIViewController *) viewController {
+    if([(id)_delegate respondsToSelector:@selector(KKShell:application:openViewController:)]) {
+        if( [_delegate KKShell:self application:application openViewController:viewController] ) {
+            return YES;
+        }
+    }
+    
+    return NO;
+}
+
+
 +(KKShell *) main {
     static KKShell * v = nil;
     static dispatch_once_t onceToken;

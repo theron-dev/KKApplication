@@ -38,7 +38,9 @@ typedef void (^KKShellOpenApplication)(KKApplication * app);
 -(id<KKHttpTask>) KKShell:(KKShell *)shell application:(KKApplication *) application send:(KKHttpOptions *) options weakObject:(id) weakObject;
 
 -(BOOL) KKShell:(KKShell *)shell application:(KKApplication *) application cancel:(id) weakObject;
-    
+
+-(BOOL) KKShell:(KKShell *)shell application:(KKApplication *) application openViewController:(UIViewController *) viewController;
+
 @end
 
 @interface KKShell : NSObject<KKApplicationDelegate>
