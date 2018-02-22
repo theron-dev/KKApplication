@@ -14,6 +14,7 @@
     UIColor * _topbar_backgroundColor;
     UIColor * _topbar_tintColor;
     UIColor * _topbar_barTintColor;
+    UIImage * _topbar_backgroundImage;
 }
 
 @end
@@ -89,6 +90,23 @@
     }
     
     {
+        id v = [self.controller.observer get:@[@"page",@"topbar",@"background-image"] defaultValue:nil];
+        if(v) {
+            
+            UIImage * image = [self.application.viewContext imageWithURI:v];
+            
+            _topbar_backgroundImage = [self.navigationController.navigationBar backgroundImageForBarMetrics:UIBarMetricsDefault];
+            
+            [self.navigationController.navigationBar setBackgroundImage:image forBarMetrics:UIBarMetricsDefault];
+            
+            if(image) {
+                [self.navigationController.navigationBar setClipsToBounds:YES];
+            }
+            
+        }
+    }
+    
+    {
         id v = [self.controller.observer get:@[@"page",@"topbar",@"background-color"] defaultValue:nil];
         if(v) {
             _topbar_backgroundColor = [self.navigationController.navigationBar backgroundColor];
@@ -124,6 +142,18 @@
             [self.navigationController setNavigationBarHidden:_topbar_hidden animated:NO];
         }
     }
+    
+    {
+        id v = [self.controller.observer get:@[@"page",@"topbar",@"background-image"] defaultValue:nil];
+        if(v) {
+            
+            [self.navigationController.navigationBar setBackgroundImage:_topbar_backgroundImage forBarMetrics:UIBarMetricsDefault];
+            
+            [self.navigationController.navigationBar setClipsToBounds:_topbar_backgroundImage != nil];
+            
+        }
+    }
+    
     
     {
         id v = [self.controller.observer get:@[@"page",@"topbar",@"background-color"] defaultValue:nil];
