@@ -115,6 +115,89 @@ static CGSize KKPageControllerViewSize(UIView * view) {
 
 }
 
+-(void) _clearTopbarItemsSpace:(NSArray *) items {
+    
+    if([items count] ==0){
+        return;
+    }
+    
+    UIBarButtonItem * buttonItem = items[0];
+    
+    if(buttonItem.customView == nil) {
+        return ;
+    }
+    
+    UIView * view =[[[buttonItem.customView superview] superview] superview];
+    NSArray * arrayConstraint=view.constraints;
+    for (NSLayoutConstraint * constant in arrayConstraint) {
+        if (fabs(constant.constant)==16) {
+            constant.constant=0;
+        }
+    }
+}
+
+-(void) installTopbar:(UIViewController *) viewController {
+    
+    KKElement * e = _element.firstChild;
+    
+    if(e && [e isKindOfClass:[KKTopbarElement class]]){
+        
+        CGSize screenSize = [UIScreen mainScreen].bounds.size;
+        CGFloat height = 64;
+        CGFloat paddingTop = 20;
+        
+        if(screenSize.height == 812.0) {
+            height += 24;
+            paddingTop += 24;
+        }
+        
+        KKElement * p = e.firstChild;
+        
+        while(p) {
+            
+            if([p isKindOfClass:[KKViewElement class]]) {
+                
+                KKElementView * elementView = nil;
+                
+                NSString * target = [p get:@"target"];
+                
+                if([target isEqualToString:@"left"]) {
+                    elementView = [[KKElementView alloc] initWithFrame:CGRectMake(0, 0, screenSize.width * 0.2, height - paddingTop)];
+                    elementView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleRightMargin;
+                    viewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:elementView];
+                }
+                else if([target isEqualToString:@"center"]) {
+                    elementView = [[KKElementView alloc] initWithFrame:CGRectMake(0, 0, screenSize.width * 0.8, height - paddingTop)];
+                    elementView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin;
+                    viewController.navigationItem.titleView = elementView;
+                }
+                else if([target isEqualToString:@"right"]) {
+                    elementView = [[KKElementView alloc] initWithFrame:CGRectMake(0, 0, screenSize.width * 0.2, height - paddingTop)];
+                    elementView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleLeftMargin;
+                    viewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:elementView];
+                }
+                
+                elementView.element = (KKViewElement *) p;
+                
+            }
+            
+            p = p.nextSibling;
+        }
+    }
+    
+}
+
+-(void) layoutTopbar:(UIViewController *) viewController {
+    
+    if([[[UIDevice currentDevice] systemVersion] doubleValue] >= 11) {
+        
+        [self _clearTopbarItemsSpace:viewController.navigationItem.leftBarButtonItems];
+        
+        [self _clearTopbarItemsSpace:viewController.navigationItem.rightBarButtonItems];
+    }
+    
+}
+
 -(void) layout:(UIViewController *) viewController {
     
     UIView * view = nil;
@@ -126,7 +209,10 @@ static CGSize KKPageControllerViewSize(UIView * view) {
     }
     
     [_element layout:KKPageControllerViewSize(view)];
+
 }
+
+
 
 -(NSSet *) elementNeedsLayoutDataKeys {
     if(_elementNeedsLayoutDataKeys == nil) {

@@ -16,6 +16,10 @@
 
 -(void) layout:(UIViewController *) viewController;
 
+-(void) installTopbar:(UIViewController *) viewController;
+
+-(void) layoutTopbar:(UIViewController *) viewController;
+
 -(void) recycle;
 
 @end

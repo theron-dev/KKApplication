@@ -8,6 +8,17 @@
 
 #import "KKController.h"
 
+@interface KKController() {
+    BOOL _topbar_hidden;
+    UIColor * _topbar_tintColor;
+    UIColor * _topbar_barTintColor;
+    UIColor * _topbar_backgroundColor;
+    UIImage * _topbar_backgroundImage;
+    UIBarStyle _topbar_barStyle;
+}
+
+@end
+
 @implementation KKController
 
 @synthesize application = _application;
@@ -83,6 +94,7 @@
     
 }
 
+
 -(void) run:(UIViewController *) viewController {
     
     {
@@ -130,139 +142,12 @@
         
     }
     
-    {
-        __weak KKController * ctl = self;
-        __weak UIViewController * v = viewController;
-        
-        [self.observer on:^(id data, NSArray *changedKeys, void *context) {
-            
-            if(v && ctl && data) {
-                
-                if([data isKindOfClass:[NSDictionary class]]) {
-                    UIImage * image = nil;
-                    {
-                        NSString * vv = [data kk_getString:@"image"];
-                        if(vv != nil && ![@"" isEqualToString:vv]) {
-                            image = [ctl.application.viewContext imageWithURI:vv];
-                        }
-                    }
-                    if(image != nil) {
-                        v.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:image style:UIBarButtonItemStylePlain target:ctl action:@selector(doTopbarRightAction:)];
-                    } else {
-                        NSString * vv = [data kk_getString:@"title"];
-                        if(vv) {
-                            v.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:vv style:UIBarButtonItemStylePlain target:ctl action:@selector(doTopbarRightAction:)];
-                        }
-                    }
-                } else {
-                    v.navigationItem.rightBarButtonItem = nil;
-                }
-                
-            }
-            
-        } keys:@[@"page",@"topbar",@"right"] context:nil];
-        
-    }
-    
-    {
-        __weak KKController * ctl = self;
-        __weak UIViewController * v = viewController;
-        
-        [self.observer on:^(id data, NSArray *changedKeys, void *context) {
-            
-            if(v && ctl && data) {
-                
-                if([data isKindOfClass:[NSDictionary class]]) {
-                    UIImage * image = nil;
-                    {
-                        NSString * vv = [data kk_getString:@"image"];
-                        if(vv != nil && ![@"" isEqualToString:vv]) {
-                            image = [ctl.application.viewContext imageWithURI:vv];
-                        }
-                    }
-                    if(image != nil) {
-                        v.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithImage:image style:UIBarButtonItemStylePlain target:nil action:nil];
-                    } else {
-                        NSString * vv = [data kk_getString:@"title"];
-                        if(vv) {
-                            v.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:vv style:UIBarButtonItemStylePlain target:nil action:nil];
-                        }
-                    }
-                } else {
-                    v.navigationItem.backBarButtonItem = nil;
-                }
-                
-            }
-            
-        } keys:@[@"page",@"topbar",@"back"] context:nil];
-        
-    }
-    
-    {
-        __weak KKController * ctl = self;
-        __weak UIViewController * v = viewController;
-        
-        [self.observer on:^(id data, NSArray *changedKeys, void *context) {
-            
-            if(v && ctl && data) {
-                
-                if([data isKindOfClass:[NSDictionary class]]) {
-                    UIImage * image = nil;
-                    {
-                        NSString * vv = [data kk_getString:@"image"];
-                        if(vv != nil && ![@"" isEqualToString:vv]) {
-                            image = [ctl.application.viewContext imageWithURI:vv];
-                        }
-                    }
-                    if(image != nil) {
-                        v.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:image style:UIBarButtonItemStylePlain target:ctl action:@selector(doTopbarLeftAction:)];
-                    } else {
-                        NSString * vv = [data kk_getString:@"title"];
-                        if(vv) {
-                            v.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:vv style:UIBarButtonItemStylePlain target:ctl action:@selector(doTopbarLeftAction:)];
-                        }
-                    }
-                } else {
-                    v.navigationItem.leftBarButtonItem = nil;
-                }
-                
-            }
-            
-        } keys:@[@"page",@"topbar",@"left"] context:nil];
-        
-    }
-    
     [self run];
     
     viewController.hidesBottomBarWhenPushed = [[self.observer get:@[@"page",@"bottombar",@"hidden"] defaultValue:@(true)] boolValue];
-    
+
 }
 
--(IBAction) doTopbarLeftAction:(id)sender {
-    
-    id data = [self.observer get:@[@"page",@"topbar",@"left"] defaultValue:nil];
-    
-    if([data isKindOfClass:[NSDictionary class]]) {
-        NSArray * action = [[data kk_getString:@"action"] componentsSeparatedByString:@"."];
-        if(action && [action count] >0 ){
-            [self.observer set:action value:[data kk_getValue:@"data"]];
-        }
-    }
-    
-}
-
--(IBAction) doTopbarRightAction:(id)sender {
-    
-    id data = [self.observer get:@[@"page",@"topbar",@"right"] defaultValue:nil];
-    
-    if([data isKindOfClass:[NSDictionary class]]) {
-        NSArray * action = [[data kk_getString:@"action"] componentsSeparatedByString:@"."];
-        if(action && [action count] >0 ){
-            [self.observer set:action value:[data kk_getValue:@"data"]];
-        }
-    }
-    
-}
 
 -(void) willAppear {
     [self.observer changeKeys:@[@"page",@"willAppear"]];
@@ -278,6 +163,144 @@
 
 -(void) didDisappear {
     [self.observer changeKeys:@[@"page",@"didDisappear"]];
+}
+
+-(void) setTopbarStyle:(UIViewController *) viewController {
+    
+    {
+        id v = [self.observer get:@[@"page",@"topbar",@"hidden"] defaultValue:nil];
+        if(v) {
+            _topbar_hidden = [viewController.navigationController isNavigationBarHidden];
+            [viewController.navigationController setNavigationBarHidden:[v boolValue] animated:NO];
+        }
+    }
+    
+    {
+        id v = [self.observer get:@[@"page",@"topbar",@"background-image"] defaultValue:nil];
+        if(v) {
+            
+            UIImage * image = [self.application.viewContext imageWithURI:v];
+            
+            _topbar_backgroundImage = [viewController.navigationController.navigationBar backgroundImageForBarMetrics:UIBarMetricsDefault];
+            
+            [viewController.navigationController.navigationBar setBackgroundImage:image forBarMetrics:UIBarMetricsDefault];
+            
+            if(image) {
+                [viewController.navigationController.navigationBar setClipsToBounds:YES];
+            }
+            
+        }
+    }
+    
+    {
+        id v = [self.observer get:@[@"page",@"topbar",@"background-color"] defaultValue:nil];
+        
+        if(v) {
+            
+            UIColor * color = [UIColor KKElementStringValue:[v kk_stringValue]];
+            _topbar_backgroundColor = [viewController.navigationController.navigationBar backgroundColor];
+            _topbar_backgroundImage = [viewController.navigationController.navigationBar backgroundImageForBarMetrics:UIBarMetricsDefault];
+            
+            CGSize size = viewController.navigationController.navigationBar.bounds.size;
+            UIGraphicsBeginImageContext(size);
+            [color setFill];
+            CGContextAddRect(UIGraphicsGetCurrentContext(), CGRectMake(0, 0, size.width, size.height));
+            CGContextDrawPath(UIGraphicsGetCurrentContext(), kCGPathFill);
+            UIImage * image = UIGraphicsGetImageFromCurrentImageContext();
+            UIGraphicsPopContext();
+            
+            [viewController.navigationController.navigationBar setBackgroundColor:color];
+            [viewController.navigationController.navigationBar setBackgroundImage:image forBarMetrics:UIBarMetricsDefault];
+            
+            if(image) {
+                [viewController.navigationController.navigationBar setClipsToBounds:YES];
+            }
+            
+        }
+    }
+    
+    {
+        id v = [self.observer get:@[@"page",@"topbar",@"tint-color"] defaultValue:nil];
+        if(v) {
+            _topbar_tintColor = [viewController.navigationController.navigationBar tintColor];
+            [viewController.navigationController.navigationBar setTintColor:[UIColor KKElementStringValue:[v kk_stringValue]]];
+        }
+    }
+    
+    {
+        id v = [self.observer get:@[@"page",@"topbar",@"bar-tint-color"] defaultValue:nil];
+        if(v) {
+            _topbar_barTintColor = [viewController.navigationController.navigationBar barTintColor];
+            [viewController.navigationController.navigationBar setBarTintColor:[UIColor KKElementStringValue:[v kk_stringValue]]];
+        }
+    }
+    
+    {
+        id v = [self.observer get:@[@"page",@"topbar",@"style"] defaultValue:nil];
+        if(v) {
+            _topbar_barStyle = [viewController.navigationController.navigationBar barStyle];
+            if([[v kk_stringValue] isEqualToString:@"light"]) {
+                [viewController.navigationController.navigationBar setBarStyle:UIBarStyleBlack];
+            } else {
+                [viewController.navigationController.navigationBar setBarStyle:UIBarStyleDefault];
+            }
+        }
+    }
+}
+
+-(void) clearTopbarStyle:(UIViewController *) viewController {
+    
+    {
+        id v = [self.observer get:@[@"page",@"topbar",@"hidden"] defaultValue:nil];
+        if(v) {
+            [viewController.navigationController setNavigationBarHidden:_topbar_hidden animated:NO];
+        }
+    }
+    
+    {
+        id v = [self.observer get:@[@"page",@"topbar",@"background-image"] defaultValue:nil];
+        if(v) {
+            
+            [viewController.navigationController.navigationBar setBackgroundImage:_topbar_backgroundImage forBarMetrics:UIBarMetricsDefault];
+            
+            [viewController.navigationController.navigationBar setClipsToBounds:_topbar_backgroundImage != nil];
+            
+        }
+    }
+    
+    
+    {
+        id v = [self.observer get:@[@"page",@"topbar",@"background-color"] defaultValue:nil];
+        if(v) {
+            
+            [viewController.navigationController.navigationBar setBackgroundColor:_topbar_backgroundColor];
+            [viewController.navigationController.navigationBar setBackgroundImage:_topbar_backgroundImage forBarMetrics:UIBarMetricsDefault];
+            
+            [viewController.navigationController.navigationBar setClipsToBounds:_topbar_backgroundImage != nil];
+        }
+    }
+    
+    {
+        id v = [self.observer get:@[@"page",@"topbar",@"tint-color"] defaultValue:nil];
+        if(v) {
+            [viewController.navigationController.navigationBar setTintColor:_topbar_tintColor];
+        }
+    }
+    
+    {
+        id v = [self.observer get:@[@"page",@"topbar",@"bar-tint-color"] defaultValue:nil];
+        if(v) {
+            [viewController.navigationController.navigationBar setBarTintColor:_topbar_barTintColor];
+        }
+    }
+    
+    {
+        id v = [self.observer get:@[@"page",@"topbar",@"style"] defaultValue:nil];
+        if(v) {
+            [viewController.navigationController.navigationBar setBarStyle:_topbar_barStyle];
+        }
+    }
+    
 }
 
 @end

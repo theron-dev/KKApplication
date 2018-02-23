@@ -130,7 +130,6 @@
 		1AE1437F1FF5E0EF00D2DEAD /* KKWebViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KKWebViewController.m; sourceTree = "<group>"; };
 		1AE143821FF5E1B600D2DEAD /* KKViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KKViewController.h; sourceTree = "<group>"; };
 		1AE143831FF5E1B600D2DEAD /* KKViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KKViewController.m; sourceTree = "<group>"; };
-		AC3071792036314800075F2D /* KKApplication copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "KKApplication copy-Info.plist"; path = "/Users/zhanghailong/Documents/src/github.com/hailongz/KKApplication/KKApplication/KKApplication copy-Info.plist"; sourceTree = "<absolute>"; };
 		AC8E5D8920043E4200343B83 /* demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AC8E5D8B20043E4200343B83 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		AC8E5D8C20043E4200343B83 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -207,7 +206,6 @@
 				AC8E5D8A20043E4200343B83 /* demo */,
 				1AE143321FF4956800D2DEAD /* Products */,
 				1A9E3CB01FF878CA0023B627 /* Frameworks */,
-				AC3071792036314800075F2D /* KKApplication copy-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};

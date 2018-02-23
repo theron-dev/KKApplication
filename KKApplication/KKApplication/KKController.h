@@ -18,9 +18,6 @@
 @property(nonatomic,strong) NSDictionary * query;
 @property(nonatomic,strong) NSString * path;
 
--(IBAction) doTopbarRightAction:(id)sender;
--(IBAction) doTopbarLeftAction:(id)sender;
-
 -(void) run;
 
 -(void) run:(UIViewController *) viewController;
@@ -31,5 +28,9 @@
 -(void) didDisappear;
 
 -(void) recycle;
+
+-(void) setTopbarStyle:(UIViewController *) viewController;
+
+-(void) clearTopbarStyle:(UIViewController *) viewController;
 
 @end

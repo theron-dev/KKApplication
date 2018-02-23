@@ -22,6 +22,7 @@
     }
     return self;
 }
+
 +(Class) controllerClass {
     return [KKPageController class];
 }
@@ -32,6 +33,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    [self.pageController installTopbar:self];
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -42,6 +46,17 @@
 -(void) viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
     [self.pageController layout:self];
+    [self.pageController layoutTopbar:self];
+}
+
+-(void) viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self.pageController layoutTopbar:self];
+}
+
+-(void) viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [self.pageController layoutTopbar:self];
 }
 
 -(void) dealloc {
