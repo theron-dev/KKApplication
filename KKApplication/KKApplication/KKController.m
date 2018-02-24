@@ -14,7 +14,7 @@
     UIColor * _topbar_barTintColor;
     UIColor * _topbar_backgroundColor;
     UIImage * _topbar_backgroundImage;
-    UIBarStyle _topbar_barStyle;
+    UIStatusBarStyle _topbar_barStyle;
 }
 
 @end
@@ -170,24 +170,39 @@
     {
         id v = [self.observer get:@[@"page",@"topbar",@"hidden"] defaultValue:nil];
         if(v) {
-            _topbar_hidden = [viewController.navigationController isNavigationBarHidden];
-            [viewController.navigationController setNavigationBarHidden:[v boolValue] animated:NO];
+            _topbar_hidden = [viewController kk_topbarHidden];
+            [viewController setKk_topbarHidden:[v boolValue]];
         }
     }
     
     {
         id v = [self.observer get:@[@"page",@"topbar",@"background-image"] defaultValue:nil];
+        
         if(v) {
             
-            UIImage * image = [self.application.viewContext imageWithURI:v];
+            UIImage * image = nil;
             
-            _topbar_backgroundImage = [viewController.navigationController.navigationBar backgroundImageForBarMetrics:UIBarMetricsDefault];
-            
-            [viewController.navigationController.navigationBar setBackgroundImage:image forBarMetrics:UIBarMetricsDefault];
-            
-            if(image) {
-                [viewController.navigationController.navigationBar setClipsToBounds:YES];
+            if([v hasPrefix:@"#"]) {
+                
+                UIColor * color = [UIColor KKElementStringValue:[v kk_stringValue]];
+                
+                CGSize size = viewController.navigationController.navigationBar.bounds.size;
+                UIGraphicsBeginImageContext(size);
+                [color setFill];
+                CGContextAddRect(UIGraphicsGetCurrentContext(), CGRectMake(0, 0, size.width, size.height));
+                CGContextDrawPath(UIGraphicsGetCurrentContext(), kCGPathFill);
+                image = UIGraphicsGetImageFromCurrentImageContext();
+                UIGraphicsPopContext();
+                
+            } else {
+                image = [self.application.viewContext imageWithURI:v];
             }
+            
+            _topbar_backgroundImage = [viewController kk_topbarBackgroundImage];
+            _topbar_backgroundColor = [viewController kk_topbarBackgroundColor];
+            
+            [viewController setKk_topbarBackgroundImage:image];
+            [viewController setKk_topbarBackgroundColor:[UIColor clearColor]];
             
         }
     }
@@ -198,23 +213,10 @@
         if(v) {
             
             UIColor * color = [UIColor KKElementStringValue:[v kk_stringValue]];
-            _topbar_backgroundColor = [viewController.navigationController.navigationBar backgroundColor];
-            _topbar_backgroundImage = [viewController.navigationController.navigationBar backgroundImageForBarMetrics:UIBarMetricsDefault];
             
-            CGSize size = viewController.navigationController.navigationBar.bounds.size;
-            UIGraphicsBeginImageContext(size);
-            [color setFill];
-            CGContextAddRect(UIGraphicsGetCurrentContext(), CGRectMake(0, 0, size.width, size.height));
-            CGContextDrawPath(UIGraphicsGetCurrentContext(), kCGPathFill);
-            UIImage * image = UIGraphicsGetImageFromCurrentImageContext();
-            UIGraphicsPopContext();
+            _topbar_backgroundColor = [viewController kk_topbarBackgroundColor];
             
-            [viewController.navigationController.navigationBar setBackgroundColor:color];
-            [viewController.navigationController.navigationBar setBackgroundImage:image forBarMetrics:UIBarMetricsDefault];
-            
-            if(image) {
-                [viewController.navigationController.navigationBar setClipsToBounds:YES];
-            }
+            [viewController setKk_topbarBackgroundColor:color];
             
         }
     }
@@ -238,11 +240,11 @@
     {
         id v = [self.observer get:@[@"page",@"topbar",@"style"] defaultValue:nil];
         if(v) {
-            _topbar_barStyle = [viewController.navigationController.navigationBar barStyle];
+            _topbar_barStyle = [viewController kk_statusBarStyle];
             if([[v kk_stringValue] isEqualToString:@"light"]) {
-                [viewController.navigationController.navigationBar setBarStyle:UIBarStyleBlack];
+                [viewController setKk_statusBarStyle:UIStatusBarStyleLightContent];
             } else {
-                [viewController.navigationController.navigationBar setBarStyle:UIBarStyleDefault];
+                [viewController setKk_statusBarStyle:UIStatusBarStyleDefault];
             }
         }
     }
@@ -253,7 +255,7 @@
     {
         id v = [self.observer get:@[@"page",@"topbar",@"hidden"] defaultValue:nil];
         if(v) {
-            [viewController.navigationController setNavigationBarHidden:_topbar_hidden animated:NO];
+            [viewController setKk_topbarHidden:_topbar_hidden];
         }
     }
     
@@ -261,9 +263,8 @@
         id v = [self.observer get:@[@"page",@"topbar",@"background-image"] defaultValue:nil];
         if(v) {
             
-            [viewController.navigationController.navigationBar setBackgroundImage:_topbar_backgroundImage forBarMetrics:UIBarMetricsDefault];
-            
-            [viewController.navigationController.navigationBar setClipsToBounds:_topbar_backgroundImage != nil];
+            [viewController setKk_topbarBackgroundColor:_topbar_backgroundColor];
+            [viewController setKk_topbarBackgroundImage:_topbar_backgroundImage];
             
         }
     }
@@ -272,11 +273,7 @@
     {
         id v = [self.observer get:@[@"page",@"topbar",@"background-color"] defaultValue:nil];
         if(v) {
-            
-            [viewController.navigationController.navigationBar setBackgroundColor:_topbar_backgroundColor];
-            [viewController.navigationController.navigationBar setBackgroundImage:_topbar_backgroundImage forBarMetrics:UIBarMetricsDefault];
-            
-            [viewController.navigationController.navigationBar setClipsToBounds:_topbar_backgroundImage != nil];
+            [viewController setKk_topbarBackgroundColor:_topbar_backgroundColor];
         }
     }
     
@@ -297,10 +294,47 @@
     {
         id v = [self.observer get:@[@"page",@"topbar",@"style"] defaultValue:nil];
         if(v) {
-            [viewController.navigationController.navigationBar setBarStyle:_topbar_barStyle];
+            [viewController setKk_statusBarStyle:_topbar_barStyle];
         }
     }
     
+}
+
+@end
+
+@implementation UIViewController(KKController)
+
+-(BOOL) kk_topbarHidden {
+    return [self.navigationController isNavigationBarHidden];
+}
+
+-(void) setKk_topbarHidden:(BOOL)kk_topbarHidden {
+    [self.navigationController setNavigationBarHidden:kk_topbarHidden animated:NO];
+}
+
+-(UIStatusBarStyle) kk_statusBarStyle {
+    return [[UIApplication sharedApplication] statusBarStyle];
+}
+
+-(void) setKk_statusBarStyle:(UIStatusBarStyle)kk_statusBarStyle {
+    [[UIApplication sharedApplication] setStatusBarStyle:kk_statusBarStyle animated:NO];
+}
+
+-(UIImage *) kk_topbarBackgroundImage {
+    return [self.navigationController.navigationBar backgroundImageForBarMetrics:UIBarMetricsDefault];
+}
+
+-(void) setKk_topbarBackgroundImage:(UIImage *)kk_topbarBackgroundImage {
+    [self.navigationController.navigationBar setBackgroundImage:kk_topbarBackgroundImage forBarMetrics:UIBarMetricsDefault];
+    [self.navigationController.navigationBar setClipsToBounds:kk_topbarBackgroundImage != nil];
+}
+
+-(UIColor *) kk_topbarBackgroundColor {
+    return [self.navigationController.navigationBar backgroundColor];
+}
+
+-(void) setKk_topbarBackgroundColor:(UIColor *)kk_topbarBackgroundColor {
+    [self.navigationController.navigationBar setBackgroundColor:kk_topbarBackgroundColor];
 }
 
 @end

@@ -14,6 +14,7 @@
 @interface KKViewController : UIViewController<KKViewController>
 
 @property(nonatomic,strong,readonly) KKController * controller;
+@property(nonatomic,assign,readonly,getter=isNextViewController) BOOL nextViewController;
 
 -(IBAction) doCloseAction:(id)sender;
 

@@ -100,8 +100,6 @@
     [super viewDidDisappear:animated];
     
     [self.controller didDisappear];
-    
-    _nextViewController = YES;
 }
 
 -(void) setAction:(NSDictionary *)action {

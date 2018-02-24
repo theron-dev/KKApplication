@@ -115,26 +115,6 @@ static CGSize KKPageControllerViewSize(UIView * view) {
 
 }
 
--(void) _clearTopbarItemsSpace:(NSArray *) items {
-    
-    if([items count] ==0){
-        return;
-    }
-    
-    UIBarButtonItem * buttonItem = items[0];
-    
-    if(buttonItem.customView == nil) {
-        return ;
-    }
-    
-    UIView * view =[[[buttonItem.customView superview] superview] superview];
-    NSArray * arrayConstraint=view.constraints;
-    for (NSLayoutConstraint * constant in arrayConstraint) {
-        if (fabs(constant.constant)==16) {
-            constant.constant=0;
-        }
-    }
-}
 
 -(void) installTopbar:(UIViewController *) viewController {
     
@@ -189,12 +169,6 @@ static CGSize KKPageControllerViewSize(UIView * view) {
 
 -(void) layoutTopbar:(UIViewController *) viewController {
     
-    if([[[UIDevice currentDevice] systemVersion] doubleValue] >= 11) {
-        
-        [self _clearTopbarItemsSpace:viewController.navigationItem.leftBarButtonItems];
-        
-        [self _clearTopbarItemsSpace:viewController.navigationItem.rightBarButtonItems];
-    }
     
 }
 

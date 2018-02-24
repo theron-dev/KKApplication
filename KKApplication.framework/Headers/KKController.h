@@ -6,7 +6,7 @@
 //  Copyright © 2017年 kkmofang.cn. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 #import <KKApplication/KKApp.h>
 #import <KKHttp/KKHttp.h>
 
@@ -34,3 +34,13 @@
 -(void) clearTopbarStyle:(UIViewController *) viewController;
 
 @end
+
+@interface UIViewController(KKController)
+
+@property(nonatomic,assign) BOOL kk_topbarHidden;
+@property(nonatomic,assign) UIStatusBarStyle kk_statusBarStyle;
+@property(nonatomic,strong) UIImage * kk_topbarBackgroundImage;
+@property(nonatomic,strong) UIColor * kk_topbarBackgroundColor;
+
+@end
+
