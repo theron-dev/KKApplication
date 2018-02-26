@@ -57,7 +57,9 @@
         } keys:@[@"action",@"close"] context:nil];
         
     }
-    
+
+    [self willAppear];
+    [self didAppear];
 }
 
 -(void) show {
@@ -65,6 +67,8 @@
 }
 
 -(void) close  {
+    [self willDisappear];
+    [self didDisappear];
     [self.element.view removeFromSuperview];
     objc_setAssociatedObject(self.element.view, "_KKWindowPageController", nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
