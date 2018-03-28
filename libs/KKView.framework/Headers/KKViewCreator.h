@@ -10,7 +10,7 @@
 #import <KKObserver/KKObserver.h>
 
 
-typedef void (^KKViewChildren)(KKElement * p, KKObserver * data);
+typedef void (^KKViewChildren)(KKElement * p, KKJSObserver * data);
 
-void KKView(Class elementClass, NSDictionary * attrs, KKElement * p, KKObserver * data,KKViewChildren children);
+void KKView(Class elementClass, NSDictionary * attrs, KKElement * p, KKJSObserver * data,KKViewChildren children);
 

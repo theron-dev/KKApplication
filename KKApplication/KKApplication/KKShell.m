@@ -334,9 +334,9 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
     
 }
 
--(BOOL) KKApplication:(KKApplication *) application openViewController:(UIViewController *) viewController {
-    if([(id)_delegate respondsToSelector:@selector(KKShell:application:openViewController:)]) {
-        if( [_delegate KKShell:self application:application openViewController:viewController] ) {
+-(BOOL) KKApplication:(KKApplication *) application openViewController:(UIViewController *) viewController action:(NSDictionary *)action {
+    if([(id)_delegate respondsToSelector:@selector(KKShell:application:openViewController:action:)]) {
+        if( [_delegate KKShell:self application:application openViewController:viewController action:action] ) {
             return YES;
         }
     }

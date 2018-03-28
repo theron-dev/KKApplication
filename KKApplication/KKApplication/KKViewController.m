@@ -34,6 +34,10 @@
     return [self.controller application];
 }
 
+-(void) dealloc {
+    [_controller recycle];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     

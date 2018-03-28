@@ -19,13 +19,15 @@ static unsigned char require_js[] = {0xa,0x28,0x66,0x75,0x6e,0x63,0x74,0x69,0x6f
 
 @implementation KKApplication
 
+@synthesize jsObserver = _jsObserver;
+
 -(instancetype) initWithBundle:(NSBundle *) bundle {
     return [self initWithBundle:bundle jsContext:[[JSContext alloc] init]];
 }
 
 -(instancetype) initWithBundle:(NSBundle *) bundle jsContext:(JSContext *) jsContext {
     if((self = [super init])) {
-        _observer = [[KKObserver alloc] initWithJSContext:jsContext];
+        _jsObserver = [[KKJSObserver alloc] initWithObserver:[[KKObserver alloc] initWithJSContext:jsContext]];
         _bundle = bundle;
         _viewContext = [[KKViewContext alloc] init];
         [_viewContext setBasePath:self.path];
@@ -97,7 +99,7 @@ static unsigned char require_js[] = {0xa,0x28,0x66,0x75,0x6e,0x63,0x74,0x69,0x6f
         }
         
         
-        [_observer on:^(id value, NSArray *changedKeys, void *context) {
+        [self.observer on:^(id value, NSArray *changedKeys, void *context) {
             
             if(app && [value isKindOfClass:[NSDictionary class]]) {
                 
@@ -107,7 +109,7 @@ static unsigned char require_js[] = {0xa,0x28,0x66,0x75,0x6e,0x63,0x74,0x69,0x6f
             
         } keys:@[@"action",@"open"] context:nil];
         
-        [_observer on:^(id value, NSArray *changedKeys, void *context) {
+        [self.observer on:^(id value, NSArray *changedKeys, void *context) {
             
             if(app && value) {
                 
@@ -123,11 +125,14 @@ static unsigned char require_js[] = {0xa,0x28,0x66,0x75,0x6e,0x63,0x74,0x69,0x6f
 }
 
 -(void) dealloc {
-    [_observer off:nil keys:@[] context:nil];
+    [_jsObserver recycle];
 }
 
+-(KKObserver *) observer {
+    return _jsObserver.observer;
+}
 
--(KKElement *) elementWithPath:(NSString *) path observer:(KKObserver *) observer{
+-(KKElement *) elementWithPath:(NSString *) path observer:(KKJSObserver *) observer{
     
     KKElement * rootElement = [[KKElement alloc] init];
     
@@ -176,7 +181,7 @@ static unsigned char require_js[] = {0xa,0x28,0x66,0x75,0x6e,0x63,0x74,0x69,0x6f
             [libs addEntriesFromDictionary:librarys];
         }
         
-        libs[@"app"] = self.observer;
+        libs[@"app"] = self.jsObserver;
         
         NSMutableArray * arguments = [NSMutableArray arrayWithCapacity:4];
         
@@ -220,7 +225,7 @@ static unsigned char require_js[] = {0xa,0x28,0x66,0x75,0x6e,0x63,0x74,0x69,0x6f
 }
 
 -(JSContext *) jsContext {
-    return [_observer jsContext];
+    return [self.observer jsContext];
 }
 
 -(UITabBarController *) openTabBarController:(NSDictionary *) action {
@@ -421,8 +426,8 @@ static unsigned char require_js[] = {0xa,0x28,0x66,0x75,0x6e,0x63,0x74,0x69,0x6f
         return ;
     }
     
-    if([(id) _delegate respondsToSelector:@selector(KKApplication:openViewController:)]) {
-        if([_delegate KKApplication:self openViewController:viewController]) {
+    if([(id) _delegate respondsToSelector:@selector(KKApplication:openViewController:action:)]) {
+        if([_delegate KKApplication:self openViewController:viewController action:action]) {
             return;
         }
     }
@@ -502,6 +507,11 @@ static unsigned char require_js[] = {0xa,0x28,0x66,0x75,0x6e,0x63,0x74,0x69,0x6f
     }
     
     return nil;
+}
+
+-(void) recycle {
+    [_jsObserver recycle];
+    _jsObserver = nil;
 }
 
 +(instancetype) main {

@@ -39,7 +39,7 @@ typedef void (^KKShellOpenApplication)(KKApplication * app);
 
 -(BOOL) KKShell:(KKShell *)shell application:(KKApplication *) application cancel:(id) weakObject;
 
--(BOOL) KKShell:(KKShell *)shell application:(KKApplication *) application openViewController:(UIViewController *) viewController;
+-(BOOL) KKShell:(KKShell *)shell application:(KKApplication *) application openViewController:(UIViewController *) viewController action:(NSDictionary *) action;
 
 @end
 

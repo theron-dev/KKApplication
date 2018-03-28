@@ -23,18 +23,20 @@
 
 @synthesize application = _application;
 @synthesize http = _http;
-@synthesize observer = _observer;
+@synthesize jsObserver = _jsObserver;
 @synthesize query = _query;
 @synthesize path = _path;
 
 -(void) dealloc {
-    [_http cancel];
-    [_observer off:nil keys:@[] context:nil];
+    [_http recycle];
+    [_jsObserver recycle];
 }
 
 -(void) recycle {
-    [_http cancel];
-    [_observer off:nil keys:@[] context:nil];
+    [_jsObserver recycle];
+    [_http recycle];
+    _http = nil;
+    _jsObserver = nil;
 }
 
 -(KKJSHttp *) http {
@@ -50,17 +52,21 @@
     return _http;
 }
 
+-(KKJSObserver *) jsObserver {
+    
+    if(_jsObserver == nil) {
+        KKObserver * v = [self.application newObserver];
+        if(v == nil) {
+            v = [[KKObserver alloc] init];
+        }
+        _jsObserver = [[KKJSObserver alloc] initWithObserver:v];
+    }
+    
+    return _jsObserver;
+}
+
 -(KKObserver *) observer {
-    
-    if(_observer == nil) {
-        _observer = [self.application newObserver];
-    }
-    
-    if(_observer == nil) {
-        _observer = [[KKObserver alloc] init];
-    }
-    
-    return _observer;
+    return self.jsObserver.observer;
 }
 
 -(NSDictionary *) query {
@@ -82,7 +88,7 @@
             
             [self.application exec:main librarys:@{
                                                    @"http":self.http,
-                                                   @"page":self.observer,
+                                                   @"page":self.jsObserver,
                                                    @"query":self.query,
                                                    @"path":self.path}];
             

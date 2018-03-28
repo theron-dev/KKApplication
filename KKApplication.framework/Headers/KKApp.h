@@ -28,7 +28,7 @@
 
 @optional
 
--(BOOL) KKApplication:(KKApplication *) application openViewController:(UIViewController *) viewController;
+-(BOOL) KKApplication:(KKApplication *) application openViewController:(UIViewController *) viewController action:(NSDictionary *) action;
 
 -(BOOL) KKApplication:(KKApplication *) application openAction:(NSDictionary *) action;
 
@@ -49,6 +49,7 @@
 @property(nonatomic,weak) id<KKApplicationDelegate> delegate;
 @property(nonatomic,strong,readonly) JSContext * jsContext;
 @property(nonatomic,strong,readonly) KKObserver * observer;
+@property(nonatomic,strong,readonly) KKJSObserver * jsObserver;
 @property(nonatomic,strong,readonly) KKViewContext * viewContext;
 @property(nonatomic,strong,readonly) NSBundle * bundle;
 @property(nonatomic,strong,readonly) NSString * path;
@@ -57,7 +58,7 @@
 
 -(instancetype) initWithBundle:(NSBundle *) bundle jsContext:(JSContext *) jsContext;
 
--(KKElement *) elementWithPath:(NSString *) path observer:(KKObserver *) observer;
+-(KKElement *) elementWithPath:(NSString *) path observer:(KKJSObserver *) observer;
 
 -(void) openlib:(NSString *) path;
 
@@ -78,6 +79,9 @@
 -(UITabBarController *) openTabBarController:(NSDictionary *) action;
 
 -(KKWindowPageController *) openWindowPageController:(NSDictionary *) action;
+
+-(void) recycle;
+
 
 +(UIViewController *) topViewController:(UIViewController *) viewController ;
 

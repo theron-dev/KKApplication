@@ -30,4 +30,6 @@ JSExportAs(send,
 
 -(void) cancel;
 
+-(void) recycle;
+
 @end

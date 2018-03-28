@@ -14,6 +14,7 @@
 
 @property(nonatomic,strong) KKApplication * application;
 @property(nonatomic,strong,readonly) KKObserver * observer;
+@property(nonatomic,strong,readonly) KKJSObserver * jsObserver;
 @property(nonatomic,strong,readonly) KKJSHttp * http;
 @property(nonatomic,strong) NSDictionary * query;
 @property(nonatomic,strong) NSString * path;
