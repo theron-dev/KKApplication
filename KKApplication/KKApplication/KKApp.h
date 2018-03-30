@@ -82,10 +82,9 @@
 
 -(void) recycle;
 
-
 +(UIViewController *) topViewController:(UIViewController *) viewController ;
 
-+(instancetype) main;
++(JSVirtualMachine *) jsVirtualMachine;
 
 @end
 

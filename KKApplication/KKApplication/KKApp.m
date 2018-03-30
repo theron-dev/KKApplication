@@ -19,14 +19,16 @@ static unsigned char require_js[] = {0xa,0x28,0x66,0x75,0x6e,0x63,0x74,0x69,0x6f
 
 @implementation KKApplication
 
+@synthesize jsContext = _jsContext;
 @synthesize jsObserver = _jsObserver;
 
 -(instancetype) initWithBundle:(NSBundle *) bundle {
-    return [self initWithBundle:bundle jsContext:[[JSContext alloc] init]];
+    return [self initWithBundle:bundle jsContext:[[JSContext alloc] initWithVirtualMachine:[KKApplication jsVirtualMachine]]];
 }
 
 -(instancetype) initWithBundle:(NSBundle *) bundle jsContext:(JSContext *) jsContext {
     if((self = [super init])) {
+        _jsContext = jsContext;
         _jsObserver = [[KKJSObserver alloc] initWithObserver:[[KKObserver alloc] initWithJSContext:jsContext]];
         _bundle = bundle;
         _viewContext = [[KKViewContext alloc] init];
@@ -224,9 +226,6 @@ static unsigned char require_js[] = {0xa,0x28,0x66,0x75,0x6e,0x63,0x74,0x69,0x6f
     return [[NSFileManager defaultManager] fileExistsAtPath:[self absolutePath:path]];
 }
 
--(JSContext *) jsContext {
-    return [self.observer jsContext];
-}
 
 -(UITabBarController *) openTabBarController:(NSDictionary *) action {
     
@@ -514,11 +513,11 @@ static unsigned char require_js[] = {0xa,0x28,0x66,0x75,0x6e,0x63,0x74,0x69,0x6f
     _jsObserver = nil;
 }
 
-+(instancetype) main {
-    static KKApplication * v = nil;
++(JSVirtualMachine *) jsVirtualMachine {
+    static JSVirtualMachine * v = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        v = [[KKApplication alloc] initWithBundle:[NSBundle mainBundle]];
+        v = [[JSVirtualMachine alloc] init];
     });
     return v;
 }
