@@ -51,7 +51,7 @@
         [self.observer on:^(id value, NSArray *changedKeys, void *context) {
             
             if(v && value) {
-                [v closeAfterDelay:[[value kk_getString:@"afterDelay"] doubleValue]];
+                [v closeAfterDelay:[[value kk_getString:@"afterDelay"] doubleValue] * 0.001];
             }
             
         } keys:@[@"action",@"close"] context:nil];

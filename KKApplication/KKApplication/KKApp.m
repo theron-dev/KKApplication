@@ -247,6 +247,30 @@ static unsigned char require_js[] = {0xa,0x28,0x66,0x75,0x6e,0x63,0x74,0x69,0x6f
                 
                 KKNavigationController * navController = [[KKNavigationController alloc] initWithRootViewController:viewController];
                 
+                {
+                    id topbar = [item kk_getValue:@"topbar"];
+                    {
+                        UIColor * v = [UIColor KKElementStringValue:[topbar kk_getString:@"background-color"]];
+                        if(v) {
+                            navController.navigationBar.backgroundColor = v;
+                        }
+                    }
+                    
+                    {
+                        UIColor * v = [UIColor KKElementStringValue:[topbar kk_getString:@"tint-color"]];
+                        if(v) {
+                            navController.navigationBar.tintColor = v;
+                        }
+                    }
+                    
+                    {
+                        UIColor * v = [UIColor KKElementStringValue:[topbar kk_getString:@"color"]];
+                        if(v) {
+                            navController.navigationBar.barTintColor = v;
+                        }
+                    }
+                }
+                
                 id tabbar = [item kk_getValue:@"tabbar"];
                 
                 UIImage * image = [self.viewContext imageWithURI:[tabbar kk_getString:@"image"]];
@@ -425,12 +449,14 @@ static unsigned char require_js[] = {0xa,0x28,0x66,0x75,0x6e,0x63,0x74,0x69,0x6f
         return ;
     }
     
+    [viewController view];
+    
     if([(id) _delegate respondsToSelector:@selector(KKApplication:openViewController:action:)]) {
         if([_delegate KKApplication:self openViewController:viewController action:action]) {
             return;
         }
     }
-    
+
     UIViewController * topViewController = [KKApplication topViewController:[UIApplication sharedApplication].keyWindow.rootViewController];
     
     if(topViewController == nil
