@@ -44,6 +44,35 @@ static CGSize KKPageControllerViewSize(UIView * view) {
     [_element layout:KKPageControllerViewSize(view)];
     [_element obtainView:view];
     
+    if(_element) {
+        
+        __weak KKPageController * v = self;
+        
+        [_element on:@"layout" fn:^(KKEvent *event, void *context) {
+            
+            if(v && [event isKindOfClass:[KKElementEvent class]]) {
+                
+                NSDictionary * data = [(KKElementEvent *) event data];
+                
+                BOOL animated = [[data valueForKey:@"animated"] boolValue];
+                
+                if(animated) {
+                    [UIView beginAnimations:nil context:nil];
+                    [UIView setAnimationDuration:0.3];
+                }
+                
+                [v.element layout:KKPageControllerViewSize(view)];
+                [v.element obtainView:view];
+                
+                if(animated) {
+                    [UIView commitAnimations];
+                }
+            }
+            
+        } context:nil];
+        
+    }
+    
     {
         //更新布局
         __weak KKPageController * v = self;

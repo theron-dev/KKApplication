@@ -25,14 +25,36 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+- (BOOL)shouldAutorotate {
+    if(self.topViewController == nil) {
+        return [super shouldAutorotate];
+    }
+    return [self.topViewController shouldAutorotate];
 }
-*/
+
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+    if(self.topViewController == nil) {
+        return [super supportedInterfaceOrientations];
+    }
+    return [self.topViewController supportedInterfaceOrientations];
+}
+
+-(UIInterfaceOrientation) preferredInterfaceOrientationForPresentation {
+    if(self.topViewController == nil) {
+        return [super preferredInterfaceOrientationForPresentation];
+    }
+    return [self.topViewController preferredInterfaceOrientationForPresentation];
+}
+
+-(void) pushViewController:(UIViewController *)viewController animated:(BOOL)animated {
+    [super pushViewController:viewController animated:animated];
+    [UIViewController attemptRotationToDeviceOrientation];
+}
+
+-(UIViewController *) popViewControllerAnimated:(BOOL)animated {
+    UIViewController * v = [super popViewControllerAnimated:animated];
+    [UIViewController attemptRotationToDeviceOrientation];
+    return v;
+}
 
 @end

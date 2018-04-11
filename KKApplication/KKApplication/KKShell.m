@@ -61,6 +61,11 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
     
     [app.observer set:@[@"url"] value:[url absoluteString]];
     [app.observer set:@[@"path"] value:path];
+    [app.observer set:@[@"key"] value:[KKHttpOptions cacheKeyWithURL:[url absoluteString]]];
+    
+    if(appInfo != nil ){
+        [app.observer set:@[@"info"] value:appInfo];
+    }
     
     [self openApplication:app];
     
@@ -163,8 +168,6 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
                 onerror(url,[NSError errorWithDomain:@"KKShell" code:0 userInfo:[NSDictionary dictionaryWithObject:@"小应用加载错误" forKey:NSLocalizedDescriptionKey]]);
             }
         } else {
-            
-            NSLog(@"[KK] %@",data);
             
             NSString * version = [data kk_getString:@"version"];
             

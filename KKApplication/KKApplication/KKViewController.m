@@ -41,6 +41,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    CGSize size = self.view.bounds.size;
+    [self.controller.observer set:@[@"page",@"landscape"] value:@(size.width > size.height)];
+    
     [self.controller run:self];
     
     {
@@ -80,6 +83,7 @@
     }
     
     _nextViewController = NO;
+
 }
 
 -(void) viewWillAppear:(BOOL)animated {
@@ -90,6 +94,7 @@
     if(!_nextViewController) {
         [self.controller setTopbarStyle:self];
     }
+
 }
 
 -(void) viewWillDisappear:(BOOL)animated {
@@ -104,6 +109,13 @@
     [super viewDidDisappear:animated];
     
     [self.controller didDisappear];
+    
+}
+
+-(void) viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+    CGSize size = self.view.bounds.size;
+    [_controller.observer set:@[@"page",@"landscape"] value:@(size.width > size.height)];
 }
 
 -(void) setAction:(NSDictionary *)action {
@@ -115,5 +127,74 @@
 +(Class) controllerClass {
     return [KKController class];
 }
+
+- (BOOL)shouldAutorotate {
+    return YES;
+}
+
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+    
+    UIInterfaceOrientationMask mask = 0;
+    
+    id v = [self.controller.observer get:@[@"page",@"orientation"] defaultValue:nil];
+    
+    if(v) {
+        if(![v isKindOfClass:[NSArray class]]) {
+            v = @[v];
+        }
+        
+        for(id vv in v) {
+            
+            NSString * s = [vv kk_stringValue];
+            
+            if([s isEqualToString:@"landscape-left"]) {
+                mask = mask | UIInterfaceOrientationMaskLandscapeLeft;
+            } else if([s isEqualToString:@"landscape-right"]) {
+                mask = mask | UIInterfaceOrientationMaskLandscapeRight;
+            } else if([s isEqualToString:@"portrait"]) {
+                mask = mask | UIInterfaceOrientationMaskPortrait;
+            } else if([s isEqualToString:@"portrait-upside"]) {
+                mask = mask | UIInterfaceOrientationMaskPortraitUpsideDown;
+            } else if([s isEqualToString:@"landscape"]) {
+                mask = mask | UIInterfaceOrientationMaskLandscape;
+            }
+            
+        }
+    } else {
+        return UIInterfaceOrientationMaskPortrait;
+    }
+    
+    return mask;
+}
+
+- (UIInterfaceOrientation) preferredInterfaceOrientationForPresentation {
+    id v = [self.controller.observer get:@[@"page",@"orientation"] defaultValue:nil];
+    if(v) {
+        
+        if(![v isKindOfClass:[NSArray class]]) {
+            v = @[v];
+        }
+        
+        for(id vv in v) {
+            
+            NSString * s = [vv kk_stringValue];
+            
+            if([s isEqualToString:@"landscape-left"]) {
+                return UIInterfaceOrientationLandscapeLeft;
+            } else if([s isEqualToString:@"landscape-right"]) {
+                return UIInterfaceOrientationLandscapeRight;
+            } else if([s isEqualToString:@"portrait"]) {
+                return UIInterfaceOrientationPortrait;
+            } else if([s isEqualToString:@"portrait-upside"]) {
+                return UIInterfaceOrientationPortraitUpsideDown;
+            } else if([s isEqualToString:@"landscape"]) {
+                return UIInterfaceOrientationLandscapeRight;
+            }
+            
+        }
+    }
+    return UIInterfaceOrientationPortrait;
+}
+
 
 @end

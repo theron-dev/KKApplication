@@ -39,6 +39,8 @@
     _jsObserver = nil;
 }
 
+
+
 -(KKJSHttp *) http {
     
     if(_http == nil) {
@@ -60,6 +62,8 @@
             v = [[KKObserver alloc] init];
         }
         _jsObserver = [[KKJSObserver alloc] initWithObserver:v];
+        
+        [v set:@[@"page",@"landscape"] value:@(UIDeviceOrientationIsLandscape([[UIDevice currentDevice] orientation]))];
     }
     
     return _jsObserver;

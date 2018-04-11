@@ -22,11 +22,45 @@
 -(void) showInView:(UIView *) view {
     
     [self run];
+    
+    if(self.element == nil) {
+        return;
+    }
 
     [self.element layout:view.bounds.size];
     [self.element obtainView:view];
     
     objc_setAssociatedObject(self.element.view, "_KKWindowPageController", self, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    
+    {
+        
+        __weak KKWindowPageController * v = self;
+        __weak UIView * vv = view;
+        
+        [self.element on:@"layout" fn:^(KKEvent *event, void *context) {
+            
+            if(v && vv && [event isKindOfClass:[KKElementEvent class]]) {
+                
+                NSDictionary * data = [(KKElementEvent *) event data];
+                
+                BOOL animated = [[data valueForKey:@"animated"] boolValue];
+                
+                if(animated) {
+                    [UIView beginAnimations:nil context:nil];
+                    [UIView setAnimationDuration:0.3];
+                }
+                
+                [v.element layout:vv.bounds.size];
+                [v.element obtainView:vv];
+                
+                if(animated) {
+                    [UIView commitAnimations];
+                }
+            }
+            
+        } context:nil];
+        
+    }
     
     {
         //更新布局
