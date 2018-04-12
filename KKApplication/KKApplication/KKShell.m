@@ -9,6 +9,7 @@
 #import "KKShell.h"
 
 typedef void (^KKShellOnLoadFunc)(NSURL * url,NSString * path);
+typedef void (^KKShellOnProgressFunc)(NSURL * url,NSString * path,NSInteger count,NSInteger totalCount);
 typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
 
 @implementation KKShell
@@ -77,12 +78,17 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
              url:(NSURL *) url
             path:(NSString *) path
           onload:(KKShellOnLoadFunc) onload
+      onprogress:(KKShellOnProgressFunc) onprogress
          onerror:(KKShellOnErrorFunc) onerror {
  
     NSFileManager * fm = [NSFileManager defaultManager];
     NSString * version = [appInfo kk_getString:@"version"];
     
     __weak KKShell * shell = self;
+    
+    if(onprogress) {
+        onprogress(url,path,index,[items count]);
+    }
     
     if(index < [items count]) {
         
@@ -112,7 +118,7 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
                 NSString * topath = [[path stringByAppendingPathComponent:version] stringByAppendingPathComponent:item] ;
                 [fm createDirectoryAtPath:[topath stringByDeletingLastPathComponent] withIntermediateDirectories:YES attributes:nil error:nil];
                 [fm moveItemAtPath:(NSString *) data toPath:topath error:nil];
-                [shell itemLoad:index + 1 items:items appInfo:appInfo url:url path:path onload:onload onerror:onerror];
+                [shell itemLoad:index + 1 items:items appInfo:appInfo url:url path:path onload:onload onprogress:onprogress onerror:onerror];
             }
         };
         
@@ -131,7 +137,10 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
     
 }
 
--(void) load:(NSURL *) url onload:(KKShellOnLoadFunc) onload onerror:(KKShellOnErrorFunc) onerror{
+-(void) load:(NSURL *) url
+      onload:(KKShellOnLoadFunc) onload
+  onprogress:(KKShellOnProgressFunc) onprogress
+     onerror:(KKShellOnErrorFunc) onerror{
     
     NSString * key = [KKHttpOptions cacheKeyWithURL:[url absoluteString]];
     NSString * path = [[NSHomeDirectory() stringByAppendingPathComponent:@"Library/kk"] stringByAppendingPathComponent:key];
@@ -186,7 +195,14 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
                     items = nil;
                 }
                 
-                [self itemLoad:0 items:items appInfo:data url:url path:path onload:onload onerror:onerror];
+                [self itemLoad:0
+                         items:items
+                       appInfo:data
+                           url:url
+                          path:path
+                        onload:onload
+                    onprogress:onprogress
+                       onerror:onerror];
                 
             } else {
                 if(onload) {
@@ -224,7 +240,10 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
                 
                 if([fm fileExistsAtPath:[path stringByAppendingPathComponent:@"app.json"]]) {
                     [self open:url path:path];
-                    [self load:url onload:nil onerror:^(NSURL *url, NSError *error) {
+                    [self load:url
+                        onload:nil
+                    onprogress:nil
+                       onerror:^(NSURL *url, NSError *error) {
                         NSLog(@"[KK] %@",[url absoluteString]);
                         NSLog(@"[KK] %@",error);
                     }];
@@ -239,12 +258,21 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
         
         {
             __weak KKShell * v = self;
-            [self load:url onload:^(NSURL *url, NSString *path) {
-                [v open:url path:path];
-                if([(id) v.delegate respondsToSelector:@selector(KKShell:didLoading:path:)]) {
-                    [v.delegate KKShell:v didLoading:url path:path];
+            [self load:url
+             
+                onload:^(NSURL *url, NSString *path) {
+                    [v open:url path:path];
+                    if([(id) v.delegate respondsToSelector:@selector(KKShell:didLoading:path:)]) {
+                        [v.delegate KKShell:v didLoading:url path:path];
+                    }
                 }
-            } onerror:^(NSURL *url, NSError *error) {
+             
+            onprogress:^(NSURL *url, NSString *path, NSInteger count,NSInteger totalCount) {
+                if([(id) v.delegate respondsToSelector:@selector(KKShell:loading:path:count:totalCount:)]) {
+                    [v.delegate KKShell:v loading:url path:path count:count totalCount:totalCount];
+                }
+            }
+               onerror:^(NSURL *url, NSError *error) {
                 if([(id)v.delegate respondsToSelector:@selector(KKShell:didFailWithError:url:)]) {
                     [v.delegate KKShell:v didFailWithError:error url:url];
                 }
@@ -258,7 +286,10 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
     if([url isFileURL]) {
         
     } else {
-        [self load:url onload:nil onerror:^(NSURL *url, NSError *error) {
+        [self load:url
+            onload:nil
+        onprogress:nil
+           onerror:^(NSURL *url, NSError *error) {
             NSLog(@"[KK] %@",[url absoluteString]);
             NSLog(@"[KK] [Fail] %@",error);
         }];

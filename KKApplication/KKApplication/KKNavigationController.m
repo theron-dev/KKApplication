@@ -26,35 +26,7 @@
 }
 
 - (BOOL)shouldAutorotate {
-    if(self.topViewController == nil) {
-        return [super shouldAutorotate];
-    }
-    return [self.topViewController shouldAutorotate];
-}
-
-- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
-    if(self.topViewController == nil) {
-        return [super supportedInterfaceOrientations];
-    }
-    return [self.topViewController supportedInterfaceOrientations];
-}
-
--(UIInterfaceOrientation) preferredInterfaceOrientationForPresentation {
-    if(self.topViewController == nil) {
-        return [super preferredInterfaceOrientationForPresentation];
-    }
-    return [self.topViewController preferredInterfaceOrientationForPresentation];
-}
-
--(void) pushViewController:(UIViewController *)viewController animated:(BOOL)animated {
-    [super pushViewController:viewController animated:animated];
-    [UIViewController attemptRotationToDeviceOrientation];
-}
-
--(UIViewController *) popViewControllerAnimated:(BOOL)animated {
-    UIViewController * v = [super popViewControllerAnimated:animated];
-    [UIViewController attemptRotationToDeviceOrientation];
-    return v;
+    return NO;
 }
 
 @end

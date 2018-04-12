@@ -58,7 +58,7 @@
 
 -(instancetype) initWithBundle:(NSBundle *) bundle jsContext:(JSContext *) jsContext;
 
--(KKElement *) elementWithPath:(NSString *) path observer:(KKJSObserver *) observer;
+-(KKElement *) elementWithPath:(NSString *) path data:(KKJSObserver *) data;
 
 -(void) openlib:(NSString *) path;
 

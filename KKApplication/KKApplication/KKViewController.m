@@ -8,6 +8,7 @@
 
 #import "KKViewController.h"
 
+NSString * const KKViewControllerWillAppearNotification = @"KKViewControllerWillAppearNotification";
 
 @interface KKViewController () {
 }
@@ -94,6 +95,8 @@
     if(!_nextViewController) {
         [self.controller setTopbarStyle:self];
     }
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:KKViewControllerWillAppearNotification object:nil userInfo:@{@"viewController":self}];
 
 }
 
@@ -129,7 +132,7 @@
 }
 
 - (BOOL)shouldAutorotate {
-    return YES;
+    return NO;
 }
 
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations {

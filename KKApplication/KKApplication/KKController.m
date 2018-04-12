@@ -26,17 +26,21 @@
 @synthesize jsObserver = _jsObserver;
 @synthesize query = _query;
 @synthesize path = _path;
+@synthesize jsApp = _jsApp;
 
 -(void) dealloc {
     [_http recycle];
     [_jsObserver recycle];
+    [_jsApp recycle];
 }
 
 -(void) recycle {
     [_jsObserver recycle];
     [_http recycle];
+    [_jsApp recycle];
     _http = nil;
     _jsObserver = nil;
+    _jsApp = nil;
 }
 
 
@@ -69,6 +73,13 @@
     return _jsObserver;
 }
 
+-(KKJSObserver *) jsApp {
+    if(_jsApp == nil) {
+        _jsApp = [[KKJSObserver alloc] initWithObserver:self.application.observer];
+    }
+    return _jsApp;
+}
+
 -(KKObserver *) observer {
     return self.jsObserver.observer;
 }
@@ -94,7 +105,9 @@
                                                    @"http":self.http,
                                                    @"page":self.jsObserver,
                                                    @"query":self.query,
-                                                   @"path":self.path}];
+                                                   @"path":self.path,
+                                                   @"app":self.jsApp
+                                                   }];
             
         } else {
             NSLog(@"[KK] Not Found %@",[app absolutePath:main]);

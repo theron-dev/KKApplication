@@ -104,7 +104,7 @@ static CGSize KKPageControllerViewSize(UIView * view) {
     
     if([app has:view]) {
         
-        KKElement * e = [self.application elementWithPath:view observer:self.jsObserver];
+        KKElement * e = [self.application elementWithPath:view data:self.jsObserver];
         
         if([e isKindOfClass:[KKViewElement class]]) {
             _element = (KKViewElement *) e;

@@ -134,7 +134,7 @@ static unsigned char require_js[] = {0xa,0x28,0x66,0x75,0x6e,0x63,0x74,0x69,0x6f
     return _jsObserver.observer;
 }
 
--(KKElement *) elementWithPath:(NSString *) path observer:(KKJSObserver *) observer{
+-(KKElement *) elementWithPath:(NSString *) path data:(KKJSObserver *) data{
     
     KKElement * rootElement = [[KKElement alloc] init];
     
@@ -146,7 +146,7 @@ static unsigned char require_js[] = {0xa,0x28,0x66,0x75,0x6e,0x63,0x74,0x69,0x6f
     
     JSValue * fn = [self.jsContext evaluateScript:[NSString stringWithFormat:@"(function(element,data){ %@ })",code]];
     
-    [fn callWithArguments:@[rootElement,observer]];
+    [fn callWithArguments:@[rootElement,data]];
     
     if(_viewContext) {
         [KKViewContext popContext];
@@ -183,7 +183,9 @@ static unsigned char require_js[] = {0xa,0x28,0x66,0x75,0x6e,0x63,0x74,0x69,0x6f
             [libs addEntriesFromDictionary:librarys];
         }
         
-        libs[@"app"] = self.jsObserver;
+        if(libs[@"app"] == nil) {
+            libs[@"app"] = self.jsObserver;
+        }
         
         NSMutableArray * arguments = [NSMutableArray arrayWithCapacity:4];
         

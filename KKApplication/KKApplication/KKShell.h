@@ -25,6 +25,8 @@ typedef void (^KKShellOpenApplication)(KKApplication * app);
 
 -(void) KKShell:(KKShell *) shell options:(KKHttpOptions *) options;
 
+-(void) KKShell:(KKShell *) shell loading:(NSURL *) url path:(NSString *) path count:(NSInteger) count totalCount:(NSInteger) totalCount;
+
 -(void) KKShell:(KKShell *) shell didLoading:(NSURL *) url path:(NSString *) path;
 
 -(void) KKShell:(KKShell *)shell didFailWithError:(NSError *) error url:(NSURL *) url;
