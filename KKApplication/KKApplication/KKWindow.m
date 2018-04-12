@@ -131,7 +131,7 @@
         return;
     }
     
-    CGRect bounds = self.bounds;
+    CGRect bounds = [UIScreen mainScreen].bounds;
     CGFloat width = MIN(bounds.size.width,bounds.size.height);
     CGFloat height = MAX(bounds.size.width,bounds.size.height);
     
