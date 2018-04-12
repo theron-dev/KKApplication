@@ -21,6 +21,7 @@ static unsigned char require_js[] = {0xa,0x28,0x66,0x75,0x6e,0x63,0x74,0x69,0x6f
 
 @synthesize jsContext = _jsContext;
 @synthesize jsObserver = _jsObserver;
+@synthesize http = _http;
 
 -(instancetype) initWithBundle:(NSBundle *) bundle {
     return [self initWithBundle:bundle jsContext:[[JSContext alloc] initWithVirtualMachine:[KKApplication jsVirtualMachine]]];
@@ -511,20 +512,32 @@ static unsigned char require_js[] = {0xa,0x28,0x66,0x75,0x6e,0x63,0x74,0x69,0x6f
 
 -(id<KKHttpTask>) KKViewContext:(KKViewContext *) viewContext send:(KKHttpOptions *) options weakObject:(id) weakObject {
     
+    id<KKHttpTask> v = nil;
+    
     if([(id)_delegate respondsToSelector:@selector(KKApplication:send:weakObject:)]) {
-        return [_delegate KKApplication:self send:options weakObject:weakObject];
+        v = [_delegate KKApplication:self send:options weakObject:weakObject];
+    }
+    
+    if(v == nil && _http != nil) {
+        v = [_http send:options weakObject:weakObject];
     }
 
-    return nil;
+    return v;
 }
 
 -(BOOL) KKViewContext:(KKViewContext *) viewContext cancel:(id) weakObject {
     
+    BOOL r = NO;
+    
     if([(id)_delegate respondsToSelector:@selector(KKApplication:cancel:)]) {
-        return [_delegate KKApplication:self cancel:weakObject];
+        r = [_delegate KKApplication:self cancel:weakObject];
     }
     
-    return NO;
+    if(r == NO && _http != nil) {
+        [_http cancel:weakObject];
+    }
+    
+    return r;
 }
 
 -(UIImage *) KKViewContext:(KKViewContext *) viewContext imageWithURI:(NSString * ) uri {

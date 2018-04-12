@@ -53,6 +53,7 @@
 @property(nonatomic,strong,readonly) KKViewContext * viewContext;
 @property(nonatomic,strong,readonly) NSBundle * bundle;
 @property(nonatomic,strong,readonly) NSString * path;
+@property(nonatomic,strong) id<KKHttp> http;
 
 -(instancetype) initWithBundle:(NSBundle *) bundle;
 
