@@ -111,7 +111,7 @@
     
     if(toOrientation == UIInterfaceOrientationUnknown) {
         
-        if(UIDeviceOrientationIsLandscape(deviceOrientation) && UIInterfaceOrientationIsLandscape(_interfaceOrientation)) {
+        if((mask & UIInterfaceOrientationMaskLandscape) && UIInterfaceOrientationIsLandscape(_interfaceOrientation)) {
             toOrientation = _interfaceOrientation;
         } else if((mask & UIInterfaceOrientationMaskPortrait)) {
             toOrientation = UIInterfaceOrientationPortrait;
