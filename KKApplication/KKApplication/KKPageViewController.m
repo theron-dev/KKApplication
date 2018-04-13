@@ -19,6 +19,7 @@
     if((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
         self.edgesForExtendedLayout = UIRectEdgeAll;
         self.automaticallyAdjustsScrollViewInsets = NO;
+        self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@" " style:UIBarButtonItemStylePlain target:nil action:nil];
     }
     return self;
 }
