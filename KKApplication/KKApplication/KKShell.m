@@ -321,6 +321,24 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
         NSString * v = [action kk_getString:@"url"];
         
         if(v) {
+            
+            NSArray * vs = [[action kk_getString:@"back"] componentsSeparatedByString:@"/"];
+            
+            if([vs count]) {
+                
+                UIViewController * topViewController = [KKApplication topViewController:[UIApplication sharedApplication].keyWindow.rootViewController];
+                
+                for(NSString * v in vs) {
+                    
+                    if([v isEqualToString:@".."]) {
+                        if([topViewController isKindOfClass:[UINavigationController class]]) {
+                            [(UINavigationController *) topViewController popViewControllerAnimated:NO];
+                        }
+                    }
+                    
+                }
+            }
+            
             [self open:[NSURL URLWithString:v]];
         }
         

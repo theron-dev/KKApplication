@@ -475,6 +475,12 @@ static unsigned char require_js[] = {0xa,0x28,0x66,0x75,0x6e,0x63,0x74,0x69,0x6f
         
     }
     else if([topViewController isKindOfClass:[UINavigationController class]]) {
+        NSArray * vs = [[action kk_getString:@"back"] componentsSeparatedByString:@"/"];
+        for(NSString * v in vs) {
+            if([v isEqualToString:@".."]) {
+                [(UINavigationController *) topViewController popViewControllerAnimated:NO];
+            }
+        }
         [(UINavigationController *) topViewController pushViewController:viewController animated:YES];
     } else {
         [topViewController presentViewController:viewController animated:YES completion:nil];
