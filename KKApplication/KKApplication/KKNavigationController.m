@@ -7,6 +7,11 @@
 //
 
 #import "KKNavigationController.h"
+#import "KKController.h"
+
+@interface UINavigationController(KKNavigationController) <UINavigationBarDelegate,UIGestureRecognizerDelegate>
+
+@end
 
 @interface KKNavigationController () <UIGestureRecognizerDelegate>
 
@@ -18,15 +23,37 @@
     [super viewDidLoad];
     
     self.interactivePopGestureRecognizer.delegate = self;
+    
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+
 }
 
 - (BOOL)shouldAutorotate {
     return NO;
+}
+
+- (BOOL) navigationBar:(UINavigationBar *)navigationBar shouldPopItem:(UINavigationItem *)item {
+    if( [[self topViewController] kk_navigationShouldPopViewController]) {
+        if([super respondsToSelector:@selector(navigationBar:shouldPopItem:)]) {
+            return [super navigationBar:navigationBar shouldPopItem:item];
+        }
+    }
+    return NO;
+}
+
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
+    if (gestureRecognizer == self.interactivePopGestureRecognizer) {
+        if( ![[self topViewController] kk_navigationShouldPopViewController]) {
+            return NO;
+        }
+    }
+    if([super respondsToSelector:@selector(gestureRecognizerShouldBegin:)]) {
+        return [super gestureRecognizerShouldBegin:gestureRecognizer];
+    }
+    return YES;
 }
 
 @end

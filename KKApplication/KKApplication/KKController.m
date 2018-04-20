@@ -8,6 +8,7 @@
 
 #import "KKController.h"
 
+
 @interface KKController() {
     BOOL _topbar_hidden;
     UIColor * _topbar_tintColor;
@@ -332,7 +333,7 @@
 }
 
 -(void) setKk_topbarHidden:(BOOL)kk_topbarHidden {
-    [self.navigationController setNavigationBarHidden:kk_topbarHidden animated:NO];
+    [self.navigationController setNavigationBarHidden:kk_topbarHidden animated:YES];
 }
 
 -(UIStatusBarStyle) kk_statusBarStyle {
@@ -358,6 +359,10 @@
 
 -(void) setKk_topbarBackgroundColor:(UIColor *)kk_topbarBackgroundColor {
     [self.navigationController.navigationBar setBackgroundColor:kk_topbarBackgroundColor];
+}
+
+-(BOOL) kk_navigationShouldPopViewController {
+    return YES;
 }
 
 @end

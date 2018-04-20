@@ -44,5 +44,6 @@
 @property(nonatomic,strong) UIImage * kk_topbarBackgroundImage;
 @property(nonatomic,strong) UIColor * kk_topbarBackgroundColor;
 
+-(BOOL) kk_navigationShouldPopViewController;
 @end
 

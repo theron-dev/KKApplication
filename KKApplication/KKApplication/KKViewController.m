@@ -66,12 +66,18 @@ NSString * const KKViewControllerWillAppearNotification = @"KKViewControllerWill
 
 -(IBAction) doCloseAction:(id)sender {
     
-    if(self.navigationController) {
-        [self.navigationController popViewControllerAnimated:YES];
-    } else if(self.presentedViewController) {
-        [self dismissViewControllerAnimated:YES completion:nil];
+    if([self kk_navigationShouldPopViewController]) {
+        
+        if(self.navigationController) {
+            
+            [self.navigationController popViewControllerAnimated:YES];
+           
+        } else if(self.presentedViewController) {
+            
+            [self dismissViewControllerAnimated:YES completion:nil];
+            
+        }
     }
-    
 }
 
 -(void) viewDidAppear:(BOOL)animated {

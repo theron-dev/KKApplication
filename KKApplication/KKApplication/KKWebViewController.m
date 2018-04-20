@@ -194,13 +194,13 @@
             {
                 UIColor * v = [UIColor KKElementStringValue:[data kk_getString:@"tint-color"]];
                 if(v) {
-                    self.viewController.progressView.trackTintColor = v;
+                    self.viewController.progressView.tintColor = v;
                 }
             }
             {
                 UIColor * v = [UIColor KKElementStringValue:[data kk_getString:@"background-color"]];
                 if(v) {
-                    self.viewController.progressView.progressTintColor = v;
+                    self.viewController.progressView.trackTintColor = v;
                 }
             }
         }
@@ -264,8 +264,27 @@
 -(void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
     
     if(object == _webView && [keyPath isEqualToString:@"estimatedProgress"]) {
+        
         [self.progressView setProgress:_webView.estimatedProgress animated:YES];
-        [self.progressView setHidden:_webView.estimatedProgress>=1];
+        
+        if(_webView.estimatedProgress>=1) {
+            
+            __weak UIView * v = self.progressView;
+            
+            [self.progressView setProgress:1.0f animated:YES];
+            
+            [UIView animateWithDuration:0.3 animations:^{
+                v.alpha = 0.0f;
+            } completion:^(BOOL finished) {
+                v.hidden = YES;
+            }];
+            
+        } else {
+            [self.progressView.layer removeAllAnimations];
+            self.progressView.alpha = 1.0f;
+            self.progressView.hidden = NO;
+        }
+        
     }
     
 }
@@ -315,7 +334,18 @@
 }
 
 -(NSURLRequest *) willLoadRequestWithURL:(NSURL *) url {
-    return [NSURLRequest requestWithURL:url];
+    
+    NSMutableURLRequest * r = [NSMutableURLRequest requestWithURL:url];
+    
+    NSMutableString * v = [NSMutableString stringWithCapacity:64];
+    
+    for(NSHTTPCookie * cookie in self.cookies) {
+        [v appendFormat:@"%@=%@; ",cookie.name,cookie.value];
+    }
+    
+    [r setValue:v forHTTPHeaderField:@"Cookie"];
+    
+    return r;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -336,6 +366,8 @@
 -(UIProgressView *) progressView {
     if(_progressView == nil) {
         _progressView = [[UIProgressView alloc] initWithFrame:CGRectZero];
+        _progressView.tintColor = [UIColor blackColor];
+        _progressView.trackTintColor = [UIColor clearColor];
     }
     return _progressView;
 }
@@ -382,7 +414,7 @@
     
     WKWebViewConfiguration * configuration = [[WKWebViewConfiguration alloc] init];
     
-    //configuration.processPool = self.processPool;
+    configuration.processPool = self.processPool;
     
     WKUserContentController * userContentController = [[WKUserContentController alloc] init];
     
@@ -390,10 +422,10 @@
         NSMutableString * v = [NSMutableString stringWithCapacity:64];
         
         for(NSHTTPCookie * cookie in self.cookies) {
-            [v appendFormat:@"%@=%@; ",cookie.name,cookie.value];
+            [v appendFormat:@"document.cookie=\"%@=%@; path=%@;\";",cookie.name,cookie.value,cookie.path];
         }
         
-        [userContentController addUserScript:[[WKUserScript alloc] initWithSource:[NSString stringWithFormat:@"if(!document.referrer){ document.cookie = \"%@\"; }",v] injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:YES]];
+        [userContentController addUserScript:[[WKUserScript alloc] initWithSource:[NSString stringWithFormat:@"if(!document.referrer){ %@ }",v] injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:NO]];
     }
     
     {
@@ -551,6 +583,14 @@
 - (void)webView:(WKWebView *)webView runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(void))completionHandler {
     [[[UIAlertView alloc] initWithTitle:nil message:message delegate:nil cancelButtonTitle:@"确定" otherButtonTitles: nil] show];
     completionHandler();
+}
+
+-(BOOL) kk_navigationShouldPopViewController {
+    if([self.webView canGoBack]) {
+        [self.webView goBack];
+        return NO;
+    }
+    return YES;
 }
 
 @end

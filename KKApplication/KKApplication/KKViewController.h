@@ -22,4 +22,5 @@ extern NSString * const KKViewControllerWillAppearNotification;
 
 +(Class) controllerClass;
 
+
 @end
