@@ -38,7 +38,9 @@
 - (BOOL) navigationBar:(UINavigationBar *)navigationBar shouldPopItem:(UINavigationItem *)item {
     if( [[self topViewController] kk_navigationShouldPopViewController]) {
         if([super respondsToSelector:@selector(navigationBar:shouldPopItem:)]) {
-            return [super navigationBar:navigationBar shouldPopItem:item];
+            @try {
+                return [super navigationBar:navigationBar shouldPopItem:item];
+            } @catch(NSException * ex) {}
         }
     }
     return NO;
@@ -51,7 +53,9 @@
         }
     }
     if([super respondsToSelector:@selector(gestureRecognizerShouldBegin:)]) {
-        return [super gestureRecognizerShouldBegin:gestureRecognizer];
+        @try {
+            return [super gestureRecognizerShouldBegin:gestureRecognizer];
+        } @catch(NSException * ex) {}
     }
     return YES;
 }

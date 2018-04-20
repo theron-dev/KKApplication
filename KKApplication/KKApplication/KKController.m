@@ -10,7 +10,7 @@
 
 
 @interface KKController() {
-    BOOL _topbar_hidden;
+    NSNumber * _topbar_hidden;
     UIColor * _topbar_tintColor;
     UIColor * _topbar_barTintColor;
     UIColor * _topbar_backgroundColor;
@@ -194,7 +194,9 @@
     {
         id v = [self.observer get:@[@"page",@"topbar",@"hidden"] defaultValue:nil];
         if(v) {
-            _topbar_hidden = [viewController kk_topbarHidden];
+            if(_topbar_hidden == nil) {
+                _topbar_hidden = @([viewController kk_topbarHidden]);
+            }
             [viewController setKk_topbarHidden:[v boolValue]];
         }
     }
@@ -278,8 +280,8 @@
     
     {
         id v = [self.observer get:@[@"page",@"topbar",@"hidden"] defaultValue:nil];
-        if(v) {
-            [viewController setKk_topbarHidden:_topbar_hidden];
+        if(v && _topbar_hidden != nil) {
+            [viewController setKk_topbarHidden:[_topbar_hidden boolValue]];
         }
     }
     

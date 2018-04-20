@@ -83,7 +83,11 @@ NSString * const KKViewControllerWillAppearNotification = @"KKViewControllerWill
 -(void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
 
-    [self.controller didAppear];
+    __weak KKController * v = self.controller;
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [v didAppear];
+    });
     
     if(_nextViewController) {
         [self.controller setTopbarStyle:self];
@@ -96,7 +100,11 @@ NSString * const KKViewControllerWillAppearNotification = @"KKViewControllerWill
 -(void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    [self.controller willAppear];
+    __weak KKController * v = self.controller;
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [v willAppear];
+    });
     
     if(!_nextViewController) {
         [self.controller setTopbarStyle:self];
