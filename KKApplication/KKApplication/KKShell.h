@@ -51,6 +51,8 @@ typedef void (^KKShellOpenApplication)(KKApplication * app);
 
 -(void) open:(NSURL *) url;
 
+-(void) open:(NSURL *) url checkUpdate:(BOOL) checkUpdate;
+
 -(BOOL) has:(NSURL *) url;
 
 -(void) update:(NSURL *) url;

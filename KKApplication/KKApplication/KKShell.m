@@ -75,6 +75,7 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
 -(void) itemLoad:(NSInteger) index
            items:(NSArray *) items
          appInfo:(NSDictionary *) appInfo
+            vers:(NSDictionary *) vers
              url:(NSURL *) url
             path:(NSString *) path
           onload:(KKShellOnLoadFunc) onload
@@ -92,7 +93,18 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
     
     if(index < [items count]) {
         
-        NSString * item = [items objectAtIndex:index];
+        id item = [items objectAtIndex:index];
+        
+        if([item isKindOfClass:[NSDictionary class]]) {
+            NSString * ver = [item kk_getString:@"ver"];
+            item = [item kk_getString:@"path"];
+            if(ver && [vers valueForKey:item]) {
+                [shell itemLoad:index + 1 items:items appInfo:appInfo vers:vers url:url path:path onload:onload onprogress:onprogress onerror:onerror];
+                return;
+            }
+        } else {
+            item = [item kk_stringValue];
+        }
 
         KKHttpOptions * options = [[KKHttpOptions alloc] initWithURL:[[NSURL URLWithString:item relativeToURL:url] absoluteString]];
         
@@ -103,7 +115,6 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
         options.type = KKHttpOptionsTypeURI;
         options.method = KKHttpOptionsGET;
         options.onfail = ^(NSError *error, id weakObject){
-            [fm removeItemAtPath:[path stringByAppendingPathComponent:version] error:nil];
             if(onerror) {
                 onerror(url,error);
             }
@@ -118,7 +129,7 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
                 NSString * topath = [[path stringByAppendingPathComponent:version] stringByAppendingPathComponent:item] ;
                 [fm createDirectoryAtPath:[topath stringByDeletingLastPathComponent] withIntermediateDirectories:YES attributes:nil error:nil];
                 [fm moveItemAtPath:(NSString *) data toPath:topath error:nil];
-                [shell itemLoad:index + 1 items:items appInfo:appInfo url:url path:path onload:onload onprogress:onprogress onerror:onerror];
+                [shell itemLoad:index + 1 items:items appInfo:appInfo vers:vers url:url path:path onload:onload onprogress:onprogress onerror:onerror];
             }
         };
         
@@ -182,33 +193,45 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
             
             NSDictionary * appInfo = [KKShell JOSNObject:[path stringByAppendingPathComponent:@"app.json"]];
             
-            if(appInfo == nil
-               || ![[appInfo kk_getString:@"version"] isEqualToString:version]) {
-                
-                NSFileManager * fm = [NSFileManager defaultManager];
-
-                [fm createDirectoryAtPath:[path stringByAppendingPathComponent:version] withIntermediateDirectories:YES attributes:nil error:nil];
-
-                NSArray * items = [data kk_getValue:@"items"];
-                
-                if(![items isKindOfClass:[NSArray class]]) {
-                    items = nil;
-                }
-                
-                [self itemLoad:0
-                         items:items
-                       appInfo:data
-                           url:url
-                          path:path
-                        onload:onload
-                    onprogress:onprogress
-                       onerror:onerror];
-                
-            } else {
-                if(onload) {
-                    onload(url,path);
-                }
+            NSFileManager * fm = [NSFileManager defaultManager];
+            
+            [fm createDirectoryAtPath:[path stringByAppendingPathComponent:version] withIntermediateDirectories:YES attributes:nil error:nil];
+            
+            NSArray * items = [data kk_getValue:@"items"];
+            
+            if(![items isKindOfClass:[NSArray class]]) {
+                items = nil;
             }
+            
+            NSMutableDictionary * vers = nil;
+            
+            NSArray* its = [appInfo kk_getValue:@"items"];
+            
+            if([its isKindOfClass:[NSArray class]]) {
+                
+                vers = [NSMutableDictionary dictionaryWithCapacity:4];
+                
+                for(id item in its) {
+                    if([item isKindOfClass:[NSDictionary class]]) {
+                        NSString * ver = [item kk_getString:@"ver"];
+                        NSString * path = [item kk_getString:@"path"];
+                        if(ver && path) {
+                            vers[path] = ver;
+                        }
+                    }
+                }
+                
+            }
+            
+            [self itemLoad:0
+                     items:items
+                   appInfo:data
+                      vers:vers
+                       url:url
+                      path:path
+                    onload:onload
+                onprogress:onprogress
+                   onerror:onerror];
         }
     };
     
@@ -216,38 +239,44 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
 }
 
 -(void) open:(NSURL *) url {
+    return [self open:url checkUpdate:NO];
+}
+
+-(void) open:(NSURL *) url checkUpdate:(BOOL) checkUpdate {
     if([url isFileURL]) {
         [self open:url path:[url path]];
     } else {
         NSString * key = [KKHttpOptions cacheKeyWithURL:[url absoluteString]];
         NSString * path = [[NSHomeDirectory() stringByAppendingPathComponent:@"Library/kk"] stringByAppendingPathComponent:key];
         
-        NSFileManager * fm = [NSFileManager defaultManager];
-        NSDictionary * appInfo = nil;
-        
-        if([fm fileExistsAtPath:[path stringByAppendingPathComponent:@"app.json"]]) {
-            NSData * data = [NSData dataWithContentsOfFile:[path stringByAppendingPathComponent:@"app.json"]];
-            appInfo = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:nil];
-        }
-        
-        if(appInfo) {
+        if(!checkUpdate) {
+            NSFileManager * fm = [NSFileManager defaultManager];
+            NSDictionary * appInfo = nil;
             
-            NSString * version = [appInfo kk_getString:@"version"];
+            if([fm fileExistsAtPath:[path stringByAppendingPathComponent:@"app.json"]]) {
+                NSData * data = [NSData dataWithContentsOfFile:[path stringByAppendingPathComponent:@"app.json"]];
+                appInfo = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:nil];
+            }
             
-            if(version) {
+            if(appInfo) {
                 
-                path = [path stringByAppendingPathComponent:version];
+                NSString * version = [appInfo kk_getString:@"version"];
                 
-                if([fm fileExistsAtPath:[path stringByAppendingPathComponent:@"app.json"]]) {
-                    [self open:url path:path];
-                    [self load:url
-                        onload:nil
-                    onprogress:nil
-                       onerror:^(NSURL *url, NSError *error) {
-                        NSLog(@"[KK] %@",[url absoluteString]);
-                        NSLog(@"[KK] %@",error);
-                    }];
-                    return;
+                if(version) {
+                    
+                    path = [path stringByAppendingPathComponent:version];
+                    
+                    if([fm fileExistsAtPath:[path stringByAppendingPathComponent:@"app.json"]]) {
+                        [self open:url path:path];
+                        [self load:url
+                            onload:nil
+                        onprogress:nil
+                           onerror:^(NSURL *url, NSError *error) {
+                            NSLog(@"[KK] %@",[url absoluteString]);
+                            NSLog(@"[KK] %@",error);
+                        }];
+                        return;
+                    }
                 }
             }
         }
@@ -339,7 +368,8 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
                 }
             }
             
-            [self open:[NSURL URLWithString:v]];
+            [self open:[NSURL URLWithString:v] checkUpdate:[[action kk_getString:@"checkUpdate"] boolValue]];
+            
         }
         
         return YES;
