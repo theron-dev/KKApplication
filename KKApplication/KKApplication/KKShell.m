@@ -94,18 +94,31 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
     if(index < [items count]) {
         
         id item = [items objectAtIndex:index];
+        NSString * topath = nil;
         
         if([item isKindOfClass:[NSDictionary class]]) {
             NSString * ver = [item kk_getString:@"ver"];
             item = [item kk_getString:@"path"];
-            if(ver && [vers valueForKey:item]) {
-                [shell itemLoad:index + 1 items:items appInfo:appInfo vers:vers url:url path:path onload:onload onprogress:onprogress onerror:onerror];
-                return;
+            topath = [[path stringByAppendingPathComponent:version] stringByAppendingPathComponent:item];
+            
+            NSString * localVer = [vers valueForKey:item];
+            
+            if(localVer == nil || [localVer isEqualToString:ver]) {
+                if([fm fileExistsAtPath:topath]) {
+                    [shell itemLoad:index + 1 items:items appInfo:appInfo vers:vers url:url path:path onload:onload onprogress:onprogress onerror:onerror];
+                    return;
+                }
             }
         } else {
             item = [item kk_stringValue];
+            topath = [[path stringByAppendingPathComponent:version] stringByAppendingPathComponent:item];
+            if([fm fileExistsAtPath:topath]) {
+                [shell itemLoad:index + 1 items:items appInfo:appInfo vers:vers url:url path:path onload:onload onprogress:onprogress onerror:onerror];
+                return;
+            }
         }
 
+        
         KKHttpOptions * options = [[KKHttpOptions alloc] initWithURL:[[NSURL URLWithString:item relativeToURL:url] absoluteString]];
         
         if([(id) shell.delegate respondsToSelector:@selector(KKShell:options:)]) {
@@ -126,7 +139,6 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
                     onerror(url,error);
                 }
             } else {
-                NSString * topath = [[path stringByAppendingPathComponent:version] stringByAppendingPathComponent:item] ;
                 [fm createDirectoryAtPath:[topath stringByDeletingLastPathComponent] withIntermediateDirectories:YES attributes:nil error:nil];
                 [fm moveItemAtPath:(NSString *) data toPath:topath error:nil];
                 [shell itemLoad:index + 1 items:items appInfo:appInfo vers:vers url:url path:path onload:onload onprogress:onprogress onerror:onerror];
@@ -167,7 +179,8 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
     options.data = @{
                      @"appid":[[main infoDictionary] valueForKey:@"CFBundleIdentifier"],
                      @"version":[[main infoDictionary] valueForKey:@"CFBundleShortVersionString"],
-                     @"kernel":[NSString stringWithFormat:@"%g", KKApplicationKernel]
+                     @"kernel":[NSString stringWithFormat:@"%g", KKApplicationKernel],
+                     @"platform":@"ios"
                      };
     options.type = KKHttpOptionsTypeJSON;
     options.method = KKHttpOptionsGET;
@@ -368,7 +381,7 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
                 }
             }
             
-            [self open:[NSURL URLWithString:v] checkUpdate:[[action kk_getString:@"checkUpdate"] boolValue]];
+            [self open:[NSURL URLWithString:v] checkUpdate:[[action kk_getValue:@"checkUpdate"] boolValue]];
             
         }
         
