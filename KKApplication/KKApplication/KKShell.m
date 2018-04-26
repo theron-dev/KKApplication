@@ -140,6 +140,7 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
                 }
             } else {
                 [fm createDirectoryAtPath:[topath stringByDeletingLastPathComponent] withIntermediateDirectories:YES attributes:nil error:nil];
+                [fm removeItemAtPath:topath error:nil];
                 [fm moveItemAtPath:(NSString *) data toPath:topath error:nil];
                 [shell itemLoad:index + 1 items:items appInfo:appInfo vers:vers url:url path:path onload:onload onprogress:onprogress onerror:onerror];
             }
