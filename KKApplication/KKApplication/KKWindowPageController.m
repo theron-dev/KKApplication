@@ -101,9 +101,27 @@
 }
 
 -(void) close  {
+    
     [self willDisappear];
     [self didDisappear];
-    [self.element.view removeFromSuperview];
+    
+    if([self.element isKindOfClass:[KKBodyElement class]]) {
+        
+        KKElement * e = self.element.firstChild;
+        
+        while(e) {
+            
+            if([e isKindOfClass:[KKViewElement class]]) {
+                [[(KKViewElement *) e view] removeFromSuperview];
+            }
+            
+            e = e.nextSibling;
+        }
+        
+    } else {
+        [self.element.view removeFromSuperview];
+    }
+    
     objc_setAssociatedObject(self.element.view, "_KKWindowPageController", nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
