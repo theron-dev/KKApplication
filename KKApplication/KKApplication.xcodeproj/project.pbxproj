@@ -51,6 +51,8 @@
 		1AE143801FF5E0F000D2DEAD /* KKWebViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AE1437E1FF5E0EF00D2DEAD /* KKWebViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1AE143841FF5E1B600D2DEAD /* KKViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AE143821FF5E1B600D2DEAD /* KKViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1AE143851FF5E1B600D2DEAD /* KKViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AE143831FF5E1B600D2DEAD /* KKViewController.m */; };
+		AC1C214120A2646000307C61 /* KKAppStorage.h in Headers */ = {isa = PBXBuildFile; fileRef = AC1C213F20A2646000307C61 /* KKAppStorage.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AC1C214220A2646000307C61 /* KKAppStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = AC1C214020A2646000307C61 /* KKAppStorage.m */; };
 		AC8E5D8D20043E4200343B83 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = AC8E5D8C20043E4200343B83 /* AppDelegate.m */; };
 		AC8E5D9320043E4200343B83 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AC8E5D9120043E4200343B83 /* Main.storyboard */; };
 		AC8E5D9520043E4200343B83 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AC8E5D9420043E4200343B83 /* Assets.xcassets */; };
@@ -134,6 +136,8 @@
 		1AE1437F1FF5E0EF00D2DEAD /* KKWebViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KKWebViewController.m; sourceTree = "<group>"; };
 		1AE143821FF5E1B600D2DEAD /* KKViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KKViewController.h; sourceTree = "<group>"; };
 		1AE143831FF5E1B600D2DEAD /* KKViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KKViewController.m; sourceTree = "<group>"; };
+		AC1C213F20A2646000307C61 /* KKAppStorage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KKAppStorage.h; sourceTree = "<group>"; };
+		AC1C214020A2646000307C61 /* KKAppStorage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KKAppStorage.m; sourceTree = "<group>"; };
 		AC8E5D8920043E4200343B83 /* demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AC8E5D8B20043E4200343B83 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		AC8E5D8C20043E4200343B83 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -247,6 +251,8 @@
 				1ACA7C642004C37D001F3684 /* KKWebViewBridge.m */,
 				1AE0E260207F271F00DA897E /* KKWindow.h */,
 				1AE0E261207F271F00DA897E /* KKWindow.m */,
+				AC1C213F20A2646000307C61 /* KKAppStorage.h */,
+				AC1C214020A2646000307C61 /* KKAppStorage.m */,
 				1A0366241FF8E40500CD6C27 /* KKShell.h */,
 				1A0366251FF8E40500CD6C27 /* KKShell.m */,
 				1AE143351FF4956800D2DEAD /* Info.plist */,
@@ -303,6 +309,7 @@
 				1A9E3C791FF750770023B627 /* KKPageController.h in Headers */,
 				1A0366121FF8C95600CD6C27 /* KKWindowPageController.h in Headers */,
 				1AE143361FF4956800D2DEAD /* KKApplication.h in Headers */,
+				AC1C214120A2646000307C61 /* KKAppStorage.h in Headers */,
 				1AE143841FF5E1B600D2DEAD /* KKViewController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -492,6 +499,7 @@
 				1AE143561FF4A26200D2DEAD /* KKPageViewController.m in Sources */,
 				1ACA7C3E20046CEE001F3684 /* KKWebViewController.m in Sources */,
 				1A0366271FF8E40500CD6C27 /* KKShell.m in Sources */,
+				AC1C214220A2646000307C61 /* KKAppStorage.m in Sources */,
 				1A0366131FF8C95600CD6C27 /* KKWindowPageController.m in Sources */,
 				1AE0E263207F271F00DA897E /* KKWindow.m in Sources */,
 				1A9E3C7A1FF750770023B627 /* KKPageController.m in Sources */,

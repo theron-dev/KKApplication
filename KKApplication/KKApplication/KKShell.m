@@ -211,6 +211,18 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
             
             [fm createDirectoryAtPath:[path stringByAppendingPathComponent:version] withIntermediateDirectories:YES attributes:nil error:nil];
             
+            NSString * ver1 = [appInfo kk_getString:@"ver"];
+            NSString * ver2 = [data kk_getString:@"ver"];
+            
+            if(ver1 != nil && ver2 != nil && [ver1 isEqualToString:ver2]) {
+                
+                if(onload) {
+                    onload(url,[path stringByAppendingPathComponent:version]);
+                }
+                
+                return;
+            }
+            
             NSArray * items = [data kk_getValue:@"items"];
             
             if(![items isKindOfClass:[NSArray class]]) {
