@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 #import <KKApplication/KKApp.h>
+#import <KKApplication/KKAppStorage.h>
+#import <KKApplication/KKProtocol.h>
 
 @class KKShell;
 
@@ -45,19 +47,23 @@ typedef void (^KKShellOpenApplication)(KKApplication * app);
 
 @end
 
-@interface KKShell : NSObject<KKApplicationDelegate>
+@interface KKShell : KKAppStorage<KKApplicationDelegate>
 
+@property(nonatomic,strong) KKProtocol * protocol;
 @property(nonatomic,weak) id<KKShellDelegate> delegate;
+@property(nonatomic,strong) KKApplication * mainApplication;
 
 -(void) open:(NSURL *) url;
 
--(void) open:(NSURL *) url checkUpdate:(BOOL) checkUpdate;
+-(void) open:(NSURL *) url query:(NSDictionary *) query;
+
+-(void) open:(NSURL *) url query:(NSDictionary *) query checkUpdate:(BOOL) checkUpdate;
 
 -(BOOL) has:(NSURL *) url;
 
 -(void) update:(NSURL *) url;
 
--(void) openApplication:(KKApplication *) app;
+-(void) openApplication:(KKApplication *) app query:(NSDictionary *) query;
 
 +(KKShell *) main;
 

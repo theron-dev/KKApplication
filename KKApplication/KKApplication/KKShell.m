@@ -16,8 +16,21 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
 
 @synthesize delegate = _delegate;
 
+-(instancetype) init {
+    if((self = [super initWithBasePath:[NSHomeDirectory() stringByAppendingPathComponent:@"Library/kk"]])) {
+        
+    }
+    return self;
+}
+
 -(void) dealloc {
-    [[KKHttp main] cancel:self];
+    
+    if([(id) _delegate respondsToSelector:@selector(KKShell:application:cancel:)]
+       && [_delegate KKShell:self application:nil cancel:self]) {
+    } else {
+        [[KKHttp main] cancel:self];
+    }
+    
 }
 
 +(NSDictionary *) JOSNObject:(NSString *) path {
@@ -28,7 +41,14 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
     return nil;
 }
 
--(void) openApplication:(KKApplication *) app {
+-(KKProtocol *) protocol {
+    if(_protocol == nil) {
+        _protocol = [KKProtocol main];
+    }
+    return _protocol;
+}
+
+-(void) openApplication:(KKApplication *) app query:(NSDictionary *) query {
 
     if([(id)_delegate respondsToSelector:@selector(KKShell:openApplication:)]) {
         if([_delegate KKShell:self openApplication:app]) {
@@ -36,12 +56,19 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
         }
     }
     
+    if(_mainApplication == nil) {
+        _mainApplication = app;
+    }
+    
     app.delegate = self;
+    [app.observer set:@[@"query"] value:query];
+    
+    [self.protocol openApplication:app];
     
     [app run];
 }
 
--(void) open:(NSURL *) url path:(NSString *) path {
+-(void) open:(NSURL *) url query:(NSDictionary *) query path:(NSString *) path {
     
     NSDictionary * appInfo = [KKShell JOSNObject:[path stringByAppendingPathComponent:@"app.json"]];
     
@@ -51,7 +78,7 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
         
         if([_delegate KKShell:self open:url path:path appInfo:appInfo openApplication:^(KKApplication *app) {
             if(v){
-                [v openApplication:app];
+                [v openApplication:app query:query];
             }
         }]) {
             return;
@@ -68,7 +95,7 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
         [app.observer set:@[@"info"] value:appInfo];
     }
     
-    [self openApplication:app];
+    [self openApplication:app query:query];
     
 }
 
@@ -146,7 +173,12 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
             }
         };
         
-        [[KKHttp main] send:options weakObject:self];
+        if([(id)_delegate respondsToSelector:@selector(KKShell:application:send:weakObject:)]
+           && [_delegate KKShell:self application:nil send:options weakObject:self]) {
+            
+        } else {
+            [[KKHttp main] send:options weakObject:self];
+        }
         
     } else {
         @autoreleasepool{
@@ -167,7 +199,7 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
      onerror:(KKShellOnErrorFunc) onerror{
     
     NSString * key = [KKHttpOptions cacheKeyWithURL:[url absoluteString]];
-    NSString * path = [[NSHomeDirectory() stringByAppendingPathComponent:@"Library/kk"] stringByAppendingPathComponent:key];
+    NSString * path = [self.basePath stringByAppendingPathComponent:key];
     
     KKHttpOptions * options = [[KKHttpOptions alloc] initWithURL:[url absoluteString]];
     
@@ -261,19 +293,29 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
         }
     };
     
-    [[KKHttp main] send:options weakObject:self];
+    if([(id)_delegate respondsToSelector:@selector(KKShell:application:send:weakObject:)]
+       && [_delegate KKShell:self application:nil send:options weakObject:self]) {
+        
+    } else {
+        [[KKHttp main] send:options weakObject:self];
+    }
+    
 }
 
--(void) open:(NSURL *) url {
-    return [self open:url checkUpdate:NO];
+-(void) open:(NSURL *) url{
+    [self open:url query:nil checkUpdate:NO];
 }
 
--(void) open:(NSURL *) url checkUpdate:(BOOL) checkUpdate {
+-(void) open:(NSURL *) url query:(NSDictionary *) query {
+     [self open:url query:query checkUpdate:NO];
+}
+
+-(void) open:(NSURL *) url query:(NSDictionary *) query checkUpdate:(BOOL) checkUpdate {
     if([url isFileURL]) {
-        [self open:url path:[url path]];
+        [self open:url query:query path:[url path]];
     } else {
         NSString * key = [KKHttpOptions cacheKeyWithURL:[url absoluteString]];
-        NSString * path = [[NSHomeDirectory() stringByAppendingPathComponent:@"Library/kk"] stringByAppendingPathComponent:key];
+        NSString * path = [self.basePath stringByAppendingPathComponent:key];
         
         if(!checkUpdate) {
             NSFileManager * fm = [NSFileManager defaultManager];
@@ -293,7 +335,7 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
                     path = [path stringByAppendingPathComponent:version];
                     
                     if([fm fileExistsAtPath:[path stringByAppendingPathComponent:@"app.json"]]) {
-                        [self open:url path:path];
+                        [self open:url query:query path:path];
                         [self load:url
                             onload:nil
                         onprogress:nil
@@ -316,7 +358,7 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
             [self load:url
              
                 onload:^(NSURL *url, NSString *path) {
-                    [v open:url path:path];
+                    [v open:url query:query path:path];
                     if([(id) v.delegate respondsToSelector:@selector(KKShell:didLoading:path:)]) {
                         [v.delegate KKShell:v didLoading:url path:path];
                     }
@@ -358,7 +400,7 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
     } else {
         NSFileManager * fm = [NSFileManager defaultManager];
         NSString * key = [KKHttpOptions cacheKeyWithURL:[url absoluteString]];
-        NSString * path = [[NSHomeDirectory() stringByAppendingPathComponent:@"Library/kk"] stringByAppendingPathComponent:key];
+        NSString * path = [self.basePath stringByAppendingPathComponent:key];
         return [fm fileExistsAtPath:[path stringByAppendingPathComponent:@"app.json"]];
     }
 }
@@ -394,7 +436,7 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
                 }
             }
             
-            [self open:[NSURL URLWithString:v] checkUpdate:[[action kk_getValue:@"checkUpdate"] boolValue]];
+            [self open:[NSURL URLWithString:v] query:[action kk_getValue:@"query"] checkUpdate:[[action kk_getValue:@"checkUpdate"] boolValue]];
             
         }
         

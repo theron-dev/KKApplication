@@ -53,12 +53,13 @@
 @property(nonatomic,strong,readonly) KKViewContext * viewContext;
 @property(nonatomic,strong,readonly) NSBundle * bundle;
 @property(nonatomic,strong,readonly) NSString * path;
+@property(nonatomic,strong) id<KKHttp> http;
 
 -(instancetype) initWithBundle:(NSBundle *) bundle;
 
 -(instancetype) initWithBundle:(NSBundle *) bundle jsContext:(JSContext *) jsContext;
 
--(KKElement *) elementWithPath:(NSString *) path observer:(KKJSObserver *) observer;
+-(KKElement *) elementWithPath:(NSString *) path data:(KKJSObserver *) data;
 
 -(void) openlib:(NSString *) path;
 

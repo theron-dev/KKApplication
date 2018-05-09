@@ -11,6 +11,8 @@
 #import <KKHttp/KKHttp.h>
 #import <KKApplication/KKController.h>
 
+extern NSString * const KKViewControllerWillAppearNotification;
+
 @interface KKViewController : UIViewController<KKViewController>
 
 @property(nonatomic,strong,readonly) KKController * controller;
@@ -19,5 +21,6 @@
 -(IBAction) doCloseAction:(id)sender;
 
 +(Class) controllerClass;
+
 
 @end

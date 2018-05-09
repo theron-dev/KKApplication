@@ -12,6 +12,7 @@
 
 @interface KKPageViewController : KKViewController
 
+@property(nonatomic,strong) IBOutlet UIView * contentView;
 @property(nonatomic,strong,readonly) KKPageController * pageController;
 
 

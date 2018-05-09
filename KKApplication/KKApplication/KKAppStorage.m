@@ -46,7 +46,9 @@
  */
 -(NSDictionary *) appInfo {
     if( _appInfo == nil ){
-        
+        NSString * path = [[self.storage.basePath stringByAppendingPathComponent:self.key] stringByAppendingPathComponent:@"app.json"];
+        NSDictionary * v = [NSJSONSerialization JSONObjectWithData:[NSData dataWithContentsOfFile:path] options:NSJSONReadingMutableLeaves error:nil];
+        [self setAppInfo:v];
     }
     return _appInfo;
 }
@@ -55,7 +57,72 @@
  * 对应版本应用信息
  */
 -(NSDictionary *) appInfo:(NSString *) version {
+    NSDictionary * v = [_appInfoWithVersion valueForKey:version];
+    if(v == nil) {
+        NSString * path = [[[self.storage.basePath stringByAppendingPathComponent:self.key]
+                            stringByAppendingPathComponent:version] stringByAppendingPathComponent:@"app.json"];
+        v = [NSJSONSerialization JSONObjectWithData:[NSData dataWithContentsOfFile:path] options:NSJSONReadingMutableLeaves error:nil];
+        [self setAppInfo:v withVersion:version];
+    }
     return nil;
+}
+
+-(void) setAppInfo:(NSDictionary *) appInfo {
+    _appInfo = appInfo;
+}
+
+-(void) setAppInfo:(NSDictionary *) appInfo withVersion:(NSString *) withVersion {
+    if(appInfo != nil) {
+        if(_appInfoWithVersion == nil) {
+            _appInfoWithVersion = [[NSMutableDictionary alloc] initWithCapacity:4];
+        }
+        _appInfoWithVersion[withVersion] = appInfo;
+    }
+}
+
+/**
+ * 当前应用信息
+ */
+-(NSDictionary *) appInfoWithOnAppInfo:(KKAppStorageItemOnAppInfo) onAppInfo {
+    if(_appInfo == nil && onAppInfo != nil) {
+        
+        NSString * path = [[self.storage.basePath stringByAppendingPathComponent:self.key] stringByAppendingPathComponent:@"app.json"];
+        
+        __weak KKAppStorageItem * item = self;
+        
+        dispatch_async(KKHttpIODispatchQueue(), ^{
+            if(item) {
+                NSMutableDictionary * v = [NSJSONSerialization JSONObjectWithData:[NSData dataWithContentsOfFile:path] options:NSJSONReadingMutableLeaves error:nil];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [item setAppInfo:v];
+                });
+            }
+        });
+    }
+    return _appInfo;
+}
+
+/**
+ * 对应版本应用信息
+ */
+-(NSDictionary *) appInfo:(NSString *) version withOnAppInfo:(KKAppStorageItemOnAppInfo) onAppInfo {
+    NSDictionary * v = [_appInfoWithVersion valueForKey:version];
+    if(v == nil && onAppInfo != nil) {
+        
+        NSString * path = [[[self.storage.basePath stringByAppendingPathComponent:self.key] stringByAppendingPathComponent:version] stringByAppendingPathComponent:@"app.json"];
+        
+        __weak KKAppStorageItem * item = self;
+        
+        dispatch_async(KKHttpIODispatchQueue(), ^{
+            if(item) {
+                NSMutableDictionary * v = [NSJSONSerialization JSONObjectWithData:[NSData dataWithContentsOfFile:path] options:NSJSONReadingMutableLeaves error:nil];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [item setAppInfo:v withVersion:version];
+                });
+            }
+        });
+    }
+    return v;
 }
 
 -(void) removeVersion:(NSString *) version {
@@ -136,7 +203,8 @@
  */
 -(void) load {
     
-    NSMutableArray * appInfos = [NSMutableArray arrayWithCapacity:4];
+    NSMutableArray * items = [NSMutableArray arrayWithCapacity:4];
+    NSMutableDictionary * itemWithKey = [NSMutableDictionary dictionaryWithCapacity:4];
     
     NSFileManager * fm = [NSFileManager defaultManager];
     NSDirectoryEnumerator<NSString *> * e = [fm enumeratorAtPath:_basePath];
@@ -146,9 +214,25 @@
         if(attr != nil && [[attr fileType] isEqualToString:NSFileTypeDirectory]) {
             NSArray<NSString *> * versions = [self versionsWithPath:[_basePath stringByAppendingPathComponent:key]];
             KKAppStorageItem * item = [[KKAppStorageItem alloc] initWithStorage:self key:key modificationDate:[attr fileModificationDate] versions:versions];
-            [appInfos addObject:item];
+            [items addObject:item];
+            itemWithKey[key] = item;
         }
     }
+    
+    [items sortUsingComparator:^NSComparisonResult(id  obj1, id  obj2) {
+        NSComparisonResult r = [[(KKAppStorageItem *) obj1 modificationDate]
+                                compare:[(KKAppStorageItem *) obj2 modificationDate] ];
+        if(r == NSOrderedAscending) {
+            return NSOrderedDescending;
+        } else if(r == NSOrderedDescending) {
+            return NSOrderedAscending;
+        }
+        return NSOrderedSame;
+    }];
+    
+    _appItems = items;
+    _appItemWithKey = itemWithKey;
+    
 }
 
 -(NSArray<KKAppStorageItem *> *) items {

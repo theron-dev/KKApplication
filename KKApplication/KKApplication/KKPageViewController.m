@@ -39,6 +39,15 @@
     
 }
 
+-(UIView *) contentView {
+    if(_contentView == nil) {
+        _contentView = [[UIView alloc] initWithFrame:self.view.bounds];
+        [_contentView setAutoresizingMask:UIViewAutoresizingFlexibleWidth |UIViewAutoresizingFlexibleHeight];
+        [self.view insertSubview:_contentView atIndex:0];
+    }
+    return _contentView;
+}
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
