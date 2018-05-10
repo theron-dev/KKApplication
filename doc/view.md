@@ -12,6 +12,9 @@
   * hidden: 是否隐藏 true false
   * overflow: visible\(默认\) hidden
   * tint-color: 高亮颜色
+  * keepalive: 是否保持不被重用 true false
+  * animation: 动画名
+  * transform: translate(x,y,z) scale(x,y,z) rotateX(角度) rotateY(角度) rotateZ(角度)
 
 * text
 
@@ -77,6 +80,26 @@
   * 摄像头扫描二维码
   * capture: 是否开始扫描（true false）扫描完成会自动设置为 false
   * kk:oncapture: 绑定扫描成功事件 { text : "扫描内容" }
+* animation
+  * 动画
+  * name: 动画名称
+  * duration: 动画时间（毫秒）
+  * repeat-count: 重复次数
+  * autoreverses: 自动反转 true false
+  * delay: 延时 (毫秒)
+* animation &gt; anim:transform
+  * 变换矩阵
+  * translate(x,y,z) scale(x,y,z) rotateX(角度) rotateY(角度) rotateZ(角度)
+  * from: 开始值
+  * to: 目标值
+  * delay: 延时 (毫秒)
+  * duration: 动画时间（毫秒）
+* animation &gt; anim:opacity
+  * 透明度 0～1
+  * from: 开始值
+  * to: 目标值
+  * delay: 延时 (毫秒)
+  * duration: 动画时间（毫秒）
 
 #### 属性类型
 
