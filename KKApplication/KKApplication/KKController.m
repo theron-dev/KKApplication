@@ -28,22 +28,25 @@
 @synthesize query = _query;
 @synthesize path = _path;
 @synthesize jsApp = _jsApp;
+@synthesize asyncCaller = _asyncCaller;
 
 -(void) dealloc {
     [_http recycle];
     [_jsObserver recycle];
     [_jsApp recycle];
+    [_asyncCaller recycle];
 }
 
 -(void) recycle {
     [_jsObserver recycle];
     [_http recycle];
     [_jsApp recycle];
+    [_asyncCaller recycle];
     _http = nil;
     _jsObserver = nil;
     _jsApp = nil;
+    _asyncCaller = nil;
 }
-
 
 
 -(KKJSHttp *) http {
@@ -92,6 +95,12 @@
     return _query;
 }
 
+-(KKAsyncCaller *) asyncCaller {
+    if(_asyncCaller == nil) {
+        _asyncCaller = [[KKAsyncCaller alloc] init];
+    }
+    return _asyncCaller;
+}
 
 -(void) run {
     
@@ -107,7 +116,11 @@
                                                    @"page":self.jsObserver,
                                                    @"query":self.query,
                                                    @"path":self.path,
-                                                   @"app":self.jsApp
+                                                   @"app":self.jsApp,
+                                                   @"setTimeout":self.asyncCaller.SetTimeoutFunc,
+                                                   @"clearTimeout":self.asyncCaller.ClearTimeoutFunc,
+                                                   @"setInterval":self.asyncCaller.SetIntervalFunc,
+                                                   @"clearInterval":self.asyncCaller.ClearIntervalFunc,
                                                    }];
             
         } else {

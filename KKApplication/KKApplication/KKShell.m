@@ -217,6 +217,7 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
                      };
     options.type = KKHttpOptionsTypeJSON;
     options.method = KKHttpOptionsGET;
+    options.timeout = 30;
     
     options.onfail = ^(NSError *error, id weakObject) {
         if(onerror) {

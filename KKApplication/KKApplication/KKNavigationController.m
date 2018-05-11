@@ -52,11 +52,6 @@
             return NO;
         }
     }
-    if([super respondsToSelector:@selector(gestureRecognizerShouldBegin:)]) {
-        @try {
-            return [super gestureRecognizerShouldBegin:gestureRecognizer];
-        } @catch(NSException * ex) {}
-    }
     return YES;
 }
 

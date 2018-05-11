@@ -22,6 +22,8 @@ static unsigned char require_js[] = {0xa,0x28,0x66,0x75,0x6e,0x63,0x74,0x69,0x6f
 @synthesize jsContext = _jsContext;
 @synthesize jsObserver = _jsObserver;
 @synthesize http = _http;
+@synthesize asyncCaller = _asyncCaller;
+@synthesize jsHttp = _jsHttp;
 
 -(instancetype) initWithBundle:(NSBundle *) bundle {
     return [self initWithBundle:bundle jsContext:[[JSContext alloc] initWithVirtualMachine:[KKApplication jsVirtualMachine]]];
@@ -129,6 +131,22 @@ static unsigned char require_js[] = {0xa,0x28,0x66,0x75,0x6e,0x63,0x74,0x69,0x6f
 
 -(void) dealloc {
     [_jsObserver recycle];
+    [_asyncCaller recycle];
+    [_jsHttp recycle];
+}
+
+-(KKAsyncCaller *) asyncCaller {
+    if(_asyncCaller == nil) {
+        _asyncCaller = [[KKAsyncCaller alloc] init];
+    }
+    return _asyncCaller;
+}
+
+-(KKJSHttp *) jsHttp {
+    if(_jsHttp == nil) {
+        _jsHttp = [[KKJSHttp alloc] initWithHttp:self.http];
+    }
+    return _jsHttp;
 }
 
 -(KKObserver *) observer {
@@ -207,7 +225,7 @@ static unsigned char require_js[] = {0xa,0x28,0x66,0x75,0x6e,0x63,0x74,0x69,0x6f
         
         [execCode appendFormat:@"){%@})",code];
         
-        JSValue * fn = [self.jsContext evaluateScript:execCode];
+        JSValue * fn = [self.jsContext evaluateScript:execCode withSourceURL:[NSURL fileURLWithPath:v]];
         
         [fn callWithArguments:arguments];
         
@@ -505,7 +523,14 @@ static unsigned char require_js[] = {0xa,0x28,0x66,0x75,0x6e,0x63,0x74,0x69,0x6f
 }
 
 -(void) run {
-    [self exec:@"main.js" librarys:nil];
+    [self exec:@"main.js" librarys:@{
+                                     @"http":self.jsHttp,
+                                     @"app":self.jsObserver,
+                                     @"setTimeout":self.asyncCaller.SetTimeoutFunc,
+                                     @"clearTimeout":self.asyncCaller.ClearTimeoutFunc,
+                                     @"setInterval":self.asyncCaller.SetIntervalFunc,
+                                     @"clearInterval":self.asyncCaller.ClearIntervalFunc,
+                                     }];
 }
 
 -(void) KKViewContext:(KKViewContext *)viewContext willSend:(KKHttpOptions *)options {
@@ -556,8 +581,12 @@ static unsigned char require_js[] = {0xa,0x28,0x66,0x75,0x6e,0x63,0x74,0x69,0x6f
 }
 
 -(void) recycle {
+    [_jsHttp recycle];
+    [_asyncCaller recycle];
     [_jsObserver recycle];
     _jsObserver = nil;
+    _asyncCaller = nil;
+    _jsHttp = nil;
 }
 
 +(JSVirtualMachine *) jsVirtualMachine {
