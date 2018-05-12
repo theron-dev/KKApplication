@@ -19,6 +19,7 @@
 @property(nonatomic,strong,readonly) KKJSObserver * jsApp;
 @property(nonatomic,strong,readonly) KKJSHttp * http;
 @property(nonatomic,strong,readonly) KKAsyncCaller * asyncCaller;
+@property(nonatomic,strong,readonly) JSValue * jsWebSocket;
 @property(nonatomic,strong) NSDictionary * query;
 @property(nonatomic,strong) NSString * path;
 

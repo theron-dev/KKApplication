@@ -7,7 +7,8 @@
 //
 
 #import "KKController.h"
-
+#import <KKWebSocket/KKWebSocket.h>
+#import <KKWebSocket/KKJSWebSocket.h>
 
 @interface KKController() {
     NSNumber * _topbar_hidden;
@@ -16,6 +17,7 @@
     UIColor * _topbar_backgroundColor;
     UIImage * _topbar_backgroundImage;
     UIStatusBarStyle _topbar_barStyle;
+    NSMutableArray * _jsWebSockets;
 }
 
 @end
@@ -29,12 +31,16 @@
 @synthesize path = _path;
 @synthesize jsApp = _jsApp;
 @synthesize asyncCaller = _asyncCaller;
+@synthesize jsWebSocket = _jsWebSocket;
 
 -(void) dealloc {
     [_http recycle];
     [_jsObserver recycle];
     [_jsApp recycle];
     [_asyncCaller recycle];
+    for(KKJSWebSocket * v in _jsWebSockets){
+        [v recycle];
+    }
 }
 
 -(void) recycle {
@@ -46,8 +52,59 @@
     _jsObserver = nil;
     _jsApp = nil;
     _asyncCaller = nil;
+    for(KKJSWebSocket * v in _jsWebSockets){
+        [v recycle];
+    }
+    _jsWebSockets = nil;
 }
 
+-(JSValue *) jsWebSocket {
+    
+    if(_jsWebSocket == nil) {
+        
+        _jsWebSockets = [[NSMutableArray alloc] initWithCapacity:4];
+        
+        _jsWebSocket = [JSValue valueWithNewObjectInContext:self.application.jsContext];
+        
+        __weak NSMutableArray * items = _jsWebSockets;
+        
+        _jsWebSocket[@"alloc"] = ^JSValue*() {
+            
+            NSArray * arguments = [JSContext currentArguments];
+            NSString * url = nil;
+            NSString * protocol = nil;
+            
+            if([arguments count] >0) {
+                url = [arguments[0] toString];
+            }
+            
+            if([arguments count] >1) {
+                url = [arguments[1] toString];
+            }
+            
+            if(url) {
+                
+                KKWebSocket * webSocket = [[KKWebSocket alloc] initWithURL:[NSURL URLWithString:url]];
+
+                if(protocol != nil) {
+                    webSocket.headers[@"Sec-WebSocket-Protocol"] = protocol;
+                }
+                
+                KKJSWebSocket * jsWebSocket = [[KKJSWebSocket alloc] initWithWebSocket:webSocket];
+                
+                [_jsWebSockets addObject:jsWebSocket];
+                
+                [webSocket connect];
+                
+                return [JSValue valueWithObject:jsWebSocket inContext:[JSContext currentContext]];
+                
+            }
+            
+            return nil;
+        };
+    }
+    return _jsWebSocket;
+}
 
 -(KKJSHttp *) http {
     
@@ -121,6 +178,7 @@
                                                    @"clearTimeout":self.asyncCaller.ClearTimeoutFunc,
                                                    @"setInterval":self.asyncCaller.SetIntervalFunc,
                                                    @"clearInterval":self.asyncCaller.ClearIntervalFunc,
+                                                   @"WebSocket":self.jsWebSocket
                                                    }];
             
         } else {
