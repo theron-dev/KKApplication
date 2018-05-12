@@ -9,6 +9,7 @@
 #import <KKObserver/KKObserver.h>
 #import <KKView/KKView.h>
 #import <KKApplication/KKAsyncCaller.h>
+#import <KKWebSocket/KKJSWebSocket.h>
 
 #define KKApplicationKernel 1.0
 
@@ -56,6 +57,8 @@
 @property(nonatomic,strong,readonly) NSString * path;
 @property(nonatomic,strong) id<KKHttp> http;
 @property(nonatomic,strong) KKJSHttp * jsHttp;
+@property(nonatomic,strong) JSValue * jsWebSocket;
+
 @property(nonatomic,strong,readonly) KKAsyncCaller * asyncCaller;
 
 -(instancetype) initWithBundle:(NSBundle *) bundle;

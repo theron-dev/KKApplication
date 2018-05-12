@@ -92,7 +92,7 @@
                 
                 KKJSWebSocket * jsWebSocket = [[KKJSWebSocket alloc] initWithWebSocket:webSocket];
                 
-                [_jsWebSockets addObject:jsWebSocket];
+                [items addObject:jsWebSocket];
                 
                 [webSocket connect];
                 
