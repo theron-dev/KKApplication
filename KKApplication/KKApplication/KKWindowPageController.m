@@ -122,6 +122,8 @@
         [self.element.view removeFromSuperview];
     }
     
+    [self recycle];
+    
     objc_setAssociatedObject(self.element.view, "_KKWindowPageController", nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
