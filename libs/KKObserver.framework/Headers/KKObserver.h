@@ -50,11 +50,11 @@ typedef void (^KKObserverFunction)(id value,NSArray * changedKeys,void * context
 
 -(void) off:(KKObserverFunction) func keys:(NSArray *) keys context:(void *) context;
 
--(void) on:(NSArray *) keys fn:(JSValue *) func context:(JSValue *) context;
+-(void) on:(NSArray *) keys fn:(JSValue *) func context:(void *) context;
 
--(void) onEvaluateScript:(NSString *) evaluateScript fn:(JSValue *) func  context:(JSValue *) context;
+-(void) onEvaluateScript:(NSString *) evaluateScript fn:(JSValue *) func  context:(void *) context;
 
--(void) off:(NSArray *) keys fn:(JSValue *) func context:(JSValue *) context ;
+-(void) off:(NSArray *) keys fn:(JSValue *) func context:(void *) context ;
 
 -(id) evaluateScript:(NSString*) evaluateScript;
 

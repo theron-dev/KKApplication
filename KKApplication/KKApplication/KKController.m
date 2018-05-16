@@ -230,6 +230,7 @@
             if(v && title) {
                 
                 v.title = [title kk_stringValue];
+                v.navigationItem.title = [title kk_stringValue];
                 
             }
             

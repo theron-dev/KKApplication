@@ -26,15 +26,19 @@ JSExportAs(set,
            );
 
 JSExportAs(on,
-           -(void) on:(NSArray *) keys fn:(JSValue *) func context:(JSValue *) context
+           -(void) on:(NSArray *) keys fn:(JSValue *) func
            );
 
 JSExportAs(evaluate,
-           -(void) onEvaluateScript:(NSString *) evaluateScript fn:(JSValue *) func context:(JSValue *) context
+           -(void) onEvaluateScript:(NSString *) evaluateScript fn:(JSValue *) func
            );
 
 JSExportAs(off,
-           -(void) off:(NSArray *) keys fn:(JSValue *) func context:(JSValue *) context
+           -(void) off:(NSArray *) keys fn:(JSValue *) func 
+           );
+
+JSExportAs(evaluateScript,
+-(id) evaluateScript:(NSString*) evaluateScript
            );
 
 @end

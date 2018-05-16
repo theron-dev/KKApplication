@@ -29,4 +29,5 @@
 #import <KKView/KKKeyboardElement.h>
 #import <KKView/KKTopbarElement.h>
 #import <KKView/KKElementView.h>
-
+#import <KKView/KKAnimationElement.h>
+#import <KKView/KKInputElement.h>

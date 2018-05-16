@@ -14,7 +14,7 @@ extern "C" {
   
     
     enum KKPixelType {
-        KKPixelTypeAuto,KKPixelTypePercent,KKPixelTypePX,KKPixelTypeRPX
+        KKPixelTypeAuto,KKPixelTypePercent,KKPixelTypePX,KKPixelTypeRPX,KKPixelTypeVW,KKPixelTypeVH
     };
     
     struct KKPixel {
@@ -42,6 +42,8 @@ extern "C" {
     
     extern CGFloat KKPixelUnitPX(void);
     extern CGFloat KKPixelUnitRPX(void);
+    extern CGFloat KKPixelUnitVW(void);
+    extern CGFloat KKPixelUnitVH(void);
     
     extern CGFloat KKPixelValue(struct KKPixel v ,CGFloat baseOf,CGFloat defaultValue);
     
@@ -53,9 +55,13 @@ extern "C" {
     
     extern enum KKVerticalAlign KKVerticalAlignFromString(NSString * value);
     
+    extern NSTextAlignment KKTextAlignmentFromString(NSString * value);
+    
     NSString * NSStringFromKKPixel(struct KKPixel v);
     
     NSString * NSStringFromKKEdge(struct KKEdge v);
+    
+    extern CATransform3D KKTransformFromString(NSString * value);
     
 #ifdef   __cplusplus
 }

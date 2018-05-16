@@ -539,6 +539,15 @@ static unsigned char require_js[] = {0xa,0x28,0x66,0x75,0x6e,0x63,0x74,0x69,0x6f
 
     UIViewController * topViewController = [KKApplication topViewController:[UIApplication sharedApplication].keyWindow.rootViewController];
     
+    BOOL animated = YES;
+    
+    {
+        id v = [action kk_getValue:@"animated"];
+        if(v != nil) {
+            animated = [v boolValue];
+        }
+    }
+    
     if(topViewController == nil
        || [[action kk_getString:@"target"] isEqualToString:@"root"]) {
         
@@ -558,9 +567,9 @@ static unsigned char require_js[] = {0xa,0x28,0x66,0x75,0x6e,0x63,0x74,0x69,0x6f
                 [(UINavigationController *) topViewController popViewControllerAnimated:NO];
             }
         }
-        [(UINavigationController *) topViewController pushViewController:viewController animated:YES];
+        [(UINavigationController *) topViewController pushViewController:viewController animated:animated];
     } else {
-        [topViewController presentViewController:viewController animated:YES completion:nil];
+        [topViewController presentViewController:viewController animated:animated completion:nil];
     }
 }
 

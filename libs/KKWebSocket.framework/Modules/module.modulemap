@@ -1,0 +1,6 @@
+framework module KKWebSocket {
+  umbrella header "KKWebSocket.h"
+
+  export *
+  module * { export * }
+}
