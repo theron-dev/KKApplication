@@ -63,6 +63,8 @@ typedef void (^KKShellOpenApplication)(KKApplication * app);
 
 -(void) update:(NSURL *) url;
 
+-(BOOL) isLoading:(NSURL *) url;
+
 -(void) openApplication:(KKApplication *) app query:(NSDictionary *) query;
 
 +(KKShell *) main;

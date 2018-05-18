@@ -12,6 +12,16 @@ typedef void (^KKShellOnLoadFunc)(NSURL * url,NSString * path);
 typedef void (^KKShellOnProgressFunc)(NSURL * url,NSString * path,NSInteger count,NSInteger totalCount);
 typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
 
+@interface KKShell() {
+    NSMutableDictionary * _loadings;
+}
+
+-(void) setLoading:(NSString *) key ;
+
+-(void) cancelLoading:(NSString *) key;
+
+@end
+
 @implementation KKShell
 
 @synthesize delegate = _delegate;
@@ -105,13 +115,14 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
             vers:(NSDictionary *) vers
              url:(NSURL *) url
             path:(NSString *) path
+             key:(NSString *) key
           onload:(KKShellOnLoadFunc) onload
       onprogress:(KKShellOnProgressFunc) onprogress
          onerror:(KKShellOnErrorFunc) onerror {
  
     NSFileManager * fm = [NSFileManager defaultManager];
     NSString * version = [appInfo kk_getString:@"version"];
-    
+  
     __weak KKShell * shell = self;
     
     if(onprogress) {
@@ -126,13 +137,31 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
         if([item isKindOfClass:[NSDictionary class]]) {
             NSString * ver = [item kk_getString:@"ver"];
             item = [item kk_getString:@"path"];
+            if([(NSString *) item containsString:@".."]) {
+                [self cancelLoading:key];
+                if(onerror) {
+                    onerror(url,[NSError errorWithDomain:@"KKShell"
+                                                    code:-500
+                                                userInfo:[NSDictionary dictionaryWithObject:@"错误的资源路径" forKey:NSLocalizedDescriptionKey]]);
+                }
+                return;
+            }
             topath = [[path stringByAppendingPathComponent:version] stringByAppendingPathComponent:item];
             
             NSString * localVer = [vers valueForKey:item];
             
             if(localVer == nil || [localVer isEqualToString:ver]) {
                 if([fm fileExistsAtPath:topath]) {
-                    [shell itemLoad:index + 1 items:items appInfo:appInfo vers:vers url:url path:path onload:onload onprogress:onprogress onerror:onerror];
+                    [shell itemLoad:index + 1
+                              items:items
+                            appInfo:appInfo
+                               vers:vers
+                                url:url
+                               path:path
+                                key:key
+                             onload:onload
+                         onprogress:onprogress
+                            onerror:onerror];
                     return;
                 }
             }
@@ -140,12 +169,20 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
             item = [item kk_stringValue];
             topath = [[path stringByAppendingPathComponent:version] stringByAppendingPathComponent:item];
             if([fm fileExistsAtPath:topath]) {
-                [shell itemLoad:index + 1 items:items appInfo:appInfo vers:vers url:url path:path onload:onload onprogress:onprogress onerror:onerror];
+                [shell itemLoad:index + 1
+                          items:items
+                        appInfo:appInfo
+                           vers:vers
+                            url:url
+                           path:path
+                            key:key
+                         onload:onload
+                     onprogress:onprogress
+                        onerror:onerror];
                 return;
             }
         }
 
-        
         KKHttpOptions * options = [[KKHttpOptions alloc] initWithURL:[[NSURL URLWithString:item relativeToURL:url] absoluteString]];
         
         if([(id) shell.delegate respondsToSelector:@selector(KKShell:options:)]) {
@@ -155,6 +192,7 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
         options.type = KKHttpOptionsTypeURI;
         options.method = KKHttpOptionsGET;
         options.onfail = ^(NSError *error, id weakObject){
+            [weakObject cancelLoading:key];
             if(onerror) {
                 onerror(url,error);
             }
@@ -162,6 +200,7 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
         
         options.onload = ^(id data, NSError *error, id weakObject){
             if(error) {
+                [weakObject cancelLoading:key];
                 if(onerror) {
                     onerror(url,error);
                 }
@@ -169,7 +208,16 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
                 [fm createDirectoryAtPath:[topath stringByDeletingLastPathComponent] withIntermediateDirectories:YES attributes:nil error:nil];
                 [fm removeItemAtPath:topath error:nil];
                 [fm moveItemAtPath:(NSString *) data toPath:topath error:nil];
-                [shell itemLoad:index + 1 items:items appInfo:appInfo vers:vers url:url path:path onload:onload onprogress:onprogress onerror:onerror];
+                [shell itemLoad:index + 1
+                          items:items
+                        appInfo:appInfo
+                           vers:vers
+                            url:url
+                           path:path
+                            key:key
+                         onload:onload
+                     onprogress:onprogress
+                        onerror:onerror];
             }
         };
         
@@ -186,6 +234,7 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
             [data writeToFile:[[path stringByAppendingPathComponent:version] stringByAppendingPathComponent:@"app.json"] atomically:YES];
             [data writeToFile:[path stringByAppendingPathComponent:@"app.json"] atomically:YES];
         }
+        [self cancelLoading:key];
         if(onload) {
             onload(url,[path stringByAppendingPathComponent:version]);
         }
@@ -198,8 +247,17 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
   onprogress:(KKShellOnProgressFunc) onprogress
      onerror:(KKShellOnErrorFunc) onerror{
     
+    if([self isLoading:url]) {
+        if(onerror) {
+            onerror(url,[NSError errorWithDomain:@"KKShell" code:-600 userInfo:@{NSLocalizedDescriptionKey:@"正在下载中..."}]);
+        }
+        return;
+    }
+    
     NSString * key = [KKHttpOptions cacheKeyWithURL:[url absoluteString]];
     NSString * path = [self.basePath stringByAppendingPathComponent:key];
+    
+    [self setLoading:key];
     
     KKHttpOptions * options = [[KKHttpOptions alloc] initWithURL:[url absoluteString]];
     
@@ -217,9 +275,12 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
                      };
     options.type = KKHttpOptionsTypeJSON;
     options.method = KKHttpOptionsGET;
-    options.timeout = 30;
+    options.timeout = 10;
     
     options.onfail = ^(NSError *error, id weakObject) {
+        
+        [weakObject cancelLoading:key];
+        
         if(onerror) {
             onerror(url,error);
         }
@@ -227,10 +288,12 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
     
     options.onload = ^(id data, NSError *error, id weakObject) {
         if(error) {
+            [weakObject cancelLoading:key];
             if(onerror) {
                 onerror(url,error);
             }
         } else if(data == nil) {
+            [weakObject cancelLoading:key];
             if(onerror) {
                 onerror(url,[NSError errorWithDomain:@"KKShell" code:0 userInfo:[NSDictionary dictionaryWithObject:@"小应用加载错误" forKey:NSLocalizedDescriptionKey]]);
             }
@@ -249,6 +312,8 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
             
             if(ver1 != nil && ver2 != nil && [ver1 isEqualToString:ver2]) {
                 
+                [weakObject cancelLoading:key];
+                
                 if(onload) {
                     onload(url,[path stringByAppendingPathComponent:version]);
                 }
@@ -256,15 +321,33 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
                 return;
             }
             
-            NSArray * items = [data kk_getValue:@"items"];
+            NSArray * items = [data kk_getValue:@"res"];
             
             if(![items isKindOfClass:[NSArray class]]) {
                 items = nil;
             }
             
+            if(items == nil) {
+                items = [data kk_getValue:@"items"];
+                if(![items isKindOfClass:[NSArray class]]) {
+                    items = nil;
+                }
+            }
+            
             NSMutableDictionary * vers = nil;
             
-            NSArray* its = [appInfo kk_getValue:@"items"];
+            NSArray* its = [appInfo kk_getValue:@"res"];
+            
+            if(![its isKindOfClass:[NSArray class]]) {
+                its = nil;
+            }
+            
+            if(its == nil) {
+                its = [appInfo kk_getValue:@"items"];
+                if(![its isKindOfClass:[NSArray class]]) {
+                    its = nil;
+                }
+            }
             
             if([its isKindOfClass:[NSArray class]]) {
                 
@@ -288,6 +371,7 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
                       vers:vers
                        url:url
                       path:path
+                       key:key
                     onload:onload
                 onprogress:onprogress
                    onerror:onerror];
@@ -495,6 +579,23 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
     return NO;
 }
 
+-(BOOL) isLoading:(NSURL *) url {
+    if([url isFileURL]) {
+        return NO;
+    }
+    return [[_loadings valueForKey:[KKHttpOptions cacheKeyWithURL:[url absoluteString]]] boolValue];
+}
+
+-(void) setLoading:(NSString *) key {
+    if(_loadings == nil){
+        _loadings = [[NSMutableDictionary alloc] initWithCapacity:4];
+    }
+    [_loadings setValue:@(true) forKey:key];
+}
+
+-(void) cancelLoading:(NSString *) key {
+    [_loadings removeObjectForKey:key];
+}
 
 +(KKShell *) main {
     static KKShell * v = nil;
