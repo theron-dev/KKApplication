@@ -521,6 +521,18 @@ static unsigned char require_js[] = {0xa,0x28,0x66,0x75,0x6e,0x63,0x74,0x69,0x6f
         if([action kk_getString:@"scheme"]) {
             NSString * v = [action kk_getString:@"scheme"];
             if(![v hasPrefix:@"http://"] && ![v hasPrefix:@"https://"]) {
+                
+                UIViewController * topViewController = [KKApplication topViewController:[UIApplication sharedApplication].keyWindow.rootViewController];
+                
+                if([topViewController isKindOfClass:[UINavigationController class]]) {
+                    NSArray * vs = [[action kk_getString:@"back"] componentsSeparatedByString:@"/"];
+                    for(NSString * v in vs) {
+                        if([v isEqualToString:@".."]) {
+                            [(UINavigationController *) topViewController popViewControllerAnimated:NO];
+                        }
+                    }
+                }
+                
                 [[UIApplication sharedApplication] openURL:[NSURL URLWithString:v]];
                 return;
             }
