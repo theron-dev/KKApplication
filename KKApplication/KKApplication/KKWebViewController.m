@@ -561,7 +561,7 @@
     
     if(![url hasPrefix:@"http://"] && ![url hasPrefix:@"https://"] ) {
         
-        [[UIApplication sharedApplication] openURL:navigationAction.request.URL];
+        [self openURL:navigationAction.request.URL];
         
         decisionHandler(WKNavigationActionPolicyCancel);
         
@@ -569,6 +569,10 @@
     }
 
     decisionHandler(WKNavigationActionPolicyAllow);
+}
+
+-(BOOL) openURL:(NSURL *) url {
+    return [[UIApplication sharedApplication] openURL:url];
 }
 
 - (void)webView:(WKWebView *)webView didFinishNavigation:(null_unspecified WKNavigation *)navigation {
