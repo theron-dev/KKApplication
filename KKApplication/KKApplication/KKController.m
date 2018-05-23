@@ -8,7 +8,6 @@
 
 #import "KKController.h"
 #import <KKWebSocket/KKWebSocket.h>
-#import <KKWebSocket/KKJSWebSocket.h>
 
 @interface KKController() {
     NSNumber * _topbar_hidden;

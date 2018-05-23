@@ -9,7 +9,7 @@
 #import <KKObserver/KKObserver.h>
 #import <KKView/KKView.h>
 #import <KKApplication/KKAsyncCaller.h>
-#import <KKWebSocket/KKJSWebSocket.h>
+#import <KKWebSocket/KKWebSocket.h>
 
 #define KKApplicationKernel 1.0
 

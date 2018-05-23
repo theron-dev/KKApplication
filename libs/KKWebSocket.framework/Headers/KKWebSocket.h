@@ -7,6 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <KKWebSocket/KKWebSocket.h>
+#import <KKWebSocket/KKJSWebSocket.h>
 
 typedef enum KKWebSocketState {
     KKWebSocketStateNone,

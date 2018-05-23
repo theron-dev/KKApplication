@@ -7,7 +7,8 @@
 //
 
 #import <JavaScriptCore/JavaScriptCore.h>
-#import <KKWebSocket/KKWebSocket.h>
+
+@class KKWebSocket;
 
 @protocol KKJSWebSocket<JSExport>
 

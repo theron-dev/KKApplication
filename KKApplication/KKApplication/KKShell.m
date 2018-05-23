@@ -58,6 +58,10 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
     return _protocol;
 }
 
+-(void) openApplication:(KKApplication *) app {
+    [self openApplication:app query:nil];
+}
+
 -(void) openApplication:(KKApplication *) app query:(NSDictionary *) query {
 
     if([(id)_delegate respondsToSelector:@selector(KKShell:openApplication:)]) {
