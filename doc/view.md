@@ -61,6 +61,7 @@
   * overflow-x: scroll \(水平滚动\) 默认空
   * taptop: 下拉刷新位置 0px则 不触发 taptop事件
   * tapbottom: 加载更多位置 0px则 不触发 tapbottom事件
+  * scroll: (top bottom left right)固定 none 滚动
   * kk:ontaptop: 下拉刷新事件绑定
   * kk:ontapbototm: 加载更多事件绑定
   * kk:emit\_scrolltop: 发起滚动到顶部事件

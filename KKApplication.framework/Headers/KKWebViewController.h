@@ -26,6 +26,8 @@
 @property(nonatomic,strong) NSArray<NSHTTPCookie*> * cookies;
 @property(nonatomic,strong) WKProcessPool * processPool;
 
+-(BOOL) openURL:(NSURL *) url;
+
 -(WKWebView *) loadWebView;
 
 -(WKWebViewConfiguration *) loadWebViewConfiguration;
