@@ -203,7 +203,11 @@ static unsigned char require_js[] = {0xa,0x28,0x66,0x75,0x6e,0x63,0x74,0x69,0x6f
 
 -(KKJSHttp *) jsHttp {
     if(_jsHttp == nil) {
-        _jsHttp = [[KKJSHttp alloc] initWithHttp:self.http];
+        id<KKHttp> http = self.http;
+        if(http == nil) {
+            http = self.viewContext;
+        }
+        _jsHttp = [[KKJSHttp alloc] initWithHttp:http];
     }
     return _jsHttp;
 }
