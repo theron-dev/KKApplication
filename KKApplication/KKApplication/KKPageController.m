@@ -84,8 +84,25 @@ static CGSize KKPageControllerViewSize(UIView * view) {
                 if([changedKeys count] ==0 ||
                    [[v elementNeedsLayoutDataKeys] containsObject:changedKeys[0]]) {
                     
+                    BOOL animated = NO;
+                    
+                    id data = [v.observer get:changedKeys defaultValue:nil];
+                    
+                    if([data isKindOfClass:[NSDictionary class]]) {
+                        animated = KKBooleanValue([data kk_getValue:@"animated"]);
+                    }
+                    
+                    if(animated) {
+                        [UIView beginAnimations:nil context:nil];
+                        [UIView setAnimationDuration:0.3];
+                    }
+                    
                     [v.element layout:KKPageControllerViewSize(view)];
                     [v.element obtainView:view];
+                    
+                    if(animated) {
+                        [UIView commitAnimations];
+                    }
                 }
                 
             }

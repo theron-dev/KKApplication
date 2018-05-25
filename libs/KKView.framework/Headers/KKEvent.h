@@ -22,5 +22,7 @@ typedef void (^KKEventEmitterFunction) (KKEvent * event,void * context);
 
 -(void) emit:(NSString *) name event:(KKEvent *) event;
 
+-(BOOL) hasEvent:(NSString *) name;
+
 @end
 

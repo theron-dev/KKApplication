@@ -65,4 +65,6 @@
 
 -(NSMutableDictionary *) data;
 
+-(BOOL) hasEventBubble:(NSString *) name;
+
 @end
