@@ -112,7 +112,12 @@
     JSValue * fn = [timer.userInfo valueForKey:@"fn"];
     BOOL isFree = [[timer.userInfo valueForKey:@"free"] boolValue];
     
-    [fn callWithArguments:@[]];
+    @try{
+        [fn callWithArguments:@[]];
+    }
+    @catch(NSException * ex) {
+        NSLog(@"[KK] %@",ex);
+    }
     
     if(isFree) {
         [timer invalidate];

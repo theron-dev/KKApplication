@@ -37,11 +37,21 @@
 }
 
 -(void) UIApplicationDidEnterBackgroundNotification {
-    [self.onappbackground callWithArguments:@[]];
+    @try{
+        [self.onappbackground callWithArguments:@[]];
+    }
+    @catch(NSException * ex) {
+        NSLog(@"[KK] %@",ex);
+    }
 }
 
 -(void) UIApplicationWillEnterForegroundNotification {
-    [self.onappforeground callWithArguments:@[]];
+    @try{
+        [self.onappforeground callWithArguments:@[]];
+    }
+    @catch(NSException * ex) {
+        NSLog(@"[KK] %@",ex);
+    }
 }
 
 -(void) add:(NSString *) elementId name:(NSString *) name attrs:(NSDictionary *) attrs parentId:(NSString *) parentId {
@@ -144,7 +154,12 @@
                             KKElementEvent * e = (KKElementEvent *) event;
                             NSData * data = [NSJSONSerialization dataWithJSONObject:e.data options:NSJSONWritingPrettyPrinted error:nil];
                             if(v && v.onevent) {
-                                [v.onevent callWithArguments:@[elementId,name,data]];
+                                @try{
+                                    [v.onevent callWithArguments:@[elementId,name,data]];
+                                }
+                                @catch(NSException * ex) {
+                                    NSLog(@"[KK] %@",ex);
+                                }
                             }
                             if(v && v.onEvent) {
                                 v.onEvent(elementId, name, data);

@@ -228,7 +228,12 @@ static unsigned char require_js[] = {0xa,0x28,0x66,0x75,0x6e,0x63,0x74,0x69,0x6f
     
     JSValue * fn = [self.jsContext evaluateScript:[NSString stringWithFormat:@"(function(element,data){ %@ })",code]];
     
-    [fn callWithArguments:@[rootElement,data]];
+    @try{
+        [fn callWithArguments:@[rootElement,data]];
+    }
+    @catch(NSException * ex) {
+        NSLog(@"[KK] %@",ex);
+    }
     
     if(_viewContext) {
         [KKViewContext popContext];
@@ -290,7 +295,12 @@ static unsigned char require_js[] = {0xa,0x28,0x66,0x75,0x6e,0x63,0x74,0x69,0x6f
         
         JSValue * fn = [self.jsContext evaluateScript:execCode withSourceURL:[NSURL fileURLWithPath:v]];
         
-        [fn callWithArguments:arguments];
+        @try{
+            [fn callWithArguments:arguments];
+        }
+        @catch(NSException * ex) {
+            NSLog(@"[KK] %@",ex);
+        }
         
     } else {
         NSLog(@"[KK] Not Found %@",v);
