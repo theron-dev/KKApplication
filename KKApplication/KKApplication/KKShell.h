@@ -11,6 +11,13 @@
 #import <KKApplication/KKAppStorage.h>
 #import <KKApplication/KKProtocol.h>
 
+@interface KKAppLoading : NSObject
+
+@property(nonatomic,strong) NSString * url;
+@property(nonatomic,assign,getter=isCanceled) BOOL canceled;
+
+@end
+
 @class KKShell;
 
 typedef void (^KKShellOpenApplication)(KKApplication * app);
@@ -63,7 +70,7 @@ typedef void (^KKShellOpenApplication)(KKApplication * app);
 
 -(void) update:(NSURL *) url;
 
--(BOOL) isLoading:(NSURL *) url;
+-(KKAppLoading *) isLoading:(NSURL *) url;
 
 -(void) openApplication:(KKApplication *) app;
 

@@ -8,17 +8,25 @@
 
 #import "KKShell.h"
 
-typedef void (^KKShellOnLoadFunc)(NSURL * url,NSString * path);
+typedef void (^KKShellOnLoadFunc)(NSURL * url,NSString * path,KKAppLoading * loading);
 typedef void (^KKShellOnProgressFunc)(NSURL * url,NSString * path,NSInteger count,NSInteger totalCount);
 typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
+
+
+
+@implementation KKAppLoading
+
+@synthesize canceled = _canceled;
+
+@end
 
 @interface KKShell() {
     NSMutableDictionary * _loadings;
 }
 
--(void) setLoading:(NSString *) key ;
+-(KKAppLoading *) setLoading:(NSString *) key url:(NSURL *) url ;
 
--(void) cancelLoading:(NSString *) key;
+-(KKAppLoading *) cancelLoading:(NSString *) key;
 
 @end
 
@@ -72,6 +80,30 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
     
     if(_mainApplication == nil) {
         _mainApplication = app;
+        
+        __weak KKShell * shell = self;
+        
+        [_mainApplication.observer on:^(id value, NSArray *changedKeys, void *context) {
+            
+            if(shell && [value isKindOfClass:[NSDictionary class]]) {
+                NSString * url = [value kk_getString:@"url"];
+                if(url != nil) {
+                    NSURL * u = nil;
+                    @try {
+                        u = [NSURL URLWithString:url];
+                    }
+                    @catch(NSException *ex) {
+                        
+                    }
+                    
+                    if(u) {
+                        [shell isLoading:u].canceled = YES;
+                    }
+                }
+            }
+            
+        } keys:@[@"app",@"cancel"] context:nil];
+    
     }
     
     app.delegate = self;
@@ -238,10 +270,11 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
             [data writeToFile:[[path stringByAppendingPathComponent:version] stringByAppendingPathComponent:@"app.json"] atomically:YES];
             [data writeToFile:[path stringByAppendingPathComponent:@"app.json"] atomically:YES];
         }
-        [self cancelLoading:key];
+        KKAppLoading * loading = [self cancelLoading:key];
         if(onload) {
-            onload(url,[path stringByAppendingPathComponent:version]);
+            onload(url,[path stringByAppendingPathComponent:version],loading);
         }
+        
     }
     
 }
@@ -250,18 +283,18 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
       onload:(KKShellOnLoadFunc) onload
   onprogress:(KKShellOnProgressFunc) onprogress
      onerror:(KKShellOnErrorFunc) onerror{
+
+    KKAppLoading * loading = [self isLoading:url];
     
-    if([self isLoading:url]) {
-        if(onerror) {
-            onerror(url,[NSError errorWithDomain:@"KKShell" code:-600 userInfo:@{NSLocalizedDescriptionKey:@"正在下载中..."}]);
-        }
+    if(loading) {
+        loading.canceled = NO;
         return;
     }
     
     NSString * key = [KKHttpOptions cacheKeyWithURL:[url absoluteString]];
     NSString * path = [self.basePath stringByAppendingPathComponent:key];
     
-    [self setLoading:key];
+    loading = [self setLoading:key url:url];
     
     KKHttpOptions * options = [[KKHttpOptions alloc] initWithURL:[url absoluteString]];
     
@@ -319,7 +352,7 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
                 [weakObject cancelLoading:key];
                 
                 if(onload) {
-                    onload(url,[path stringByAppendingPathComponent:version]);
+                    onload(url,[path stringByAppendingPathComponent:version],loading);
                 }
                 
                 return;
@@ -446,8 +479,10 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
             __weak KKShell * v = self;
             [self load:url
              
-                onload:^(NSURL *url, NSString *path) {
-                    [v open:url query:query path:path];
+                onload:^(NSURL *url, NSString *path,KKAppLoading * loading) {
+                    if(loading == nil || !loading.canceled) {
+                        [v open:url query:query path:path];
+                    }
                     if([(id) v.delegate respondsToSelector:@selector(KKShell:didLoading:path:)]) {
                         [v.delegate KKShell:v didLoading:url path:path];
                     }
@@ -583,22 +618,32 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
     return NO;
 }
 
--(BOOL) isLoading:(NSURL *) url {
+-(KKAppLoading *) isLoading:(NSURL *) url {
     if([url isFileURL]) {
-        return NO;
+        return nil;
     }
-    return [[_loadings valueForKey:[KKHttpOptions cacheKeyWithURL:[url absoluteString]]] boolValue];
+    return [_loadings valueForKey:[KKHttpOptions cacheKeyWithURL:[url absoluteString]]];
 }
 
--(void) setLoading:(NSString *) key {
+-(KKAppLoading *) setLoading:(NSString *) key url:(NSURL *) url {
     if(_loadings == nil){
         _loadings = [[NSMutableDictionary alloc] initWithCapacity:4];
     }
-    [_loadings setValue:@(true) forKey:key];
+    KKAppLoading * loading = [_loadings valueForKey:key];
+    if(loading == nil) {
+        loading = [[KKAppLoading alloc] init];
+        loading.url = [url absoluteString];
+        [_loadings setValue:loading forKey:key];
+    }
+    return loading;
 }
 
--(void) cancelLoading:(NSString *) key {
-    [_loadings removeObjectForKey:key];
+-(KKAppLoading *) cancelLoading:(NSString *) key {
+    KKAppLoading * loading = [_loadings valueForKey:key];
+    if(loading != nil) {
+        [_loadings removeObjectForKey:key];
+    }
+    return loading;
 }
 
 +(KKShell *) main {
