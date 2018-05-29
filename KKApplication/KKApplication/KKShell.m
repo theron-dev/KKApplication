@@ -83,7 +83,7 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
         
         __weak KKShell * shell = self;
         
-        [_mainApplication.observer on:^(id value, NSArray *changedKeys, void *context) {
+        [app.observer on:^(id value, NSArray *changedKeys, void *context) {
             
             if(shell && [value isKindOfClass:[NSDictionary class]]) {
                 NSString * url = [value kk_getString:@"url"];
@@ -136,6 +136,7 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
     [app.observer set:@[@"url"] value:[url absoluteString]];
     [app.observer set:@[@"path"] value:path];
     [app.observer set:@[@"key"] value:[KKHttpOptions cacheKeyWithURL:[url absoluteString]]];
+    [app.observer set:@[@"query"] value:query];
     
     if(appInfo != nil ){
         [app.observer set:@[@"info"] value:appInfo];
