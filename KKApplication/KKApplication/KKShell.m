@@ -78,11 +78,12 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
         }
     }
     
+    __weak KKShell * shell = self;
+    
     if(_mainApplication == nil) {
+        
         _mainApplication = app;
-        
-        __weak KKShell * shell = self;
-        
+
         [app.observer on:^(id value, NSArray *changedKeys, void *context) {
             
             if(shell && [value isKindOfClass:[NSDictionary class]]) {
@@ -103,8 +104,32 @@ typedef void (^KKShellOnErrorFunc)(NSURL * url,NSError * error);
             }
             
         } keys:@[@"app",@"cancel"] context:nil];
-    
+        
     }
+    
+    [app.observer on:^(id value, NSArray *changedKeys, void *context) {
+        
+        if(shell && [value isKindOfClass:[NSDictionary class]]) {
+            NSString * url = [value kk_getString:@"url"];
+            if(url != nil) {
+                NSURL * u = nil;
+                
+                @try {
+                    u = [NSURL URLWithString:url];
+                }
+                @catch(NSException *ex) {}
+                
+                BOOL checkUpdate =  KKBooleanValue([value kk_getValue:@"checkUpdate"]);
+                
+                if(u) {
+                    if(checkUpdate || ![shell has:u]) {
+                        [shell update:u];
+                    }
+                }
+            }
+        }
+        
+    } keys:@[@"app",@"update"] context:nil];
     
     app.delegate = self;
     [app.observer set:@[@"query"] value:query];
