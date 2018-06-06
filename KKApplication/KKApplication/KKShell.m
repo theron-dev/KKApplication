@@ -197,7 +197,6 @@
     };
     
     loading.onerror = ^(NSURL *url, NSError *error) {
-        NSLog(@"[KK] [APP] %@ %@",[url absoluteString],[error localizedDescription]);
         [shell cancelLoading:key];
         if(shell && onload != nil) {
             if([(id)shell.delegate respondsToSelector:@selector(KKShell:didFailWithError:url:)]) {
@@ -223,6 +222,7 @@
     
     [self setLoading:key loading:loading];
     
+
     [loading start];
     
     return loading;
@@ -235,6 +235,8 @@
         _query[@"appid"] = [[main infoDictionary] valueForKey:@"CFBundleIdentifier"];
         _query[@"version"] = [[main infoDictionary] valueForKey:@"CFBundleShortVersionString"];
         _query[@"kernel"] = [NSString stringWithFormat:@"%g", KKApplicationKernel];
+        _query[@"model"] = [[UIDevice currentDevice] model];
+        _query[@"sdk"] = [[UIDevice currentDevice] systemVersion];
         _query[@"platform"] = @"ios";
     }
     return _query;

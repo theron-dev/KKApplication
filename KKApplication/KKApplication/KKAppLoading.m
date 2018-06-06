@@ -24,12 +24,18 @@
 }
 
 -(void) onError:(NSError *)error {
+    
+    NSLog(@"[KK] [APP] [ERROR] %@",[error localizedDescription]);
+    
     if(_onerror != nil) {
         _onerror(_URL,error);
     }
 }
 
 -(void) onLoad:(NSString *) path {
+    
+    NSLog(@"[KK] [APP] [OK] %@ %@",_url,_path);
+    
     if(_onload != nil) {
         _onload(_URL,path,self);
     }
@@ -232,6 +238,8 @@
             }
         };
         
+        NSLog(@"[KK] [APP] %@",options.absoluteUrl);
+        
         _http(options);
         
     } else {
@@ -352,6 +360,8 @@
             [loading onAppInfo:data];
         }
     };
+    
+    NSLog(@"[KK] [APP] [LOADING] %@",options.absoluteUrl);
     
     _http(options);
     
