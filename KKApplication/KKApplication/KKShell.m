@@ -173,18 +173,8 @@
     NSString * key = [KKHttpOptions cacheKeyWithURL:[url absoluteString]];
     
     loading = [[KKAppLoading alloc] initWithURL:[url absoluteString] path:[self.basePath stringByAppendingPathComponent:key] http:^(KKHttpOptions *options) {
-        
-        if(shell) {
-            if([(id) shell.delegate respondsToSelector:@selector(KKShell:application:send:weakObject:)]) {
-                [shell.delegate KKShell:shell application:nil send:options weakObject:shell];
-            } else {
-                [[KKHttp main] send:options weakObject:shell];
-            }
-        }
-        
+        [[KKHttp main] send:options weakObject:shell];
     }];
-    
-    loading.query = self.query;
     
     loading.onload = ^(NSURL *url, NSString *path, KKAppLoading *loading) {
         [shell cancelLoading:key];
@@ -226,20 +216,6 @@
     [loading start];
     
     return loading;
-}
-
--(NSMutableDictionary *) query {
-    if(_query == nil) {
-        _query = [[NSMutableDictionary alloc] initWithCapacity:4];
-        NSBundle * main = [NSBundle mainBundle];
-        _query[@"appid"] = [[main infoDictionary] valueForKey:@"CFBundleIdentifier"];
-        _query[@"version"] = [[main infoDictionary] valueForKey:@"CFBundleShortVersionString"];
-        _query[@"kernel"] = [NSString stringWithFormat:@"%g", KKApplicationKernel];
-        _query[@"model"] = [[UIDevice currentDevice] model];
-        _query[@"sdk"] = [[UIDevice currentDevice] systemVersion];
-        _query[@"platform"] = @"ios";
-    }
-    return _query;
 }
 
 -(void) open:(NSURL *) url{

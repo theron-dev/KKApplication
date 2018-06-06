@@ -342,7 +342,6 @@
     
     KKHttpOptions * options = [[KKHttpOptions alloc] initWithURL:[_URL absoluteString]];
     
-    options.data = self.query;
     options.type = KKHttpOptionsTypeJSON;
     options.method = KKHttpOptionsGET;
     options.timeout = 10;

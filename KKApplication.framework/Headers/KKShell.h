@@ -53,7 +53,6 @@ typedef void (^KKShellOpenApplication)(KKApplication * app);
 @property(nonatomic,strong) KKProtocol * protocol;
 @property(nonatomic,weak) id<KKShellDelegate> delegate;
 @property(nonatomic,strong) KKApplication * mainApplication;
-@property(nonatomic,strong) NSMutableDictionary * query;
 
 -(void) open:(NSURL *) url;
 

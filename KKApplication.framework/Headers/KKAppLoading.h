@@ -24,7 +24,6 @@ typedef void (^KKAppLoadingSendFunc)(KKHttpOptions * options);
 @property(nonatomic,strong,readonly) NSString * key;
 @property(nonatomic,strong,readonly) NSString * path;
 
-@property(nonatomic,strong) NSDictionary * query;
 @property(nonatomic,assign,getter=isCanceled) BOOL canceled;
 @property(nonatomic,strong) KKAppLoadingOnLoadFunc onload;
 @property(nonatomic,strong) KKAppLoadingOnProgressFunc onprogress;
