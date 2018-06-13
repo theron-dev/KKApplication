@@ -55,6 +55,7 @@ static unsigned char require_js[] = {0xa,0x28,0x66,0x75,0x6e,0x63,0x74,0x69,0x6f
             
             [kk setValue:@(KKApplicationKernel) forProperty:@"kernel"];
             [kk setValue:@"ios" forProperty:@"platform"];
+            [kk setValue:[[NSLocale currentLocale] localeIdentifier] forProperty:@"lang"];
             
             [kk setValue:^NSString *(NSString *path){
 

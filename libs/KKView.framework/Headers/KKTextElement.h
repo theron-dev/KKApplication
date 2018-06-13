@@ -26,6 +26,9 @@
 @property(nonatomic,strong) UIFont * font;
 @property(nonatomic,strong,readonly) NSString * text;
 
+@property(nonatomic,strong) UIColor * strokeColor;
+@property(nonatomic,assign) struct KKPixel strokeSpacing;
+
 @end
 
 @interface KKTextElement : KKViewElement
@@ -39,6 +42,9 @@
 @property(nonatomic,strong) UIFont * font;
 @property(nonatomic,strong,readonly) NSAttributedString * attributedString;
 @property(nonatomic,strong,readonly) NSString * text;
+
+@property(nonatomic,strong) UIColor * strokeColor;
+@property(nonatomic,assign) struct KKPixel strokeSpacing;
 
 -(CGRect) bounds:(CGSize) size;
 
