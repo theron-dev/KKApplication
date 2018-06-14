@@ -148,7 +148,9 @@
     
     [app.observer set:@[@"url"] value:[url absoluteString]];
     [app.observer set:@[@"path"] value:path];
-    [app.observer set:@[@"key"] value:[KKHttpOptions cacheKeyWithURL:[url absoluteString]]];
+    if(![url isFileURL]) {
+        [app.observer set:@[@"key"] value:[KKHttpOptions cacheKeyWithURL:[url absoluteString]]];
+    }
     [app.observer set:@[@"query"] value:query];
     
     if(appInfo != nil ){

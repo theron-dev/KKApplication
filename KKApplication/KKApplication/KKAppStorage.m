@@ -36,7 +36,7 @@
         _storage = storage;
         _key = key;
         _modificationDate = modificationDate;
-        _versions= [NSMutableArray arrayWithArray:_versions];
+        _versions= [NSMutableArray arrayWithArray:versions];
     }
     return self;
 }
@@ -47,8 +47,11 @@
 -(NSDictionary *) appInfo {
     if( _appInfo == nil ){
         NSString * path = [[self.storage.basePath stringByAppendingPathComponent:self.key] stringByAppendingPathComponent:@"app.json"];
-        NSDictionary * v = [NSJSONSerialization JSONObjectWithData:[NSData dataWithContentsOfFile:path] options:NSJSONReadingMutableLeaves error:nil];
-        [self setAppInfo:v];
+        NSData * data = [NSData dataWithContentsOfFile:path];
+        if(data) {
+            NSDictionary * v = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:nil];
+            [self setAppInfo:v];
+        }
     }
     return _appInfo;
 }
@@ -61,10 +64,15 @@
     if(v == nil) {
         NSString * path = [[[self.storage.basePath stringByAppendingPathComponent:self.key]
                             stringByAppendingPathComponent:version] stringByAppendingPathComponent:@"app.json"];
-        v = [NSJSONSerialization JSONObjectWithData:[NSData dataWithContentsOfFile:path] options:NSJSONReadingMutableLeaves error:nil];
-        [self setAppInfo:v withVersion:version];
+        
+        NSData * data = [NSData dataWithContentsOfFile:path];
+        
+        if(data!= nil) {
+            v = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:nil];
+            [self setAppInfo:v withVersion:version];
+        }
     }
-    return nil;
+    return v;
 }
 
 -(void) setAppInfo:(NSDictionary *) appInfo {
@@ -177,10 +185,9 @@
 -(NSArray *) versionsWithPath:(NSString *) path {
     NSMutableArray * vs = [NSMutableArray arrayWithCapacity:4];
     NSFileManager * fm = [NSFileManager defaultManager];
-    NSDirectoryEnumerator<NSString *> * e = [fm enumeratorAtPath:path];
-    NSString * key ;
-    while((key = [e nextObject])) {
-        NSDictionary * attr = [e directoryAttributes];
+    
+    for(NSString * key in [fm contentsOfDirectoryAtPath:path error:nil]) {
+        NSDictionary * attr = [fm attributesOfItemAtPath:[path stringByAppendingPathComponent:key] error:nil];
         if(attr != nil && [[attr fileType] isEqualToString:NSFileTypeDirectory]) {
             [vs addObject:key];
         }
@@ -207,10 +214,10 @@
     NSMutableDictionary * itemWithKey = [NSMutableDictionary dictionaryWithCapacity:4];
     
     NSFileManager * fm = [NSFileManager defaultManager];
-    NSDirectoryEnumerator<NSString *> * e = [fm enumeratorAtPath:_basePath];
-    NSString * key ;
-    while((key = [e nextObject])) {
-        NSDictionary * attr = [e directoryAttributes];
+    
+
+    for(NSString * key in [fm contentsOfDirectoryAtPath:_basePath error:nil]) {
+        NSDictionary * attr = [fm attributesOfItemAtPath:[_basePath stringByAppendingPathComponent:key] error:nil];
         if(attr != nil && [[attr fileType] isEqualToString:NSFileTypeDirectory]) {
             NSArray<NSString *> * versions = [self versionsWithPath:[_basePath stringByAppendingPathComponent:key]];
             KKAppStorageItem * item = [[KKAppStorageItem alloc] initWithStorage:self key:key modificationDate:[attr fileModificationDate] versions:versions];
