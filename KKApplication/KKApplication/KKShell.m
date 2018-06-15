@@ -200,11 +200,18 @@
     loading.onprogress = ^(NSURL *url, NSString *path, NSInteger count, NSInteger totalCount) {
         if(shell && onload != nil) {
             if([(id)shell.delegate respondsToSelector:@selector(KKShell:loading:path:count:totalCount:)]) {
-                [shell.delegate KKShell:self loading:url path:path count:count totalCount:totalCount];
+                [shell.delegate KKShell:shell loading:url path:path count:count totalCount:totalCount];
             }
         }
     };
 
+    loading.onappinfo = ^(NSURL *url, NSString *path, KKAppLoading *loading, id appInfo) {
+        if(shell && onload != nil) {
+            if([(id)shell.delegate respondsToSelector:@selector(KKShell:loading:path:appInfo:)]) {
+                [shell.delegate KKShell:shell loading:url path:path appInfo:appInfo];
+            }
+        }
+    };
     
     if(onload != nil) {
         if([(id)self.delegate respondsToSelector:@selector(KKShell:willLoading:)]) {

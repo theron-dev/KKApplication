@@ -57,6 +57,10 @@
 
 -(void) onAppInfo:(id) data{
     
+    if(_onappinfo) {
+        _onappinfo(_URL,_path,self,data);
+    }
+    
     NSString * version = [data kk_getString:@"version"];
     NSString * ver = [data kk_getString:@"ver"];
     

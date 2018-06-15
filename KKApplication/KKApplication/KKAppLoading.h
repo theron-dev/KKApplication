@@ -12,6 +12,7 @@
 @class KKAppLoading;
 
 typedef void (^KKAppLoadingOnLoadFunc)(NSURL * url,NSString * path,KKAppLoading * loading);
+typedef void (^KKAppLoadingOnAppInfoFunc)(NSURL * url,NSString * path,KKAppLoading * loading,id appInfo);
 typedef void (^KKAppLoadingOnProgressFunc)(NSURL * url,NSString * path,NSInteger count,NSInteger totalCount);
 typedef void (^KKAppLoadingOnErrorFunc)(NSURL * url,NSError * error);
 typedef void (^KKAppLoadingSendFunc)(KKHttpOptions * options);
@@ -28,6 +29,7 @@ typedef void (^KKAppLoadingSendFunc)(KKHttpOptions * options);
 @property(nonatomic,strong) KKAppLoadingOnLoadFunc onload;
 @property(nonatomic,strong) KKAppLoadingOnProgressFunc onprogress;
 @property(nonatomic,strong) KKAppLoadingOnErrorFunc onerror;
+@property(nonatomic,strong) KKAppLoadingOnAppInfoFunc onappinfo;
 
 -(instancetype) initWithURL:(NSString *) url path:(NSString *) path http:(KKAppLoadingSendFunc) http;
 
