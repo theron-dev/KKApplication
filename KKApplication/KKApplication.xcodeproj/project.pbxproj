@@ -42,6 +42,8 @@
 		1A9E3CB31FF878CE0023B627 /* KKObserver.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A9E3CB51FF878CE0023B627 /* KKObserver.framework */; };
 		1A9E3CB61FF878CE0023B627 /* KKView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AE143441FF4959D00D2DEAD /* KKView.framework */; };
 		1A9E3CBA1FF8799E0023B627 /* KKDylib.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A9E3CB81FF8799E0023B627 /* KKDylib.m */; };
+		1AA7918420D8B5C800121878 /* KKGeoLocation.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AA7918220D8B5C800121878 /* KKGeoLocation.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1AA7918520D8B5C800121878 /* KKGeoLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AA7918320D8B5C800121878 /* KKGeoLocation.m */; };
 		1AC8943A20A5572B00F3E4CA /* KKAsyncCaller.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AC8943820A5572B00F3E4CA /* KKAsyncCaller.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1AC8943B20A5572B00F3E4CA /* KKAsyncCaller.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AC8943920A5572B00F3E4CA /* KKAsyncCaller.m */; };
 		1ACA7C3E20046CEE001F3684 /* KKWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AE1437F1FF5E0EF00D2DEAD /* KKWebViewController.m */; };
@@ -144,6 +146,8 @@
 		1A9E3CB41FF878CE0023B627 /* KKHttp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = KKHttp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A9E3CB51FF878CE0023B627 /* KKObserver.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = KKObserver.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A9E3CB81FF8799E0023B627 /* KKDylib.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KKDylib.m; sourceTree = "<group>"; };
+		1AA7918220D8B5C800121878 /* KKGeoLocation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KKGeoLocation.h; sourceTree = "<group>"; };
+		1AA7918320D8B5C800121878 /* KKGeoLocation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KKGeoLocation.m; sourceTree = "<group>"; };
 		1AC8943820A5572B00F3E4CA /* KKAsyncCaller.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KKAsyncCaller.h; sourceTree = "<group>"; };
 		1AC8943920A5572B00F3E4CA /* KKAsyncCaller.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KKAsyncCaller.m; sourceTree = "<group>"; };
 		1ACA7C632004C37D001F3684 /* KKWebViewBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KKWebViewBridge.h; sourceTree = "<group>"; };
@@ -289,6 +293,8 @@
 				1A1438A520C679D9001DA906 /* KKAppLoading.m */,
 				1A0366241FF8E40500CD6C27 /* KKShell.h */,
 				1A0366251FF8E40500CD6C27 /* KKShell.m */,
+				1AA7918220D8B5C800121878 /* KKGeoLocation.h */,
+				1AA7918320D8B5C800121878 /* KKGeoLocation.m */,
 				1AE143351FF4956800D2DEAD /* Info.plist */,
 			);
 			path = KKApplication;
@@ -351,6 +357,7 @@
 				1AE143801FF5E0F000D2DEAD /* KKWebViewController.h in Headers */,
 				1A1438A620C679D9001DA906 /* KKAppLoading.h in Headers */,
 				1A9E3C791FF750770023B627 /* KKPageController.h in Headers */,
+				1AA7918420D8B5C800121878 /* KKGeoLocation.h in Headers */,
 				1A0366121FF8C95600CD6C27 /* KKWindowPageController.h in Headers */,
 				1AC8943A20A5572B00F3E4CA /* KKAsyncCaller.h in Headers */,
 				1AE143361FF4956800D2DEAD /* KKApplication.h in Headers */,
@@ -555,6 +562,7 @@
 				1A4F849A20A2BD6D007ED70E /* KKProtocol.m in Sources */,
 				1AC8943B20A5572B00F3E4CA /* KKAsyncCaller.m in Sources */,
 				1ACA7C662004C37D001F3684 /* KKWebViewBridge.m in Sources */,
+				1AA7918520D8B5C800121878 /* KKGeoLocation.m in Sources */,
 				1AE1434A1FF495BE00D2DEAD /* KKApp.m in Sources */,
 				1AE143561FF4A26200D2DEAD /* KKPageViewController.m in Sources */,
 				1ACA7C3E20046CEE001F3684 /* KKWebViewController.m in Sources */,

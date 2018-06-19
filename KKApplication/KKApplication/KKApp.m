@@ -20,6 +20,8 @@ static unsigned char require_js[] = {0xa,0x28,0x66,0x75,0x6e,0x63,0x74,0x69,0x6f
 
 @interface KKApplication(){
     NSMutableArray * _jsWebSockets;
+    NSMutableArray * _objectRecycles;
+    NSMutableDictionary * _objectRecyclesForKey;
 }
 
 @end
@@ -142,8 +144,20 @@ static unsigned char require_js[] = {0xa,0x28,0x66,0x75,0x6e,0x63,0x74,0x69,0x6f
     [_jsObserver recycle];
     [_asyncCaller recycle];
     [_jsHttp recycle];
-    for(KKJSWebSocket * v in _jsWebSockets){
-        [v recycle];
+    {
+        for(KKJSWebSocket * v in _jsWebSockets){
+            [v recycle];
+        }
+    }
+    {
+        for(id<KKObjectRecycle> v in _objectRecycles) {
+            [v recycle];
+        }
+    }
+    {
+        for(id<KKObjectRecycle> v in [_objectRecyclesForKey allValues]) {
+            [v recycle];
+        }
     }
 }
 
@@ -682,10 +696,60 @@ static unsigned char require_js[] = {0xa,0x28,0x66,0x75,0x6e,0x63,0x74,0x69,0x6f
     _jsObserver = nil;
     _asyncCaller = nil;
     _jsHttp = nil;
-    for(KKJSWebSocket * v in _jsWebSockets){
+    {
+        for(KKJSWebSocket * v in _jsWebSockets){
+            [v recycle];
+        }
+        _jsWebSockets = nil;
+    }
+    {
+        for(id<KKObjectRecycle> v in _objectRecycles) {
+            [v recycle];
+        }
+        _objectRecycles = nil;
+        _objectRecyclesForKey = nil;
+    }
+    
+    {
+        for(id<KKObjectRecycle> v in [_objectRecyclesForKey allValues]) {
+            [v recycle];
+        }
+        _objectRecyclesForKey = nil;
+    }
+}
+
+-(void) addObjectRecycle:(id<KKObjectRecycle>) object {
+    if(_objectRecycles == nil) {
+        _objectRecycles = [[NSMutableArray alloc] initWithCapacity:4];
+    }
+    [_objectRecycles addObject:object];
+}
+
+-(void) removeObjectRecycle:(id<KKObjectRecycle>) object {
+    [_objectRecycles removeObject:object];
+}
+
+-(void) setObjectRecycle:(id<KKObjectRecycle>) object forKey:(NSString *) key {
+    if(_objectRecyclesForKey == nil) {
+        _objectRecyclesForKey = [[NSMutableDictionary alloc] initWithCapacity:4];
+    }
+    id<KKObjectRecycle> v = [_objectRecyclesForKey valueForKey:key];
+    if(v != object) {
+        [v recycle];
+        [_objectRecyclesForKey setValue:object forKey:key];
+    }
+}
+
+-(void) removeObjectRecycleForKey:(NSString *) key {
+    id<KKObjectRecycle> v = [_objectRecyclesForKey valueForKey:key];
+    if(v) {
         [v recycle];
     }
-    _jsWebSockets = nil;
+    [_objectRecyclesForKey removeObjectForKey:key];
+}
+
+-(id<KKObjectRecycle>) objectRecycleForKey:(NSString *) key {
+    return [_objectRecyclesForKey valueForKey:key];
 }
 
 +(JSVirtualMachine *) jsVirtualMachine {

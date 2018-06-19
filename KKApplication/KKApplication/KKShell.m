@@ -7,6 +7,7 @@
 //
 
 #import "KKShell.h"
+#import "KKGeoLocation.h"
 
 @interface KKShell() {
     NSMutableDictionary * _loadings;
@@ -19,6 +20,10 @@
 @end
 
 @implementation KKShell
+
++(void) initialize {
+    [KKGeoLocation openlibs];
+}
 
 @synthesize delegate = _delegate;
 
