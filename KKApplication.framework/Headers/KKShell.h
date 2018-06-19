@@ -30,6 +30,8 @@ typedef void (^KKShellOpenApplication)(KKApplication * app);
 
 -(void) KKShell:(KKShell *) shell loading:(NSURL *) url path:(NSString *) path count:(NSInteger) count totalCount:(NSInteger) totalCount;
 
+-(void) KKShell:(KKShell *) shell loading:(NSURL *) url path:(NSString *) path appInfo:(id) appInfo;
+
 -(void) KKShell:(KKShell *) shell didLoading:(NSURL *) url path:(NSString *) path;
 
 -(void) KKShell:(KKShell *)shell didFailWithError:(NSError *) error url:(NSURL *) url;
@@ -45,6 +47,7 @@ typedef void (^KKShellOpenApplication)(KKApplication * app);
 -(BOOL) KKShell:(KKShell *)shell application:(KKApplication *) application cancel:(id) weakObject;
 
 -(BOOL) KKShell:(KKShell *)shell application:(KKApplication *) application openViewController:(UIViewController *) viewController action:(NSDictionary *) action;
+
 
 @end
 

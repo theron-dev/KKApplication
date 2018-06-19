@@ -16,6 +16,12 @@
 @class KKWindowPageController;
 @class KKApplication;
 
+@protocol KKObjectRecycle
+
+-(void) recycle;
+
+@end
+
 @protocol KKViewController
 
 @property(nonatomic,strong) NSDictionary * action;
@@ -92,6 +98,16 @@
 +(UIViewController *) topViewController:(UIViewController *) viewController ;
 
 +(JSVirtualMachine *) jsVirtualMachine;
+
+-(void) addObjectRecycle:(id<KKObjectRecycle>) object;
+
+-(void) removeObjectRecycle:(id<KKObjectRecycle>) object;
+
+-(id<KKObjectRecycle>) objectRecycleForKey:(NSString *) key;
+
+-(void) setObjectRecycle:(id<KKObjectRecycle>) object forKey:(NSString *) key;
+
+-(void) removeObjectRecycleForKey:(NSString *) key;
 
 @end
 
