@@ -62,9 +62,18 @@
   * taptop: 下拉刷新位置 0px则 不触发 taptop事件
   * tapbottom: 加载更多位置 0px则 不触发 tapbottom事件
   * scroll: (top bottom left right)固定 none 滚动
+  * kk:onscroll: 滚动事件
   * kk:ontaptop: 下拉刷新事件绑定
   * kk:ontapbototm: 加载更多事件绑定
   * kk:emit\_scrolltop: 发起滚动到顶部事件
+  * kk:emit\_anchor: 定位到锚点 同一组件内不可与 kk:onanchor 同时存在 data : { anchor : '' ,margin:''}
+    * 子节点属性
+    * anchor: 锚点
+  * kk:onanchor: 滚动到锚点时产生事件
+    * 子节点属性
+    * anchor: 锚点
+    * anchor-margin: 锚点外间距
+
 * pager
   * 轮播如展示数据为 \[1,2,3\] 需要处理成 \[3,1,2,3,1\]
   * interval: 自动轮播时间 \(毫秒\)
@@ -101,6 +110,11 @@
   * to: 目标值
   * delay: 延时 (毫秒)
   * duration: 动画时间（毫秒）
+* audio
+  * 音乐
+  * src: 音乐URL
+  * loop: true|false 循环播放 默认 false
+  * autoplay: true:false 自动开始播放 默认 false
 
 #### 属性类型
 
@@ -116,6 +130,8 @@
   * 50%
   * 1rpx    可以根据屏幕宽度进行自适应。规定屏幕宽为750rpx。如在 iPhone6 上，屏幕宽度为375px，共有750个物理像素，则750rpx = 375px = 750物理像素，1rpx = 0.5px = 1物理像素
   * auto
+  * 1vh   相对屏幕高度 100vh == 当前屏幕高度
+  * 1vw   相对屏幕宽度 100vw == 当前屏幕宽度
 
 * 字体
 
