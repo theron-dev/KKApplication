@@ -27,7 +27,7 @@ static CGSize KKPageControllerViewSize(UIView * view) {
 @synthesize elementNeedsLayoutDataKeys = _elementNeedsLayoutDataKeys;
 
 -(void) dealloc {
-    [_element recycleView];
+    [_element recycle];
 }
 
 -(void) run:(UIViewController *)viewController {
