@@ -63,6 +63,13 @@ extern "C" {
     
     extern CATransform3D KKTransformFromString(NSString * value);
     
+    enum KKTextDecoration {
+        KKTextDecorationNone,KKTextDecorationUnderline,KKTextDecorationLineThrough
+    };
+    
+    enum KKTextDecoration KKTextDecorationFromString(NSString * value);
+    
+    
 #ifdef   __cplusplus
 }
 #endif

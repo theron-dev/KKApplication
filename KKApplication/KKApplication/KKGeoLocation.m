@@ -80,6 +80,7 @@
         }
         
         [manager stopUpdatingLocation];
+        [_observers removeAllObjects];
     }
 }
 
@@ -92,6 +93,7 @@
     }
     
     [manager stopUpdatingLocation];
+    [_observers removeAllObjects];
     
 }
 

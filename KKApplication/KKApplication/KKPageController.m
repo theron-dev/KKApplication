@@ -127,14 +127,34 @@ static CGSize KKPageControllerViewSize(UIView * view) {
             _element = (KKViewElement *) e;
             if([e isKindOfClass:[KKBodyElement class]]) {
                 KKBodyElement * body = (KKBodyElement *) e;
+                NSString * edge = [body get:@"edge"];
+                NSMutableSet * edgeSet = [NSMutableSet set];
+                
+                if(edge == nil) {
+                    [edgeSet addObject:@"top"];
+                    [edgeSet addObject:@"bottom"];
+                } else {
+                    for(NSString * v in [edge componentsSeparatedByString:@" "]) {
+                        if([v length]) {
+                            [edgeSet addObject:v];
+                        }
+                    }
+                }
+                
                 struct KKEdge padding = body.padding;
                 CGFloat paddingTop = KKPixelValue(padding.top, 0, 0);
                 CGFloat paddingBottom = KKPixelValue(padding.bottom, 0, 0);
                 CGRect bounds =  [UIScreen mainScreen].bounds;
+                
                 if(bounds.size.height == 812.0) {
-                    paddingTop += 24;
-                    paddingBottom += 34;
+                    if([edgeSet containsObject:@"top"]) {
+                        paddingTop += 24;
+                    }
+                    if([edgeSet containsObject:@"bottom"]) {
+                        paddingBottom += 34;
+                    }
                 }
+                
                 padding.top.type = KKPixelTypePX;
                 padding.top.value = paddingTop;
                 padding.bottom.type = KKPixelTypePX;
@@ -147,6 +167,28 @@ static CGSize KKPageControllerViewSize(UIView * view) {
         
     } else {
         NSLog(@"[KK] Not Found %@",[app absolutePath:view]);
+    }
+    
+    CGRect bounds =  [UIScreen mainScreen].bounds;
+    
+    [self.observer set:@[@"page",@"screen"] value:@{
+                                                    @"width":@(bounds.size.width),
+                                                    @"height":@(bounds.size.height)}];
+    
+    CGFloat height = MAX(bounds.size.width, bounds.size.height);
+    
+    if(height == 812.0) {
+        [self.observer set:@[@"page",@"edge"] value:@{
+                                                      @"top":@(24),
+                                                      @"bottom":@(34),
+                                                      @"left":@(0),
+                                                      @"right":@(0)}];
+    } else {
+        [self.observer set:@[@"page",@"edge"] value:@{
+                                                  @"top":@(0),
+                                                  @"bottom":@(0),
+                                                  @"left":@(0),
+                                                  @"right":@(0)}];
     }
     
     [super run];

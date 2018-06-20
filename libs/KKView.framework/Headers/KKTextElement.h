@@ -28,6 +28,7 @@
 
 @property(nonatomic,strong) UIColor * strokeColor;
 @property(nonatomic,assign) struct KKPixel strokeSpacing;
+@property(nonatomic,assign) enum KKTextDecoration textDecoration;
 
 @end
 
@@ -45,6 +46,7 @@
 
 @property(nonatomic,strong) UIColor * strokeColor;
 @property(nonatomic,assign) struct KKPixel strokeSpacing;
+@property(nonatomic,assign) enum KKTextDecoration textDecoration;
 
 -(CGRect) bounds:(CGSize) size;
 
