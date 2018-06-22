@@ -11,9 +11,9 @@
 #import <KKApplication/KKPageViewController.h>
 #import <KKApplication/KKWindowPageController.h>
 #import <KKApplication/KKNavigationController.h>
+#import <KKApplication/KKLandscapeNavigationController.h>
 #import <KKApplication/KKShell.h>
 #import <KKApplication/KKWebViewController.h>
 #import <KKApplication/KKWebViewBridge.h>
-#import <KKApplication/KKWindow.h>
 #import <KKApplication/KKProtocol.h>
 

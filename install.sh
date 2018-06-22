@@ -29,8 +29,13 @@ clone(){
 build() {
 
     PROJ=$1
+    DIR=$2
 
-    SRCROOT=$HOME/${PROJ}/${PROJ}
+    if [ ! $DIR ]; then
+        DIR=$PROJ
+    fi
+
+    SRCROOT=$HOME/${DIR}/${PROJ}
 
     cmd "cd $SRCROOT"
     
@@ -72,13 +77,18 @@ framework() {
     
     PROJ=$1
     OUT=$2
+    DIR=$3
+
+    if [ ! $DIR ]; then
+        DIR=$PROJ
+    fi
 
     if [ ! -d $OUT ]; then
         cmd "mkdir $OUT"
     fi
 
     rm -rf $OUT/${PROJ}.framework
-    cp -r ${PROJ}/${PROJ}.framework $OUT/${PROJ}.framework
+    cp -r ${DIR}/${PROJ}.framework $OUT/${PROJ}.framework
 
 }
 
@@ -88,27 +98,36 @@ clone KKHttp master
 clone KKObserver master
 clone KKWebSocket master
 clone KKStorage master
+clone kk-game master
 
 build KKHttp
 framework KKHttp bin
 framework KKHttp KKView/libs
 framework KKHttp KKApplication/libs
+framework KKHttp kk-game/lib
 
 build KKObserver
 framework KKObserver bin
 framework KKObserver KKView/libs
 framework KKObserver KKApplication/libs
+framework KKObserver kk-game/lib
 
 build KKView
 framework KKView bin
 framework KKView KKApplication/libs
+framework KKView kk-game/lib
 
 build KKWebSocket
 framework KKWebSocket bin
 framework KKWebSocket KKApplication/libs
+framework KKWebSocket kk-game/lib
 
 build KKStorage
 framework KKStorage bin
 
 build KKApplication
 framework KKApplication bin
+framework KKApplication kk-game/lib
+
+build KKGame kk-game 
+framework KKGame bin kk-game

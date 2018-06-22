@@ -70,9 +70,14 @@ NSString * const KKViewControllerWillAppearNotification = @"KKViewControllerWill
         
         if(self.navigationController) {
             
-            [self.navigationController popViewControllerAnimated:YES];
-           
-        } else if(self.presentedViewController) {
+            if([[self.navigationController viewControllers] count] ==1) {
+                if(self.navigationController.presentingViewController) {
+                    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+                }
+            } else {
+                [self.navigationController popViewControllerAnimated:YES];
+            }
+        } else if(self.presentingViewController) {
             
             [self dismissViewControllerAnimated:YES completion:nil];
             

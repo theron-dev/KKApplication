@@ -49,8 +49,8 @@
 		1ACA7C3E20046CEE001F3684 /* KKWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AE1437F1FF5E0EF00D2DEAD /* KKWebViewController.m */; };
 		1ACA7C652004C37D001F3684 /* KKWebViewBridge.h in Headers */ = {isa = PBXBuildFile; fileRef = 1ACA7C632004C37D001F3684 /* KKWebViewBridge.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1ACA7C662004C37D001F3684 /* KKWebViewBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ACA7C642004C37D001F3684 /* KKWebViewBridge.m */; };
-		1AE0E262207F271F00DA897E /* KKWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AE0E260207F271F00DA897E /* KKWindow.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		1AE0E263207F271F00DA897E /* KKWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AE0E261207F271F00DA897E /* KKWindow.m */; };
+		1ACC83B820DCB79E0064E81C /* KKLandscapeNavigationController.h in Headers */ = {isa = PBXBuildFile; fileRef = 1ACC83B620DCB79E0064E81C /* KKLandscapeNavigationController.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1ACC83B920DCB79E0064E81C /* KKLandscapeNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ACC83B720DCB79E0064E81C /* KKLandscapeNavigationController.m */; };
 		1AE143361FF4956800D2DEAD /* KKApplication.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AE143341FF4956800D2DEAD /* KKApplication.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1AE143491FF495BE00D2DEAD /* KKApp.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AE143471FF495BE00D2DEAD /* KKApp.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1AE1434A1FF495BE00D2DEAD /* KKApp.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AE143481FF495BE00D2DEAD /* KKApp.m */; };
@@ -152,8 +152,8 @@
 		1AC8943920A5572B00F3E4CA /* KKAsyncCaller.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KKAsyncCaller.m; sourceTree = "<group>"; };
 		1ACA7C632004C37D001F3684 /* KKWebViewBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KKWebViewBridge.h; sourceTree = "<group>"; };
 		1ACA7C642004C37D001F3684 /* KKWebViewBridge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KKWebViewBridge.m; sourceTree = "<group>"; };
-		1AE0E260207F271F00DA897E /* KKWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KKWindow.h; sourceTree = "<group>"; };
-		1AE0E261207F271F00DA897E /* KKWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KKWindow.m; sourceTree = "<group>"; };
+		1ACC83B620DCB79E0064E81C /* KKLandscapeNavigationController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KKLandscapeNavigationController.h; sourceTree = "<group>"; };
+		1ACC83B720DCB79E0064E81C /* KKLandscapeNavigationController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KKLandscapeNavigationController.m; sourceTree = "<group>"; };
 		1AE143311FF4956800D2DEAD /* KKApplication.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = KKApplication.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1AE143341FF4956800D2DEAD /* KKApplication.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KKApplication.h; sourceTree = "<group>"; };
 		1AE143351FF4956800D2DEAD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -281,10 +281,10 @@
 				1A0366111FF8C95600CD6C27 /* KKWindowPageController.m */,
 				1A03662F1FF933D600CD6C27 /* KKNavigationController.h */,
 				1A0366301FF933D600CD6C27 /* KKNavigationController.m */,
+				1ACC83B620DCB79E0064E81C /* KKLandscapeNavigationController.h */,
+				1ACC83B720DCB79E0064E81C /* KKLandscapeNavigationController.m */,
 				1ACA7C632004C37D001F3684 /* KKWebViewBridge.h */,
 				1ACA7C642004C37D001F3684 /* KKWebViewBridge.m */,
-				1AE0E260207F271F00DA897E /* KKWindow.h */,
-				1AE0E261207F271F00DA897E /* KKWindow.m */,
 				AC1C213F20A2646000307C61 /* KKAppStorage.h */,
 				AC1C214020A2646000307C61 /* KKAppStorage.m */,
 				1A4F849720A2BD6D007ED70E /* KKProtocol.h */,
@@ -347,7 +347,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1ACA7C652004C37D001F3684 /* KKWebViewBridge.h in Headers */,
-				1AE0E262207F271F00DA897E /* KKWindow.h in Headers */,
+				1ACC83B820DCB79E0064E81C /* KKLandscapeNavigationController.h in Headers */,
 				1A0366261FF8E40500CD6C27 /* KKShell.h in Headers */,
 				1A9E3C751FF74AD40023B627 /* KKController.h in Headers */,
 				1A4F849920A2BD6D007ED70E /* KKProtocol.h in Headers */,
@@ -569,8 +569,8 @@
 				1A0366271FF8E40500CD6C27 /* KKShell.m in Sources */,
 				AC1C214220A2646000307C61 /* KKAppStorage.m in Sources */,
 				1A0366131FF8C95600CD6C27 /* KKWindowPageController.m in Sources */,
-				1AE0E263207F271F00DA897E /* KKWindow.m in Sources */,
 				1A9E3C7A1FF750770023B627 /* KKPageController.m in Sources */,
+				1ACC83B920DCB79E0064E81C /* KKLandscapeNavigationController.m in Sources */,
 				1A9E3C761FF74AD40023B627 /* KKController.m in Sources */,
 				1AE143851FF5E1B600D2DEAD /* KKViewController.m in Sources */,
 				1A0366321FF933D600CD6C27 /* KKNavigationController.m in Sources */,

@@ -24,6 +24,10 @@
     return self;
 }
 
+-(void) dealloc {
+    NSLog(@"KKPageViewController dealloc");
+}
+
 +(Class) controllerClass {
     return [KKPageController class];
 }
@@ -67,10 +71,6 @@
 -(void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [self.pageController layoutTopbar:self];
-}
-
--(void) dealloc {
-    NSLog(@"KKPageViewController dealloc");
 }
 
 @end

@@ -67,4 +67,6 @@
 
 -(BOOL) hasEventBubble:(NSString *) name;
 
+-(void) recycle;
+
 @end
