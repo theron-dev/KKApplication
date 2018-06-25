@@ -307,7 +307,7 @@ static CGSize KKPageControllerViewSize(UIView * view) {
 
 -(void) recycle {
     [super recycle];
-    [_element recycleView];
+    [_element recycle];
     [_element remove];
 }
 
