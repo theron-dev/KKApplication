@@ -19,6 +19,7 @@
 
 @interface KKGeoLocationObject : NSObject<CLLocationManagerDelegate,KKObjectRecycle> {
     NSMutableArray * _observers;
+    NSInteger _requestWhenInUseAuthorizations;
     CLLocationManager * _manager;
 }
 
@@ -60,6 +61,17 @@
     [_manager startUpdatingLocation];
 }
 
+-(void) requestWhenInUseAuthorization {
+    _requestWhenInUseAuthorizations ++ ;
+    if(_manager == nil) {
+        _manager = [[CLLocationManager alloc] init];
+        [_manager setDelegate:self];
+        [_manager setPausesLocationUpdatesAutomatically:YES];
+        [_manager setDesiredAccuracy:kCLLocationAccuracyBest];
+    }
+    [_manager requestWhenInUseAuthorization];
+}
+
 -(void) recycle {
     [_manager setDelegate:nil];
     [_manager stopUpdatingLocation];
@@ -97,6 +109,25 @@
     
 }
 
+- (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
+    
+    if(_requestWhenInUseAuthorizations >0 ) {
+        _requestWhenInUseAuthorizations = 0;
+        
+        NSMutableDictionary * data = [NSMutableDictionary dictionaryWithCapacity:4];
+        
+        CLAuthorizationStatus status = [CLLocationManager authorizationStatus];
+        
+        if(status == kCLAuthorizationStatusAuthorizedAlways || status == kCLAuthorizationStatusAuthorizedWhenInUse) {
+            data[@"location"] = @"OK";
+        } else {
+            data[@"location"] = @"CANCEL";
+        }
+        
+        [self.app.observer set:@[@"permissions",@"result"] value:data];
+    }
+}
+
 @end
 
 @implementation KKGeoLocationObjectObserver
@@ -119,8 +150,11 @@
                 [app setObjectRecycle:v forKey:@"KKGeoLocationObject"];
             }
             
-            [v addObserverWithKeys:keys data:data];
-            
+            if(keys != nil) {
+                [v addObserverWithKeys:keys data:data];
+            } else {
+                [v requestWhenInUseAuthorization];
+            }
             
         } else {
             data[@"lat"] = @(0);
@@ -152,6 +186,30 @@
             }
             
         } keys:@[@"geo",@"location"] context:nil];
+        
+        [app.observer on:^(id value, NSArray *changedKeys, void *context) {
+            
+            if(value && [value isKindOfClass:[NSMutableDictionary class]]) {
+                if([value kk_getValue:@"location"]) {
+                    
+                    if([CLLocationManager locationServicesEnabled]) {
+                        
+                        CLAuthorizationStatus status = [CLLocationManager authorizationStatus];
+                        
+                        if(status == kCLAuthorizationStatusAuthorizedAlways || status == kCLAuthorizationStatusAuthorizedWhenInUse) {
+                            value[@"location"] = @"OK";
+                        } else {
+                            value[@"location"] = @"LOADING";
+                            [self getLocation:a keys:nil data:nil];
+                        }
+                        
+                    } else {
+                        value[@"location"] = @"CANCEL";
+                    }
+                }
+            }
+            
+        } keys:@[@"permissions",@"get"] context:nil];
         
     }];
     
