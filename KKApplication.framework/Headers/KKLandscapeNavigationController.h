@@ -10,4 +10,6 @@
 
 @interface KKLandscapeNavigationController : UINavigationController
 
+@property(nonatomic,strong) id action;
+
 @end

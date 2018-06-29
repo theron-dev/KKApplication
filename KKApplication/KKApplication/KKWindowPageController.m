@@ -13,6 +13,35 @@
 
 @synthesize action = _action;
 
+-(instancetype) init {
+    if((self = [super init])) {
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_OrientationAction) name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];
+    }
+    return self;
+}
+
+-(void) dealloc {
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];
+    
+}
+
+-(void) _OrientationAction {
+    
+    UIView * v = self.element.view;
+    
+    if(v) {
+        
+        UIView * vv = v.superview;
+        
+        if(vv) {
+            [self.element layout:vv.bounds.size];
+            [self.element obtainView:vv];
+        }
+    }
+    
+}
+
 -(void) setAction:(NSDictionary *)action {
     _action = action;
     self.path = [action kk_getString:@"path"];

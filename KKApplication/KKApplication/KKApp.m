@@ -609,6 +609,8 @@ static unsigned char require_js[] = {0xa,0x28,0x66,0x75,0x6e,0x63,0x74,0x69,0x6f
             
             KKLandscapeNavigationController * nav = [[KKLandscapeNavigationController alloc] initWithRootViewController:viewController];
             
+            nav.action = action;
+            
             [topViewController presentViewController:nav animated:animated completion:nil];
             
             return;
