@@ -11,6 +11,8 @@
 #import <KKObserver/KKObserver.h>
 #import <CommonCrypto/CommonCrypto.h>
 
+#define kSkipLocalFiles @"_skipLocalFiles"
+
 @implementation KKAppLoading
 
 -(instancetype) initWithURL:(NSString *) url path:(NSString *) path http:(KKAppLoadingSendFunc) http {
@@ -47,7 +49,7 @@
     }
 }
 
-+(NSDictionary *) JOSNObject:(NSString *) path {
++(NSMutableDictionary *) JOSNObject:(NSString *) path {
     NSData * data = [NSData dataWithContentsOfFile:path];
     if(data) {
         return [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:nil];
@@ -64,7 +66,9 @@
     NSString * version = [data kk_getString:@"version"];
     NSString * ver = [data kk_getString:@"ver"];
     
-    NSDictionary * appInfo = [KKAppLoading JOSNObject:[_path stringByAppendingPathComponent:@"app.json"]];
+    NSString * basePath = [_path stringByAppendingPathComponent:version];
+    
+    NSDictionary * appInfo = [KKAppLoading JOSNObject:[basePath stringByAppendingPathComponent:@"app.json"]];
 
     NSMutableDictionary * vers = nil;
     
@@ -81,7 +85,11 @@
         }
     }
     
-    if([appInfo kk_getString:@"md5"] != nil && [version isEqualToString:[appInfo kk_getString:@"version"]]) {
+    BOOL skipLocalFiles = [[appInfo kk_getValue:kSkipLocalFiles] boolValue];
+    
+    if([appInfo kk_getString:@"md5"] != nil
+       && [version isEqualToString:[appInfo kk_getString:@"version"]]
+       && ! skipLocalFiles) {
     
         NSString * ver1 = [appInfo kk_getString:@"ver"];
         NSString * ver2 = [data kk_getString:@"ver"];
@@ -123,7 +131,6 @@
         }
     }
     
-    NSString * basePath = [_path stringByAppendingPathComponent:version];
     NSString * tPath = [_path stringByAppendingString:[NSString stringWithFormat:@"_%@_%@",version,ver]];
     
     [self itemLoad:0
@@ -131,7 +138,8 @@
            appInfo:data
               vers:vers
           basePath:basePath
-             tPath:tPath];
+             tPath:tPath
+    skipLocalFiles:skipLocalFiles];
     
 }
 
@@ -140,7 +148,8 @@
          appInfo:(NSDictionary *) appInfo
             vers:(NSDictionary *) vers
         basePath:(NSString *) basePath
-           tPath:(NSString *) tPath {
+           tPath:(NSString *) tPath
+  skipLocalFiles:(BOOL) skipLocalFiles {
     
     NSFileManager * fm = [NSFileManager defaultManager];
     
@@ -166,7 +175,8 @@
                               appInfo:appInfo
                                  vers:vers
                              basePath:basePath
-                                tPath:tPath];
+                                tPath:tPath
+                       skipLocalFiles:skipLocalFiles];
                 });
                 return;
             }
@@ -184,7 +194,7 @@
             
             NSString * localVer = [vers valueForKey:item];
             
-            if(localVer == nil || [localVer isEqualToString:ver]) {
+            if(!skipLocalFiles && (localVer == nil || [localVer isEqualToString:ver])) {
                 if([fm fileExistsAtPath:topath]) {
                     [fm createDirectoryAtPath:[tpath stringByDeletingLastPathComponent] withIntermediateDirectories:YES attributes:nil error:nil];
                     [fm copyItemAtPath:topath toPath:tpath error:nil];
@@ -194,7 +204,8 @@
                                   appInfo:appInfo
                                      vers:vers
                                  basePath:basePath
-                                    tPath:tPath];
+                                    tPath:tPath
+                           skipLocalFiles:skipLocalFiles];
                     });
                     return;
                 }
@@ -211,7 +222,8 @@
                           appInfo:appInfo
                              vers:vers
                          basePath:basePath
-                            tPath:tPath];
+                            tPath:tPath
+                   skipLocalFiles:skipLocalFiles];
             });
             return;
         }
@@ -238,7 +250,8 @@
                         appInfo:appInfo
                            vers:vers
                          basePath:basePath
-                            tPath:tPath];
+                            tPath:tPath
+                   skipLocalFiles:skipLocalFiles];
             }
         };
         
@@ -320,6 +333,14 @@
             });
             
         } else {
+            
+            NSMutableDictionary * appInfo = [[KKAppLoading JOSNObject:[basePath stringByAppendingPathComponent:@"app.json"]] mutableCopy];
+            
+            if(appInfo != nil && [appInfo isKindOfClass:[NSMutableDictionary class]]) {
+                [appInfo setValue:@(true) forKey:kSkipLocalFiles];
+                NSData * data = [NSJSONSerialization dataWithJSONObject:appInfo options:NSJSONWritingPrettyPrinted error:nil];
+                [data writeToFile:[basePath stringByAppendingPathComponent:@"app.json"] atomically:YES];
+            }
             
             [fm removeItemAtPath:tPath error:nil];
             

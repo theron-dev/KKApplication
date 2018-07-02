@@ -32,6 +32,8 @@
 		1A1438A720C679D9001DA906 /* KKAppLoading.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A1438A520C679D9001DA906 /* KKAppLoading.m */; };
 		1A4F849920A2BD6D007ED70E /* KKProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A4F849720A2BD6D007ED70E /* KKProtocol.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1A4F849A20A2BD6D007ED70E /* KKProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A4F849820A2BD6D007ED70E /* KKProtocol.m */; };
+		1A5DA59520E9FF74001B9EF4 /* KKPortraitNavigationController.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A5DA59320E9FF74001B9EF4 /* KKPortraitNavigationController.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1A5DA59620E9FF74001B9EF4 /* KKPortraitNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A5DA59420E9FF74001B9EF4 /* KKPortraitNavigationController.m */; };
 		1A9E3C751FF74AD40023B627 /* KKController.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A9E3C731FF74AD40023B627 /* KKController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1A9E3C761FF74AD40023B627 /* KKController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A9E3C741FF74AD40023B627 /* KKController.m */; };
 		1A9E3C791FF750770023B627 /* KKPageController.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A9E3C771FF750770023B627 /* KKPageController.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -136,6 +138,8 @@
 		1A1438A520C679D9001DA906 /* KKAppLoading.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KKAppLoading.m; sourceTree = "<group>"; };
 		1A4F849720A2BD6D007ED70E /* KKProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KKProtocol.h; sourceTree = "<group>"; };
 		1A4F849820A2BD6D007ED70E /* KKProtocol.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KKProtocol.m; sourceTree = "<group>"; };
+		1A5DA59320E9FF74001B9EF4 /* KKPortraitNavigationController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KKPortraitNavigationController.h; sourceTree = "<group>"; };
+		1A5DA59420E9FF74001B9EF4 /* KKPortraitNavigationController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KKPortraitNavigationController.m; sourceTree = "<group>"; };
 		1A9E3C731FF74AD40023B627 /* KKController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KKController.h; sourceTree = "<group>"; };
 		1A9E3C741FF74AD40023B627 /* KKController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KKController.m; sourceTree = "<group>"; };
 		1A9E3C771FF750770023B627 /* KKPageController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KKPageController.h; sourceTree = "<group>"; };
@@ -281,6 +285,8 @@
 				1A0366111FF8C95600CD6C27 /* KKWindowPageController.m */,
 				1A03662F1FF933D600CD6C27 /* KKNavigationController.h */,
 				1A0366301FF933D600CD6C27 /* KKNavigationController.m */,
+				1A5DA59320E9FF74001B9EF4 /* KKPortraitNavigationController.h */,
+				1A5DA59420E9FF74001B9EF4 /* KKPortraitNavigationController.m */,
 				1ACC83B620DCB79E0064E81C /* KKLandscapeNavigationController.h */,
 				1ACC83B720DCB79E0064E81C /* KKLandscapeNavigationController.m */,
 				1ACA7C632004C37D001F3684 /* KKWebViewBridge.h */,
@@ -352,6 +358,7 @@
 				1A9E3C751FF74AD40023B627 /* KKController.h in Headers */,
 				1A4F849920A2BD6D007ED70E /* KKProtocol.h in Headers */,
 				1AE143551FF4A26200D2DEAD /* KKPageViewController.h in Headers */,
+				1A5DA59520E9FF74001B9EF4 /* KKPortraitNavigationController.h in Headers */,
 				1AE143491FF495BE00D2DEAD /* KKApp.h in Headers */,
 				1A0366311FF933D600CD6C27 /* KKNavigationController.h in Headers */,
 				1AE143801FF5E0F000D2DEAD /* KKWebViewController.h in Headers */,
@@ -563,6 +570,7 @@
 				1AC8943B20A5572B00F3E4CA /* KKAsyncCaller.m in Sources */,
 				1ACA7C662004C37D001F3684 /* KKWebViewBridge.m in Sources */,
 				1AA7918520D8B5C800121878 /* KKGeoLocation.m in Sources */,
+				1A5DA59620E9FF74001B9EF4 /* KKPortraitNavigationController.m in Sources */,
 				1AE1434A1FF495BE00D2DEAD /* KKApp.m in Sources */,
 				1AE143561FF4A26200D2DEAD /* KKPageViewController.m in Sources */,
 				1ACA7C3E20046CEE001F3684 /* KKWebViewController.m in Sources */,

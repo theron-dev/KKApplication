@@ -55,7 +55,19 @@
     if(self.element == nil) {
         return;
     }
-
+    
+    if([self.element isKindOfClass:[KKBodyElement class]]) {
+        KKElement * e = self.element.firstChild;
+        while(e){
+            if([e isKindOfClass:[KKViewElement class]]) {
+                [e set:@"reuse" value:@""];
+            }
+            e = e.nextSibling;
+        }
+    } else {
+        [self.element set:@"reuse" value:@""];
+    }
+    
     [self.element layout:view.bounds.size];
     [self.element obtainView:view];
     
