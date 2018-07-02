@@ -83,7 +83,7 @@
 }
 
 - (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation {
-    return UIInterfaceOrientationLandscapeLeft;
+    return UIInterfaceOrientationLandscapeRight;
 }
 
 -(BOOL) prefersStatusBarHidden {
