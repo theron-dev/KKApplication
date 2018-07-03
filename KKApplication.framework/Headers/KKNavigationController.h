@@ -10,4 +10,6 @@
 
 @interface KKNavigationController : UINavigationController
 
+@property(nonatomic,strong) id action;
+
 @end

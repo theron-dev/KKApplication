@@ -58,9 +58,13 @@ CGSize KKViewElementLayoutHorizontal(KKViewElement * element);
 @property(nonatomic,strong,readonly) Class viewClass;
 @property(nonatomic,assign,readonly,getter=isObtaining) BOOL obtaining;
 
+-(UIView*) createView;
+
 -(void) obtainView:(UIView *) view;
 
 -(void) recycleView;
+
+-(void) recycleView:(KKViewElement *) element;
 
 -(void) obtainChildrenView;
 
