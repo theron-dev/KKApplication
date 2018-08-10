@@ -98,7 +98,11 @@ clone KKHttp master
 clone KKObserver master
 clone KKWebSocket master
 clone KKStorage master
+clone kk-duktape feature_game
+clone kk-event master
 clone kk-game master
+clone kk-object master
+clone kk-element master
 
 build KKHttp
 framework KKHttp bin
@@ -128,6 +132,22 @@ framework KKStorage bin
 build KKApplication
 framework KKApplication bin
 framework KKApplication kk-game/lib
+
+build KKDuktape kk-duktape
+framework KKDuktape bin kk-duktape
+framework KKDuktape kk-game/lib kk-duktape
+
+build KKEvent kk-event
+framework KKEvent bin kk-event
+framework KKEvent kk-game/lib kk-event
+
+build KKObject kk-object
+framework KKObject bin kk-object
+framework KKObject kk-game/lib kk-object
+
+build KKElement kk-element
+framework KKElement bin kk-element
+framework KKElement kk-game/lib kk-element
 
 build KKGame kk-game 
 framework KKGame bin kk-game
