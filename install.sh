@@ -136,14 +136,17 @@ framework KKApplication kk-game/lib
 build KKDuktape kk-duktape
 framework KKDuktape bin kk-duktape
 framework KKDuktape kk-game/lib kk-duktape
+framework KKDuktape kk-element/lib kk-duktape
 
 build KKEvent kk-event
 framework KKEvent bin kk-event
 framework KKEvent kk-game/lib kk-event
+framework KKEvent kk-element/lib kk-event
 
 build KKObject kk-object
 framework KKObject bin kk-object
 framework KKObject kk-game/lib kk-object
+framework KKObject kk-element/lib kk-object
 
 build KKElement kk-element
 framework KKElement bin kk-element
