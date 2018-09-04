@@ -302,6 +302,10 @@
                     
                     NSData * data = [NSData dataWithContentsOfFile:[tPath stringByAppendingPathComponent:itemPath]];
                     
+                    if([data length] == 0) {
+                        NSLog(@"[KK] [HTTP] [DATA] [NIL] %@",[tPath stringByAppendingPathComponent:itemPath]);
+                    }
+                    
                     CC_MD5_Update(&ctx, [data bytes], (CC_LONG) [data length]);
                 }
                 

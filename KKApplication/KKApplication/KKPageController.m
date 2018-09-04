@@ -30,17 +30,10 @@ static CGSize KKPageControllerViewSize(UIView * view) {
     [_element recycle];
 }
 
--(void) run:(UIViewController *)viewController {
-    [super run:viewController];
+-(void) runInView:(UIView *) inView {
     
-    __weak UIView * view = nil;
+    __weak UIView * view = inView;
     
-    if([viewController respondsToSelector:@selector(contentView)]) {
-        view = [(id<KKViewController>) viewController contentView];
-    } else {
-        view = [viewController view];
-    }
-  
     [_element layout:KKPageControllerViewSize(view)];
     [_element obtainView:view];
     
@@ -110,6 +103,103 @@ static CGSize KKPageControllerViewSize(UIView * view) {
         } keys:@[] children:true priority:KKOBSERVER_PRIORITY_LOW context:nil];
         
     }
+    
+    
+}
+
++(UIEdgeInsets) screenContentEdgeInsetsWithEdge:(NSString *) edge {
+    
+    UIEdgeInsets padding = UIEdgeInsetsZero;
+    
+    NSMutableSet * edgeSet = [NSMutableSet set];
+    
+    if(edge == nil) {
+        [edgeSet addObject:@"top"];
+        [edgeSet addObject:@"bottom"];
+    } else {
+        for(NSString * v in [edge componentsSeparatedByString:@" "]) {
+            if([v length]) {
+                [edgeSet addObject:v];
+            }
+        }
+    }
+    
+    CGSize screenSize =  [UIScreen mainScreen].bounds.size;
+    
+    UIInterfaceOrientation interfaceOrientation = [[UIApplication sharedApplication] statusBarOrientation];
+    
+    if(screenSize.height == 812.0) {
+        if([edgeSet containsObject:@"top"]) {
+            padding.top += 24;
+        }
+        if([edgeSet containsObject:@"bottom"]) {
+            padding.bottom += 34;
+        }
+    } else if(screenSize.width == 812.0) {
+        switch (interfaceOrientation) {
+            case UIInterfaceOrientationLandscapeLeft:
+                if([edgeSet containsObject:@"top"]) {
+                    padding.right += 24;
+                }
+                break;
+            case UIInterfaceOrientationLandscapeRight:
+                if([edgeSet containsObject:@"bottom"]) {
+                    padding.left += 24;
+                }
+                break;
+            default:
+                break;
+        }
+    }
+    
+    return padding;
+}
+
+-(void) layoutInView:(UIView *) view hasScreenContentEdge:(BOOL) hasScreenContentEdge {
+    
+    if(hasScreenContentEdge && [_element isKindOfClass:[KKBodyElement class]]) {
+        
+        KKBodyElement * body = (KKBodyElement *) _element;
+        
+        UIEdgeInsets edge = [KKPageController screenContentEdgeInsetsWithEdge:[body get:@"edge"]];
+        
+        struct KKEdge padding = KKEdgeFromString([body get:@"padding"]);
+        
+        CGFloat paddingTop = KKPixelValue(padding.top, 0, 0) + edge.top;
+        CGFloat paddingBottom = KKPixelValue(padding.bottom, 0, 0) + edge.bottom;
+        CGFloat paddingLeft = KKPixelValue(padding.left, 0, 0) + edge.left;
+        CGFloat paddingRight = KKPixelValue(padding.right, 0, 0) + + edge.right;
+        
+        
+        padding.top.type = KKPixelTypePX;
+        padding.top.value = paddingTop;
+        padding.bottom.type = KKPixelTypePX;
+        padding.bottom.value = paddingBottom;
+        padding.left.type = KKPixelTypePX;
+        padding.left.value = paddingLeft;
+        padding.right.type = KKPixelTypePX;
+        padding.right.value = paddingRight;
+        body.padding = padding;
+        
+    }
+    
+    [_element layout:KKPageControllerViewSize(view)];
+    
+    
+}
+
+-(void) run:(UIViewController *)viewController {
+    [super run:viewController];
+    
+    UIView * view = nil;
+    
+    if([viewController respondsToSelector:@selector(contentView)]) {
+        view = [(id<KKViewController>) viewController contentView];
+    } else {
+        view = [viewController view];
+    }
+  
+    [self runInView:view];
     
 }
 
@@ -234,67 +324,7 @@ static CGSize KKPageControllerViewSize(UIView * view) {
         view = [viewController view];
     }
     
-    if([_element isKindOfClass:[KKBodyElement class]]) {
-        KKBodyElement * body = (KKBodyElement *) _element;
-        NSString * edge = [body get:@"edge"];
-        NSMutableSet * edgeSet = [NSMutableSet set];
-        
-        if(edge == nil) {
-            [edgeSet addObject:@"top"];
-            [edgeSet addObject:@"bottom"];
-        } else {
-            for(NSString * v in [edge componentsSeparatedByString:@" "]) {
-                if([v length]) {
-                    [edgeSet addObject:v];
-                }
-            }
-        }
-        
-        struct KKEdge padding = KKEdgeFromString([body get:@"padding"]);
-        
-        CGFloat paddingTop = KKPixelValue(padding.top, 0, 0);
-        CGFloat paddingBottom = KKPixelValue(padding.bottom, 0, 0);
-        CGFloat paddingLeft = KKPixelValue(padding.left, 0, 0);
-        CGFloat paddingRight = KKPixelValue(padding.right, 0, 0);
-        CGSize screenSize =  [UIScreen mainScreen].bounds.size;
-        UIInterfaceOrientation interfaceOrientation = [[UIApplication sharedApplication] statusBarOrientation];
-        
-        if(screenSize.height == 812.0) {
-            if([edgeSet containsObject:@"top"]) {
-                paddingTop += 24;
-            }
-            if([edgeSet containsObject:@"bottom"]) {
-                paddingBottom += 34;
-            }
-        } else if(screenSize.width == 812.0) {
-            switch (interfaceOrientation) {
-                case UIInterfaceOrientationLandscapeLeft:
-                    if([edgeSet containsObject:@"top"]) {
-                        paddingRight += 24;
-                    }
-                    break;
-                case UIInterfaceOrientationLandscapeRight:
-                    if([edgeSet containsObject:@"bottom"]) {
-                        paddingLeft += 24;
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
-        
-        padding.top.type = KKPixelTypePX;
-        padding.top.value = paddingTop;
-        padding.bottom.type = KKPixelTypePX;
-        padding.bottom.value = paddingBottom;
-        padding.left.type = KKPixelTypePX;
-        padding.left.value = paddingLeft;
-        padding.right.type = KKPixelTypePX;
-        padding.right.value = paddingRight;
-        body.padding = padding;
-    }
-    
-    [_element layout:KKPageControllerViewSize(view)];
+    [self layoutInView:view hasScreenContentEdge:YES];
 
 }
 

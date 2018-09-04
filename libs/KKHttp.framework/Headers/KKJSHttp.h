@@ -2,7 +2,7 @@
 //  KKJSHttp.h
 //  KKHttp
 //
-//  Created by hailong11 on 2017/12/27.
+//  Created by zhanghailong on 2017/12/27.
 //  Copyright © 2017年 mofang.cn. All rights reserved.
 //
 
