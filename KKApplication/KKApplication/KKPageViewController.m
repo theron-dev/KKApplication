@@ -73,4 +73,9 @@
     [self.pageController layoutTopbar:self];
 }
 
+-(void) setAction:(NSDictionary *)action {
+    [super setAction:action];
+    self.pageController.viewPath = [action kk_getString:@"view"];
+}
+
 @end

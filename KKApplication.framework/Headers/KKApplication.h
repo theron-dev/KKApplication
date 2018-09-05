@@ -16,4 +16,5 @@
 #import <KKApplication/KKWebViewController.h>
 #import <KKApplication/KKWebViewBridge.h>
 #import <KKApplication/KKProtocol.h>
+#import <KKApplication/KKPageElement.h>
 

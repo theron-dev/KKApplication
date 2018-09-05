@@ -136,6 +136,7 @@
     _pageController.application = app;
     [_pageController setQuery:self.data];
     [_pageController setPath:path];
+    [_pageController setViewPath:[self get:@"view"]];
     [_pageController run];
     
     [_pageController runInView:view];

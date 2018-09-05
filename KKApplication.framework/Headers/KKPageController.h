@@ -14,6 +14,10 @@
 @property(nonatomic,strong,readonly) KKViewElement * element;
 @property(nonatomic,strong) NSSet * elementNeedsLayoutDataKeys;
 
+-(void) runInView:(UIView *) view;
+
+-(void) layoutInView:(UIView *) view hasScreenContentEdge:(BOOL) hasScreenContentEdge;
+
 -(void) layout:(UIViewController *) viewController;
 
 -(void) installTopbar:(UIViewController *) viewController;
@@ -21,5 +25,7 @@
 -(void) layoutTopbar:(UIViewController *) viewController;
 
 -(void) recycle;
+
++(UIEdgeInsets) screenContentEdgeInsetsWithEdge:(NSString *) edge;
 
 @end

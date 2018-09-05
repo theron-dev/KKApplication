@@ -207,7 +207,13 @@ static CGSize KKPageControllerViewSize(UIView * view) {
     
     KKApplication * app = self.application;
     
-    NSString * view = [self.path stringByAppendingString:@"_view.js"];
+    NSString * view = self.viewPath ;
+    
+    if(view == nil) {
+        view = [self.path stringByAppendingString:@"_view.js"];
+    } else {
+        view = [view stringByAppendingString:@"_view.js"];
+    }
     
     if([app has:view]) {
         
