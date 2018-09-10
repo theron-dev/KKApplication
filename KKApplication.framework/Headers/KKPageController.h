@@ -13,6 +13,7 @@
 
 @property(nonatomic,strong,readonly) KKViewElement * element;
 @property(nonatomic,strong) NSSet * elementNeedsLayoutDataKeys;
+@property(nonatomic,strong) NSString * viewPath;
 
 -(void) runInView:(UIView *) view;
 

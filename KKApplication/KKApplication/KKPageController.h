@@ -15,9 +15,9 @@
 @property(nonatomic,strong) NSSet * elementNeedsLayoutDataKeys;
 @property(nonatomic,strong) NSString * viewPath;
 
--(void) runInView:(UIView *) view;
+-(void) runInView:(UIView *) view edge:(UIEdgeInsets) edge;
 
--(void) layoutInView:(UIView *) view hasScreenContentEdge:(BOOL) hasScreenContentEdge;
+-(void) layoutInView:(UIView *) view edge:(UIEdgeInsets) edge;
 
 -(void) layout:(UIViewController *) viewController;
 
@@ -26,6 +26,8 @@
 -(void) layoutTopbar:(UIViewController *) viewController;
 
 -(void) recycle;
+
+-(UIEdgeInsets) elementScreenContentEdgeInsets;
 
 +(UIEdgeInsets) screenContentEdgeInsetsWithEdge:(NSString *) edge;
 

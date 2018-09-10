@@ -30,10 +30,39 @@ static CGSize KKPageControllerViewSize(UIView * view) {
     [_element recycle];
 }
 
--(void) runInView:(UIView *) inView {
+-(void) setElementContentEdgeInsets:(UIEdgeInsets) edge {
+    
+    if([_element isKindOfClass:[KKBodyElement class]]) {
+        
+        KKBodyElement * body = (KKBodyElement *) _element;
+        
+        struct KKEdge padding = KKEdgeFromString([body get:@"padding"]);
+        
+        CGFloat paddingTop = KKPixelValue(padding.top, 0, 0) + edge.top;
+        CGFloat paddingBottom = KKPixelValue(padding.bottom, 0, 0) + edge.bottom;
+        CGFloat paddingLeft = KKPixelValue(padding.left, 0, 0) + edge.left;
+        CGFloat paddingRight = KKPixelValue(padding.right, 0, 0) + + edge.right;
+        
+        
+        padding.top.type = KKPixelTypePX;
+        padding.top.value = paddingTop;
+        padding.bottom.type = KKPixelTypePX;
+        padding.bottom.value = paddingBottom;
+        padding.left.type = KKPixelTypePX;
+        padding.left.value = paddingLeft;
+        padding.right.type = KKPixelTypePX;
+        padding.right.value = paddingRight;
+        body.padding = padding;
+        
+    }
+    
+}
+
+-(void) runInView:(UIView *) inView edge:(UIEdgeInsets) edge {
     
     __weak UIView * view = inView;
     
+    [self setElementContentEdgeInsets:edge];
     [_element layout:KKPageControllerViewSize(view)];
     [_element obtainView:view];
     
@@ -107,6 +136,17 @@ static CGSize KKPageControllerViewSize(UIView * view) {
     
 }
 
+-(UIEdgeInsets) elementScreenContentEdgeInsets {
+    
+    NSString * v = nil;
+    
+    if([_element isKindOfClass:[KKBodyElement class]]) {
+        v = [_element get:@"edge"];
+    }
+    
+    return [KKPageController screenContentEdgeInsetsWithEdge:v];
+}
+
 +(UIEdgeInsets) screenContentEdgeInsetsWithEdge:(NSString *) edge {
     
     UIEdgeInsets padding = UIEdgeInsetsZero;
@@ -155,38 +195,13 @@ static CGSize KKPageControllerViewSize(UIView * view) {
     return padding;
 }
 
--(void) layoutInView:(UIView *) view hasScreenContentEdge:(BOOL) hasScreenContentEdge {
+-(void) layoutInView:(UIView *) view edge:(UIEdgeInsets) edge {
     
-    if(hasScreenContentEdge && [_element isKindOfClass:[KKBodyElement class]]) {
-        
-        KKBodyElement * body = (KKBodyElement *) _element;
-        
-        UIEdgeInsets edge = [KKPageController screenContentEdgeInsetsWithEdge:[body get:@"edge"]];
-        
-        struct KKEdge padding = KKEdgeFromString([body get:@"padding"]);
-        
-        CGFloat paddingTop = KKPixelValue(padding.top, 0, 0) + edge.top;
-        CGFloat paddingBottom = KKPixelValue(padding.bottom, 0, 0) + edge.bottom;
-        CGFloat paddingLeft = KKPixelValue(padding.left, 0, 0) + edge.left;
-        CGFloat paddingRight = KKPixelValue(padding.right, 0, 0) + + edge.right;
-        
-        
-        padding.top.type = KKPixelTypePX;
-        padding.top.value = paddingTop;
-        padding.bottom.type = KKPixelTypePX;
-        padding.bottom.value = paddingBottom;
-        padding.left.type = KKPixelTypePX;
-        padding.left.value = paddingLeft;
-        padding.right.type = KKPixelTypePX;
-        padding.right.value = paddingRight;
-        body.padding = padding;
-        
-    }
-    
+    [self setElementContentEdgeInsets:edge];
     [_element layout:KKPageControllerViewSize(view)];
-    
-    
+
 }
+
 
 -(void) run:(UIViewController *)viewController {
     [super run:viewController];
@@ -199,7 +214,7 @@ static CGSize KKPageControllerViewSize(UIView * view) {
         view = [viewController view];
     }
   
-    [self runInView:view];
+    [self runInView:view edge:[self elementScreenContentEdgeInsets]];
     
 }
 
@@ -330,7 +345,7 @@ static CGSize KKPageControllerViewSize(UIView * view) {
         view = [viewController view];
     }
     
-    [self layoutInView:view hasScreenContentEdge:YES];
+    [self layoutInView:view edge:[self elementScreenContentEdgeInsets]];
 
 }
 

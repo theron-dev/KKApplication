@@ -8,7 +8,9 @@
 
 #import "KKPortraitNavigationController.h"
 
-@interface KKPortraitNavigationController ()
+@interface KKPortraitNavigationController (){
+   
+}
 
 @end
 

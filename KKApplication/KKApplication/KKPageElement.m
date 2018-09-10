@@ -139,8 +139,7 @@
     [_pageController setViewPath:[self get:@"view"]];
     [_pageController run];
     
-    [_pageController runInView:view];
-    [_pageController layoutInView:view hasScreenContentEdge:NO];
+    [_pageController runInView:view edge:UIEdgeInsetsMake(-20, 0, 0, 0)];
     
     [_pageController willAppear];
     [_pageController didAppear];
@@ -183,7 +182,7 @@
     }
     
     if(_pageController) {
-        [_pageController layoutInView:view hasScreenContentEdge:NO];
+        [_pageController layoutInView:view edge:UIEdgeInsetsMake(-20, 0, 0, 0)];
     }
     
 }
