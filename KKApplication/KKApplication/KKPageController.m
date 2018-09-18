@@ -167,15 +167,15 @@ static CGSize KKPageControllerViewSize(UIView * view) {
     CGSize screenSize =  [UIScreen mainScreen].bounds.size;
     
     UIInterfaceOrientation interfaceOrientation = [[UIApplication sharedApplication] statusBarOrientation];
-    
-    if(screenSize.height == 812.0) {
+
+    if(screenSize.height == 812.0 || screenSize.height == 896.0) {
         if([edgeSet containsObject:@"top"]) {
             padding.top += 24;
         }
         if([edgeSet containsObject:@"bottom"]) {
             padding.bottom += 34;
         }
-    } else if(screenSize.width == 812.0) {
+    } else if(screenSize.width == 812.0 || screenSize.width == 896.0) {
         switch (interfaceOrientation) {
             case UIInterfaceOrientationLandscapeLeft:
                 if([edgeSet containsObject:@"top"]) {
