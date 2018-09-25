@@ -143,11 +143,26 @@ static unsigned char require_js[] = {0xa,0x28,0x66,0x75,0x6e,0x63,0x74,0x69,0x6f
             
         } keys:@[@"alert"] context:nil];
         
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(doAppForeground) name:UIApplicationWillEnterForegroundNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(doAppBackground) name:UIApplicationDidEnterBackgroundNotification object:nil];
     }
     return self;
 }
 
+-(void) doAppForeground {
+    [self.observer set:@[@"app",@"foreground"] value:@{}];
+}
+
+-(void) doAppBackground {
+    [self.observer set:@[@"app",@"background"] value:@{}];
+}
+
 -(void) dealloc {
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillEnterForegroundNotification object:nil];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:nil];
+    
     [_jsObserver recycle];
     [_asyncCaller recycle];
     [_jsHttp recycle];
@@ -527,9 +542,36 @@ static unsigned char require_js[] = {0xa,0x28,0x66,0x75,0x6e,0x63,0x74,0x69,0x6f
 
 -(KKWindowPageController *) openWindowPageController:(NSDictionary *) action {
     
+    __strong KKApplication * v = self;
+    
+    NSArray * vs = [[action kk_getString:@"back"] componentsSeparatedByString:@"/"];
+    
+    if(vs != nil ){
+        
+        UIViewController * topViewController = [KKApplication topViewController:[UIApplication sharedApplication].keyWindow.rootViewController];
+        
+        if([topViewController isKindOfClass:[UINavigationController class]]) {
+            
+            NSMutableArray * viewControllers = [NSMutableArray arrayWithArray:[(UINavigationController *) topViewController viewControllers]];
+            
+            for(NSString * v in vs) {
+                if([v isEqualToString:@".."]) {
+                    [viewControllers removeLastObject];
+                }
+            }
+            
+            if([viewControllers count] >0){
+                [(UINavigationController *) topViewController popToViewController:[viewControllers lastObject] animated:YES];
+            } else {
+                [(UINavigationController *) topViewController popToRootViewControllerAnimated:YES];
+            }
+        }
+        
+    }
+    
     KKWindowPageController * pageController = [[KKWindowPageController alloc] init];
     
-    pageController.application = self;
+    pageController.application = v;
     pageController.action = action;
     
     [pageController show];
