@@ -91,7 +91,7 @@
                     }
                     
                     if(u) {
-                        [shell isLoading:u].canceled = YES;
+                        [[shell isLoading:u] cancel];
                     }
                 }
             }
@@ -170,18 +170,21 @@
 
     KKAppLoading * loading = [self isLoading:url];
     
-    if(loading) {
-        loading.canceled = NO;
-        return loading;
-    }
+    BOOL isRestart = NO;
     
     __weak KKShell * shell = self;
-    
     NSString * key = [KKHttpOptions cacheKeyWithURL:[url absoluteString]];
-    
-    loading = [[KKAppLoading alloc] initWithURL:[url absoluteString] path:[self.basePath stringByAppendingPathComponent:key] http:^(KKHttpOptions *options) {
-        [[KKHttp main] send:options weakObject:shell];
-    }];
+    NSString * path = [self.basePath stringByAppendingPathComponent:key];
+    if(loading == nil) {
+        loading = [[KKAppLoading alloc] initWithURL:[url absoluteString] path:path http:^(KKHttpOptions *options) {
+            [[KKHttp main] send:options weakObject:shell];
+        }];
+        
+        [self setLoading:key loading:loading];
+        
+    } else {
+        isRestart = YES;
+    }
     
     loading.onload = ^(NSURL *url, NSString *path, KKAppLoading *loading) {
         [shell cancelLoading:key];
@@ -219,15 +222,30 @@
     };
     
     if(onload != nil) {
+        
         if([(id)self.delegate respondsToSelector:@selector(KKShell:willLoading:)]) {
             [self.delegate KKShell:self willLoading:url];
         }
+        
+        if(loading.appInfo != nil) {
+            if([(id)shell.delegate respondsToSelector:@selector(KKShell:loading:path:appInfo:)]) {
+                [shell.delegate KKShell:shell loading:url path:path appInfo:loading.appInfo];
+            }
+        }
+        
+        if(loading.totalCount > 0) {
+            if([(id)shell.delegate respondsToSelector:@selector(KKShell:loading:path:count:totalCount:)]) {
+                [shell.delegate KKShell:shell loading:url path:path count:loading.count totalCount:loading.totalCount];
+            }
+        }
+        
     }
     
-    [self setLoading:key loading:loading];
-    
-
-    [loading start];
+    if(isRestart) {
+        [loading restart];
+    } else {
+        [loading start];
+    }
     
     return loading;
 }

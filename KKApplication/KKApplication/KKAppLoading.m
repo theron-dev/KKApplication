@@ -44,6 +44,8 @@
 }
 
 -(void) onProgress:(NSInteger) count totalCount:(NSInteger) totalCount {
+    _count = count;
+    _totalCount = totalCount;
     if(_onprogress != nil) {
         _onprogress(_URL,_path,count,totalCount);
     }
@@ -58,6 +60,8 @@
 }
 
 -(void) onAppInfo:(id) data{
+    
+    _appInfo = data;
     
     if(_onappinfo) {
         _onappinfo(_URL,_path,self,data);
@@ -393,6 +397,18 @@
     
     _http(options);
     
+}
+
+-(void) cancel {
+    _canceled = YES;
+    _onload = nil;
+    _onprogress = nil;
+    _onerror = nil;
+    _onappinfo = nil;
+}
+
+-(void) restart {
+    _canceled = NO;
 }
 
 @end

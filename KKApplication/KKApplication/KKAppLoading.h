@@ -24,8 +24,11 @@ typedef void (^KKAppLoadingSendFunc)(KKHttpOptions * options);
 @property(nonatomic,strong,readonly) NSString * url;
 @property(nonatomic,strong,readonly) NSString * key;
 @property(nonatomic,strong,readonly) NSString * path;
+@property(nonatomic,strong,readonly) id appInfo;
+@property(nonatomic,assign,readonly) NSInteger count;
+@property(nonatomic,assign,readonly) NSInteger totalCount;
 
-@property(nonatomic,assign,getter=isCanceled) BOOL canceled;
+@property(nonatomic,assign,getter=isCanceled,readonly) BOOL canceled;
 @property(nonatomic,strong) KKAppLoadingOnLoadFunc onload;
 @property(nonatomic,strong) KKAppLoadingOnProgressFunc onprogress;
 @property(nonatomic,strong) KKAppLoadingOnErrorFunc onerror;
@@ -34,5 +37,9 @@ typedef void (^KKAppLoadingSendFunc)(KKHttpOptions * options);
 -(instancetype) initWithURL:(NSString *) url path:(NSString *) path http:(KKAppLoadingSendFunc) http;
 
 -(void) start;
+
+-(void) cancel;
+
+-(void) restart;
 
 @end
