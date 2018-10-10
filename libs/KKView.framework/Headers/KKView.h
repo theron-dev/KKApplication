@@ -32,5 +32,5 @@
 #import <KKView/KKAnimationElement.h>
 #import <KKView/KKInputElement.h>
 #import <KKView/KKSlideViewElement.h>
-
-
+#import <KKView/KKSelectElement.h>
+#import <KKView/KKTextareaElement.h>

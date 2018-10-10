@@ -51,7 +51,7 @@ build() {
 
     xcodebuild -configuration "Release" -target "${FMK_NAME}" -sdk iphoneos clean build
 
-    xcodebuild -configuration "Release" -target "${FMK_NAME}" -sdk iphonesimulator clean build
+    xcodebuild -configuration "Release" -target "${FMK_NAME}" -sdk iphonesimulator build
 
     if [ -d "${INSTALL_DIR}" ]
 

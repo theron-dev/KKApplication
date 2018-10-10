@@ -228,7 +228,7 @@
             return;
         }
         
-        KKHttpOptions * options = [[KKHttpOptions alloc] initWithURL:[[NSURL URLWithString:item relativeToURL:_URL] absoluteString]];
+        KKHttpOptions * options = [[KKHttpOptions alloc] initWithURL:[[NSURL URLWithString:[item stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] relativeToURL:_URL] absoluteString]];
         
         options.type = KKHttpOptionsTypeURI;
         options.method = KKHttpOptionsGET;

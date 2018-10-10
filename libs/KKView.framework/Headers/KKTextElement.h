@@ -8,6 +8,26 @@
 
 #import <KKView/KKViewElement.h>
 
+@protocol KKTextElement<NSObject>
+
+@property(nonatomic,assign) struct KKPixel lineSpacing;
+@property(nonatomic,assign) struct KKPixel paragraphSpacing;
+@property(nonatomic,assign) struct KKPixel letterSpacing;
+@property(nonatomic,assign) struct KKPixel baseline;
+@property(nonatomic,strong) UIColor * color;
+@property(nonatomic,strong) UIFont * font;
+@property(nonatomic,strong) UIColor * strokeColor;
+@property(nonatomic,assign) struct KKPixel strokeSpacing;
+@property(nonatomic,assign) enum KKTextDecoration textDecoration;
+
+@optional
+@property(nonatomic,assign) NSTextAlignment textAlign;
+
+@end
+
+extern NSDictionary * KKTextElementStringAttribute(KKElement<KKTextElement> * e,...);
+extern CGSize KKTextElementLayout(KKViewElement * element);
+
 @interface KKImgElement : KKElement
 
 @property(nonatomic,assign) struct KKEdge margin;
@@ -19,34 +39,17 @@
 
 @end
 
-@interface KKSpanElement: KKElement
+@interface KKSpanElement: KKElement<KKTextElement>
 
-@property(nonatomic,assign) struct KKPixel letterSpacing;
-@property(nonatomic,strong) UIColor * color;
-@property(nonatomic,strong) UIFont * font;
 @property(nonatomic,strong,readonly) NSString * text;
-
-@property(nonatomic,strong) UIColor * strokeColor;
-@property(nonatomic,assign) struct KKPixel strokeSpacing;
-@property(nonatomic,assign) enum KKTextDecoration textDecoration;
 
 @end
 
-@interface KKTextElement : KKViewElement
+@interface KKTextElement : KKViewElement<KKTextElement>
 
-@property(nonatomic,assign) struct KKPixel lineSpacing;
-@property(nonatomic,assign) struct KKPixel paragraphSpacing;
-@property(nonatomic,assign) struct KKPixel letterSpacing;
-@property(nonatomic,assign) struct KKPixel baseline;
-@property(nonatomic,assign) NSTextAlignment textAlign;
-@property(nonatomic,strong) UIColor * color;
-@property(nonatomic,strong) UIFont * font;
 @property(nonatomic,strong,readonly) NSAttributedString * attributedString;
 @property(nonatomic,strong,readonly) NSString * text;
 
-@property(nonatomic,strong) UIColor * strokeColor;
-@property(nonatomic,assign) struct KKPixel strokeSpacing;
-@property(nonatomic,assign) enum KKTextDecoration textDecoration;
 
 -(CGRect) bounds:(CGSize) size;
 
