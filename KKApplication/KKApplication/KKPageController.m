@@ -2,7 +2,7 @@
 //  KKPageController.m
 //  KKApplication
 //
-//  Created by hailong11 on 2017/12/30.
+//  Created by zhanghailong on 2017/12/30.
 //  Copyright © 2017年 kkmofang.cn. All rights reserved.
 //
 
@@ -23,10 +23,12 @@ static CGSize KKPageControllerViewSize(UIView * view) {
 
 @implementation KKPageController
 
+@synthesize document = _document;
 @synthesize element = _element;
 @synthesize elementNeedsLayoutDataKeys = _elementNeedsLayoutDataKeys;
 
 -(void) dealloc {
+    [_document recycle];
     [_element recycle];
 }
 
@@ -218,6 +220,12 @@ static CGSize KKPageControllerViewSize(UIView * view) {
     
 }
 
+-(void) runLibrary:(NSMutableDictionary *) library {
+    if(_document != nil) {
+        [library setValue:_document forKey:@"document"];
+    }
+}
+
 -(void) run {
     
     KKApplication * app = self.application;
@@ -230,6 +238,8 @@ static CGSize KKPageControllerViewSize(UIView * view) {
         view = [view stringByAppendingString:@"_view.js"];
     }
     
+    _document = [[KKPageDocument alloc] init];
+    
     if([app has:view]) {
         
         KKElement * e = [self.application elementWithPath:view data:self.jsObserver];
@@ -240,15 +250,16 @@ static CGSize KKPageControllerViewSize(UIView * view) {
             _element = nil;
         }
         
-    } else {
-        NSLog(@"[KK] Not Found %@",[app absolutePath:view]);
+        if(_element) {
+            [_document setElement:_element forElementId:@"0"];
+        }
+        
+    } else if(_document == nil) {
+        [_document create:@"body" elementId:@"0"];
+        _element = (KKViewElement *) [_document elementById:@"0"];
     }
     
     CGRect bounds =  [UIScreen mainScreen].bounds;
-    
-    [self.observer set:@[@"page",@"screen"] value:@{
-                                                    @"width":@(bounds.size.width),
-                                                    @"height":@(bounds.size.height)}];
     
     CGFloat height = MAX(bounds.size.width, bounds.size.height);
     
@@ -265,6 +276,10 @@ static CGSize KKPageControllerViewSize(UIView * view) {
                                                   @"left":@(0),
                                                   @"right":@(0)}];
     }
+    
+    [self.observer set:@[@"page",@"screen"] value:@{
+                                                    @"width":@(bounds.size.width),
+                                                    @"height":@(bounds.size.height)}];
     
     [super run];
     
@@ -358,6 +373,7 @@ static CGSize KKPageControllerViewSize(UIView * view) {
 
 -(void) recycle {
     [super recycle];
+    [_document recycle];
     [_element recycle];
     [_element remove];
 }

@@ -2,7 +2,7 @@
 //  KKWebViewBridge.m
 //  KKApplication
 //
-//  Created by hailong11 on 2018/1/9.
+//  Created by zhanghailong on 2018/1/9.
 //  Copyright © 2018年 kkmofang.cn. All rights reserved.
 //
 

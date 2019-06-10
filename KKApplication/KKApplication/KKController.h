@@ -2,7 +2,7 @@
 //  KKController.h
 //  KKApplication
 //
-//  Created by hailong11 on 2017/12/30.
+//  Created by zhanghailong on 2017/12/30.
 //  Copyright © 2017年 kkmofang.cn. All rights reserved.
 //
 
@@ -37,6 +37,8 @@
 -(void) setTopbarStyle:(UIViewController *) viewController;
 
 -(void) clearTopbarStyle:(UIViewController *) viewController;
+
+-(void) runLibrary:(NSMutableDictionary *) library;
 
 @end
 

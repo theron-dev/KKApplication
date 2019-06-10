@@ -2,7 +2,7 @@
 //  KKApp.m
 //  KKApplication
 //
-//  Created by hailong11 on 2017/12/28.
+//  Created by zhanghailong on 2017/12/28.
 //  Copyright © 2017年 kkmofang.cn. All rights reserved.
 //
 
@@ -782,6 +782,10 @@ static unsigned char require_js[] = {0xa,0x28,0x66,0x75,0x6e,0x63,0x74,0x69,0x6f
     }
     
     return nil;
+}
+
+-(void) KKViewContext:(KKViewContext *) viewContext element:(KKViewElement *) element changedKey:(NSString *) key {
+    
 }
 
 -(void) recycle {

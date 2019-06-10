@@ -2,7 +2,7 @@
 //  KKGeoLocation.m
 //  KKApplication
 //
-//  Created by hailong11 on 2018/6/19.
+//  Created by zhanghailong on 2018/6/19.
 //  Copyright © 2018年 kkmofang.cn. All rights reserved.
 //
 

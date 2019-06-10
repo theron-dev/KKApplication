@@ -57,6 +57,7 @@ CGSize KKViewElementLayoutHorizontal(KKViewElement * element);
 @property(nonatomic,strong,readonly) NSString * reuse;
 @property(nonatomic,strong,readonly) Class viewClass;
 @property(nonatomic,assign,readonly,getter=isObtaining) BOOL obtaining;
+@property(nonatomic,strong,readonly) UIView * contentView;
 
 -(UIView*) createView;
 

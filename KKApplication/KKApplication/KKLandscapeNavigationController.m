@@ -2,7 +2,7 @@
 //  KKLandscapeNavigationController.m
 //  KKApplication
 //
-//  Created by hailong11 on 2018/6/22.
+//  Created by zhanghailong on 2018/6/22.
 //  Copyright © 2018年 kkmofang.cn. All rights reserved.
 //
 
@@ -10,7 +10,9 @@
 #import <KKObserver/KKObserver.h>
 #import <KKView/KKView.h>
 
-@interface KKLandscapeNavigationController ()
+@interface KKLandscapeNavigationController (){
+    BOOL _showing;
+}
 
 @end
 
@@ -32,51 +34,38 @@
 -(void) dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillChangeStatusBarOrientationNotification object:nil];
 }
-/*
+
+-(void) viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    if(_showing) {
+        [self.topViewController viewWillAppear:animated];
+    }
+    _showing = YES;
+}
+
 -(void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    {
-        id v = [self.action kk_getValue:@"fullScreen"];
-        
-        if(v == nil || KKBooleanValue(v)) {
-            [[UIApplication sharedApplication] setStatusBarHidden:NO];
-        }
+    if(_showing) {
+        [self.topViewController viewWillAppear:animated];
     }
-    
-    {
-        id v = [self.action kk_getString:@"style"];
-        if(v != nil) {
-            if([@"light" isEqualToString:v]) {
-                [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
-            }
-        }
-    }
-    
 }
 
--(void) viewWillDisappear:(BOOL)animated{
+-(void) viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
-    {
-        id v = [self.action kk_getValue:@"fullScreen"];
-        
-        if(v == nil || KKBooleanValue(v)) {
-            [[UIApplication sharedApplication] setStatusBarHidden:YES];
-        }
+    if(_showing) {
+        [self.topViewController viewWillDisappear:animated];
     }
-    
-    {
-        id v = [self.action kk_getString:@"style"];
-        if(v != nil) {
-            if([@"light" isEqualToString:v]) {
-                [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
-            }
-        }
-    }
-    
 }
-*/
+
+-(void) viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    
+    if(_showing) {
+        [self.topViewController viewDidDisappear:animated];
+    }
+}
 
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations {
     return UIInterfaceOrientationMaskLandscape;

@@ -2,7 +2,7 @@
 //  KKProtocol.h
 //  KKApplication
 //
-//  Created by hailong11 on 2018/5/9.
+//  Created by zhanghailong on 2018/5/9.
 //  Copyright © 2018年 kkmofang.cn. All rights reserved.
 //
 

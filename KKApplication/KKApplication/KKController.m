@@ -2,7 +2,7 @@
 //  KKController.m
 //  KKApplication
 //
-//  Created by hailong11 on 2017/12/30.
+//  Created by zhanghailong on 2017/12/30.
 //  Copyright © 2017年 kkmofang.cn. All rights reserved.
 //
 
@@ -158,6 +158,10 @@
     return _asyncCaller;
 }
 
+-(void) runLibrary:(NSMutableDictionary *) library {
+    
+}
+
 -(void) run {
     
     KKApplication * app = self.application;
@@ -167,18 +171,22 @@
         
         if([app has:main]) {
             
-            [self.application exec:main librarys:@{
-                                                   @"http":self.http,
-                                                   @"page":self.jsObserver,
-                                                   @"query":self.query,
-                                                   @"path":self.path,
-                                                   @"app":self.jsApp,
-                                                   @"setTimeout":self.asyncCaller.SetTimeoutFunc,
-                                                   @"clearTimeout":self.asyncCaller.ClearTimeoutFunc,
-                                                   @"setInterval":self.asyncCaller.SetIntervalFunc,
-                                                   @"clearInterval":self.asyncCaller.ClearIntervalFunc,
-                                                   @"WebSocket":self.jsWebSocket
-                                                   }];
+            NSMutableDictionary * library = [@{
+                                               @"http":self.http,
+                                               @"page":self.jsObserver,
+                                               @"query":self.query,
+                                               @"path":self.path,
+                                               @"app":self.jsApp,
+                                               @"setTimeout":self.asyncCaller.SetTimeoutFunc,
+                                               @"clearTimeout":self.asyncCaller.ClearTimeoutFunc,
+                                               @"setInterval":self.asyncCaller.SetIntervalFunc,
+                                               @"clearInterval":self.asyncCaller.ClearIntervalFunc,
+                                               @"WebSocket":self.jsWebSocket
+                                               } mutableCopy];
+            
+            [self runLibrary:library];
+            
+            [self.application exec:main librarys:library];
             
         } else {
             NSLog(@"[KK] Not Found %@",[app absolutePath:main]);

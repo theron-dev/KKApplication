@@ -2,7 +2,7 @@
 //  KKWindowPageController.h
 //  KKApplication
 //
-//  Created by hailong11 on 2017/12/31.
+//  Created by zhanghailong on 2017/12/31.
 //  Copyright © 2017年 kkmofang.cn. All rights reserved.
 //
 
