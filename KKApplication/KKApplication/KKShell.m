@@ -28,7 +28,7 @@
 @synthesize delegate = _delegate;
 
 -(instancetype) init {
-    if((self = [super initWithBasePath:[NSHomeDirectory() stringByAppendingPathComponent:@"Library/kk"]])) {
+    if((self = [super initWithBasePath:[KKHttpOptions pathWithURI:@"cache:///kk"]])) {
         
     }
     return self;

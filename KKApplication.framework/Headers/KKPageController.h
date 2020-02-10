@@ -8,9 +8,11 @@
 
 #import <KKApplication/KKController.h>
 #import <KKView/KKView.h>
+#import <KKApplication/KKPageDocument.h>
 
 @interface KKPageController : KKController
 
+@property(nonatomic,strong,readonly) KKPageDocument * document;
 @property(nonatomic,strong,readonly) KKViewElement * element;
 @property(nonatomic,strong) NSSet * elementNeedsLayoutDataKeys;
 @property(nonatomic,strong) NSString * viewPath;

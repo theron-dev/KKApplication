@@ -65,7 +65,7 @@ static unsigned char require_js[] = {0xa,0x28,0x66,0x75,0x6e,0x63,0x74,0x69,0x6f
             [kk setValue:@(KKApplicationKernel) forProperty:@"kernel"];
             [kk setValue:@"ios" forProperty:@"platform"];
             [kk setValue:[[NSLocale currentLocale] localeIdentifier] forProperty:@"lang"];
-            
+            [kk setValue:[KKHttp userAgent] forProperty:@"userAgent"];
             [kk setValue:^NSString *(NSString *path){
 
                 return [NSString stringWithContentsOfFile:[app absolutePath:path] encoding:NSUTF8StringEncoding error:nil];
@@ -145,6 +145,17 @@ static unsigned char require_js[] = {0xa,0x28,0x66,0x75,0x6e,0x63,0x74,0x69,0x6f
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(doAppForeground) name:UIApplicationWillEnterForegroundNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(doAppBackground) name:UIApplicationDidEnterBackgroundNotification object:nil];
+        
+        {
+            JSValue * global = [jsContext globalObject];
+            [global setValue:self.jsHttp forProperty:@"http"];
+            [global setValue:self.jsObserver forProperty:@"app"];
+            [global setValue:self.asyncCaller.SetTimeoutFunc forProperty:@"setTimeout"];
+            [global setValue:self.asyncCaller.ClearTimeoutFunc forProperty:@"clearTimeout"];
+            [global setValue:self.asyncCaller.SetIntervalFunc forProperty:@"setInterval"];
+            [global setValue:self.asyncCaller.ClearIntervalFunc forProperty:@"clearInterval"];
+        }
+        
     }
     return self;
 }
@@ -727,14 +738,7 @@ static unsigned char require_js[] = {0xa,0x28,0x66,0x75,0x6e,0x63,0x74,0x69,0x6f
 }
 
 -(void) run {
-    [self exec:@"main.js" librarys:@{
-                                     @"http":self.jsHttp,
-                                     @"app":self.jsObserver,
-                                     @"setTimeout":self.asyncCaller.SetTimeoutFunc,
-                                     @"clearTimeout":self.asyncCaller.ClearTimeoutFunc,
-                                     @"setInterval":self.asyncCaller.SetIntervalFunc,
-                                     @"clearInterval":self.asyncCaller.ClearIntervalFunc,
-                                     }];
+    [self exec:@"main.js" librarys:@{}];
 }
 
 -(void) KKViewContext:(KKViewContext *)viewContext willSend:(KKHttpOptions *)options {

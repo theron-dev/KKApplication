@@ -23,6 +23,7 @@
         [e recycle];
     }
     [_elements removeAllObjects];
+    NSLog(@"[KK] KKPageDocument recycle");
 }
 
 
@@ -32,12 +33,19 @@
         return;
     }
     
+    if(_viewContext) {
+        [KKViewContext pushContext:_viewContext];
+    }
+    
     KKElement * e = nil;
     
-    Class isa =[[KKViewContext defaultElementClass] objectForKey:name];
+    NSString * className = [[KKViewContext defaultElementClass] objectForKey:name];
     
-    if(isa != nil) {
-        e = [[isa alloc] init];
+    if(className != nil) {
+        Class isa = NSClassFromString(className);
+        if(isa != nil) {
+            e = [[isa alloc] init];
+        }
     }
     
     if(e == nil) {
@@ -46,6 +54,9 @@
     
     [self setElement:e forElementId:elementId];
     
+    if(_viewContext) {
+        [KKViewContext popContext];
+    }
 }
 
 -(void) recycle:(NSString *)elementId {
@@ -142,7 +153,11 @@
                     
                     if(data) {
                         [args addObject:data];
+                    } else {
+                        [args addObject:[NSNull null]];
                     }
+                    
+                    [args addObject:name];
                     
                     [fn callWithArguments:args];
                 }

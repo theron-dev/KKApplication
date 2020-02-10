@@ -239,6 +239,7 @@ static CGSize KKPageControllerViewSize(UIView * view) {
     }
     
     _document = [[KKPageDocument alloc] init];
+    _document.viewContext = app.viewContext;
     
     if([app has:view]) {
         
@@ -252,9 +253,12 @@ static CGSize KKPageControllerViewSize(UIView * view) {
         
         if(_element) {
             [_document setElement:_element forElementId:@"0"];
+        } else {
+            [_document create:@"body" elementId:@"0"];
+            _element = (KKViewElement *) [_document elementById:@"0"];
         }
         
-    } else if(_document == nil) {
+    } else {
         [_document create:@"body" elementId:@"0"];
         _element = (KKViewElement *) [_document elementById:@"0"];
     }

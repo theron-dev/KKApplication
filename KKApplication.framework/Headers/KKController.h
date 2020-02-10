@@ -38,6 +38,8 @@
 
 -(void) clearTopbarStyle:(UIViewController *) viewController;
 
+-(void) runLibrary:(NSMutableDictionary *) library;
+
 @end
 
 @interface UIViewController(KKController)
