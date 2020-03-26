@@ -52,6 +52,41 @@
     return _contentView;
 }
 
+-(void) updateTheme {
+
+    NSString * theme = nil;
+    
+    if (@available(iOS 13.0, *)) {
+        if(UITraitCollection.currentTraitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) {
+            theme = @"dark";
+        }
+    }
+    
+    if(theme == nil) {
+        theme = @"default";
+    }
+    
+    NSString * v = [self.pageController.application.observer get:@[@"theme"] defaultValue:nil];
+    
+    if(![theme isEqualToString:v]) {
+        [self.pageController.application.observer set:@[@"theme"] value:theme];
+    }
+
+}
+
+
+- (void)traitCollectionDidChange:(nullable UITraitCollection *)previousTraitCollection {
+    [super traitCollectionDidChange:previousTraitCollection];
+    
+    __weak KKPageViewController * v = self;
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [v updateTheme];
+    });
+    
+}
+
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
